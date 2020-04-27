@@ -5,11 +5,11 @@ import XcodeVideo from '../services/xcode-video'
 import XcodeScreenshot from '../services/xcode-screenshot'
 
 export default class Ios extends Command {
-  static description = 'describe the command here'
+  static description = 'Record and take screenshots of the iOS simulator'
 
   static examples = [
-    `$ iggy ios record
-hello world from ./src/hello.ts!
+    `$ yggy ios record [screenshot | video]
+🎬 Recording started. Press SPACE to save or ESC to abort.
 `,
   ]
 

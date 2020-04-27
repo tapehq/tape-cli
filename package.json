@@ -1,11 +1,11 @@
 {
-  "name": "@edamameldn/iggy-cli",
+  "name": "yggy",
   "version": "0.0.0",
   "author": "Ingmaras Keleras @ingmaras",
   "bin": {
-    "iggy": "./bin/iggy"
+    "yggy": "./bin/yggy"
   },
-  "bugs": "https://github.com/ingmaras/iggy/issues",
+  "bugs": "https://github.com/ingmaras/yggy/issues",
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -40,7 +40,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/ingmaras/iggy",
+  "homepage": "https://github.com/ingmaras/yggy",
   "keywords": [
     "oclif"
   ],
@@ -48,12 +48,12 @@
   "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "iggy",
+    "bin": "yggy",
     "plugins": [
       "@oclif/plugin-help"
     ]
   },
-  "repository": "git://github.com/edamameldn/iggy-cli.git",
+  "repository": "git://github.com/ingmaras/yggy.git",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
@@ -61,8 +61,5 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
-  "types": "lib/index.d.ts",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  }
+  "types": "lib/index.d.ts"
 }

@@ -15,11 +15,11 @@ iggy
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g @edamameldn/iggy-cli
+$ npm install -g yggy
 $ iggy COMMAND
 running command...
 $ iggy (-v|--version|version)
-@edamameldn/iggy-cli/0.0.0 darwin-x64 node-v12.12.0
+yggy/0.0.0 darwin-x64 node-v12.12.0
 $ iggy --help [COMMAND]
 USAGE
   $ iggy COMMAND
@@ -28,9 +28,27 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`iggy config NAME`](#iggy-config-name)
 * [`iggy help [COMMAND]`](#iggy-help-command)
 * [`iggy ios TYPE`](#iggy-ios-type)
 * [`iggy upload FILE`](#iggy-upload-file)
+
+## `iggy config NAME`
+
+Upload a file to an S3 bucket
+
+```
+USAGE
+  $ iggy config NAME
+
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $ iggy bucket [file]
+```
+
+_See code: [src/commands/config.ts](https://github.com/edamameldn/iggy-cli/blob/v0.0.0/src/commands/config.ts)_
 
 ## `iggy help [COMMAND]`
 
@@ -51,7 +69,7 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3
 
 ## `iggy ios TYPE`
 
-describe the command here
+Record and take screenshots of the iOS simulator
 
 ```
 USAGE
@@ -62,27 +80,25 @@ OPTIONS
   -v, --verbose
 
 EXAMPLE
-  $ iggy ios record
-  hello world from ./src/hello.ts!
+  $ iggy ios record [screenshot | video]
+  🎬 Recording started. Press SPACE to save or ESC to abort.
 ```
 
 _See code: [src/commands/ios.ts](https://github.com/edamameldn/iggy-cli/blob/v0.0.0/src/commands/ios.ts)_
 
 ## `iggy upload FILE`
 
-describe the command here
+Upload a file to an S3 bucket
 
 ```
 USAGE
   $ iggy upload FILE
 
 OPTIONS
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  show CLI help
 
 EXAMPLE
-  $ iggy upload
-  hello world from ./src/hello.ts!
+  $ iggy upload [file]
 ```
 
 _See code: [src/commands/upload.ts](https://github.com/edamameldn/iggy-cli/blob/v0.0.0/src/commands/upload.ts)_

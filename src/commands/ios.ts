@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command'
 import { uploadFile } from '../helpers/s3'
-import { waitForSpace, waitForKeys } from '../helpers/keyboard'
+import { waitForKeys } from '../helpers/keyboard'
 import XcodeVideo from '../services/xcode-video'
 import XcodeScreenshot from '../services/xcode-screenshot'
 

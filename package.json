@@ -1,5 +1,5 @@
 {
-  "name": "iggy",
+  "name": "@edamameldn/iggy-cli",
   "version": "0.0.0",
   "author": "Ingmaras Keleras @ingmaras",
   "bin": {
@@ -53,7 +53,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "ingmaras/iggy",
+  "repository": "git://github.com/edamameldn/iggy-cli.git",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
@@ -61,5 +61,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }

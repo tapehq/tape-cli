@@ -15,11 +15,11 @@ iggy
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g iggy
+$ npm install -g @edamameldn/iggy-cli
 $ iggy COMMAND
 running command...
 $ iggy (-v|--version|version)
-iggy/0.0.0 darwin-x64 node-v12.12.0
+@edamameldn/iggy-cli/0.0.0 darwin-x64 node-v12.12.0
 $ iggy --help [COMMAND]
 USAGE
   $ iggy COMMAND
@@ -28,28 +28,9 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`iggy hello [FILE]`](#iggy-hello-file)
 * [`iggy help [COMMAND]`](#iggy-help-command)
-
-## `iggy hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ iggy hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ iggy hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/ingmaras/iggy/blob/v0.0.0/src/commands/hello.ts)_
+* [`iggy ios TYPE`](#iggy-ios-type)
+* [`iggy upload FILE`](#iggy-upload-file)
 
 ## `iggy help [COMMAND]`
 
@@ -67,4 +48,42 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
+
+## `iggy ios TYPE`
+
+describe the command here
+
+```
+USAGE
+  $ iggy ios TYPE
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --verbose
+
+EXAMPLE
+  $ iggy ios record
+  hello world from ./src/hello.ts!
+```
+
+_See code: [src/commands/ios.ts](https://github.com/edamameldn/iggy-cli/blob/v0.0.0/src/commands/ios.ts)_
+
+## `iggy upload FILE`
+
+describe the command here
+
+```
+USAGE
+  $ iggy upload FILE
+
+OPTIONS
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ iggy upload
+  hello world from ./src/hello.ts!
+```
+
+_See code: [src/commands/upload.ts](https://github.com/edamameldn/iggy-cli/blob/v0.0.0/src/commands/upload.ts)_
 <!-- commandsstop -->

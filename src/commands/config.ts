@@ -1,13 +1,12 @@
 import { Command, flags } from '@oclif/command'
-import { uploadFile } from '../helpers/s3'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 
 export default class Bucket extends Command {
-  static description = 'Upload a file to an S3 bucket'
+  static description = 'Set bucket name'
 
-  static examples = ['$ yggy bucket [file]']
+  static examples = ['$ yggy config [S3 bucket namee]']
 
   static flags = {
     help: flags.help({ char: 'h' }),
@@ -35,7 +34,5 @@ export default class Bucket extends Command {
     const json = JSON.parse(content)
 
     fs.writeFileSync(file, JSON.stringify({ bucket: args.name }))
-
-    // JSON.open
   }
 }

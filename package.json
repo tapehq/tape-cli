@@ -1,6 +1,6 @@
 {
   "name": "yggy",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Ingmaras Keleras @ingmaras",
   "bin": {
     "yggy": "./bin/yggy"

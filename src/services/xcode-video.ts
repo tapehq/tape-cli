@@ -30,7 +30,6 @@ export default class XcodeVideo {
       '--codec=h264',
       '-f',
     ])
-    // todo handle abort
 
     this.log(`[xcrun] Recording started in ${this.path}.`)
 

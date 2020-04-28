@@ -11,6 +11,6 @@ export const readConfig = async (key: string) => {
 
 export const bucketName = async () => {
   const bucket = await readConfig('bucket')
-  console.log(`bucket name is ${bucket}`)
+  console.info(`ℹ️  Bucket name is s3://${bucket} \n`)
   return bucket
 }

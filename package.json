@@ -14,11 +14,14 @@
     "adbkit": "^2.11.1",
     "await-exec": "^0.1.2",
     "aws-sdk": "^2.663.0",
+    "cli-ux": "^5.4.5",
+    "clipboardy": "^2.3.0",
     "decompress": "^4.2.1",
     "decompress-tarxz": "^3.0.0",
     "decompress-unzip": "^4.0.1",
     "lodash": "^4.17.15",
     "mime-types": "^2.1.27",
+    "niceware": "^2.0.0",
     "tslib": "^1"
   },
   "devDependencies": {

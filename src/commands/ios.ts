@@ -1,4 +1,7 @@
 import { Command, flags } from '@oclif/command'
+import cli from 'cli-ux'
+import * as clipboardy from 'clipboardy'
+
 import { uploadFile } from '../helpers/s3'
 import { waitForKeys } from '../helpers/keyboard'
 import XcodeVideo from '../services/xcode-video'
@@ -15,34 +18,40 @@ export default class Ios extends Command {
 
   static flags = {
     help: flags.help({ char: 'h' }),
-    verbose: flags.boolean({ char: 'v' }),
+    debug: flags.boolean({ char: 'd' }),
     gif: flags.boolean({ char: 'g', default: false }),
+    video: flags.boolean({ char: 'v', default: true }),
+    image: flags.boolean({ char: 'i', default: false }),
   }
 
-  static args = [
-    { name: 'type', required: true, options: ['video', 'screenshot'] },
-  ]
-
   async run() {
-    const { args, flags } = this.parse(Ios)
+    const { flags } = this.parse(Ios)
 
-    if (args.type === 'screenshot') {
-      const screenshot = new XcodeScreenshot({ verbose: flags.verbose })
+    if (flags.image) {
+      const screenshot = new XcodeScreenshot({ verbose: flags.debug })
       const path = await screenshot.save()
+
+      cli.action.start('🔗 Uploading file...')
       const url = await uploadFile(path)
-      console.log(`Screenshot uploaded! ${url}`)
+      clipboardy.writeSync(url)
+      cli.action.stop(
+        `🎉 Screenshot uploaded. Copied URL to clipboard! -> 🔖 ${url}`
+      )
+
       screenshot.destroy()
     } else {
-      const video = new XcodeVideo({ verbose: flags.verbose })
+      const video = new XcodeVideo({ verbose: flags.debug })
       video.record()
-      console.log('🎬 Recording started. Press SPACE to save or ESC to abort.')
+      console.log(
+        '\n 🎬 Recording started. Press SPACE to save or ESC to abort. \n'
+      )
 
       const success = await waitForKeys('space', 'escape')
 
       const path = await video.save()
 
       if (success) {
-        console.log('🔗 Uploading file...')
+        cli.action.start('🔗 Uploading file...')
 
         if (flags.gif) {
           console.log('convert to gif')
@@ -52,7 +61,8 @@ export default class Ios extends Command {
           //
         } else {
           const url = await uploadFile(path)
-          console.log(`✅ Video uploaded: ${url}`)
+          clipboardy.writeSync(url)
+          cli.action.stop(`🎉 Video uploaded ->  ${url}`)
         }
       } else {
         console.log(

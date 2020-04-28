@@ -1,5 +1,6 @@
 const readline = require('readline')
 
+// TODO these should be arrays..maybeh?
 export const waitForKeys = (
   successfulKey: string,
   failureKey: string

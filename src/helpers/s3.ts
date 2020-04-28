@@ -1,6 +1,7 @@
 import * as AWS from 'aws-sdk'
 import * as fs from 'fs'
 import * as mime from 'mime-types'
+import * as path from 'path'
 
 import { randomString } from './random'
 import { bucketName } from '../services/config'
@@ -9,7 +10,7 @@ export const uploadFile = async (source: string): Promise<string> => {
   // Read content from the file
   const fileContent = fs.readFileSync(source)
 
-  const key = `${randomString()}`
+  const key = path.parse(source).base
   const params = {
     Bucket: await bucketName(),
     Key: key, // File name you want to save as in S3

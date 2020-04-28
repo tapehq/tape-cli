@@ -16,6 +16,7 @@ export default class Ios extends Command {
   static flags = {
     help: flags.help({ char: 'h' }),
     verbose: flags.boolean({ char: 'v' }),
+    gif: flags.boolean({ char: 'g', default: false }),
   }
 
   static args = [
@@ -43,8 +44,16 @@ export default class Ios extends Command {
       if (success) {
         console.log('🔗 Uploading file...')
 
-        const url = await uploadFile(path)
-        console.log(`✅ Video uploaded: ${url}`)
+        if (flags.gif) {
+          console.log('convert to gif')
+          // XcodeVideoToGif(path)
+          console.log('done')
+          // console.log(r)
+          //
+        } else {
+          const url = await uploadFile(path)
+          console.log(`✅ Video uploaded: ${url}`)
+        }
       } else {
         console.log(
           '🔥 Escape pressed - stopping the recording and deleting the file'

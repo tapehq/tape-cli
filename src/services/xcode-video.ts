@@ -33,17 +33,17 @@ export default class XcodeVideo {
 
     this.log(`[xcrun] Recording started in ${this.path}.`)
 
-    // this.xcrun.stdout.on('data', (data) => {
-    //   console.log(`[xcrun] stdout: ${data}`)
-    // })
+    this.xcrun.stdout.on('data', (data) => {
+      console.log(`[xcrun] stdout: ${data}`)
+    })
 
-    // this.xcrun.stderr.on('data', (data) => {
-    //   console.log(`[xcrun] stderr: ${data}`)
-    // })
+    this.xcrun.stderr.on('data', (data) => {
+      console.log(`[xcrun] stderr: ${data}`)
+    })
 
-    // this.xcrun.on('error', (error) => {
-    //   console.log(`[xcrun] error: ${error.message}`)
-    // })
+    this.xcrun.on('error', (error) => {
+      console.log(`[xcrun] error: ${error.message}`)
+    })
   }
 
   save = async (): Promise<string> => {
@@ -72,7 +72,7 @@ export default class XcodeVideo {
 
   private log(text: string) {
     if (this.verbose) {
-      console.log(`[xcode-screenshot] ${text}`)
+      console.log(`[xcode-video] ${text}`)
     }
   }
 }

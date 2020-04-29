@@ -35,7 +35,7 @@ export default class Ios extends Command {
       const url = await uploadFile(path)
       clipboardy.writeSync(url)
       cli.action.stop(
-        `🎉 Screenshot uploaded. Copied URL to clipboard! -> 🔖 ${url}`
+        `🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! -> \n ${url}`
       )
 
       screenshot.destroy()
@@ -62,7 +62,9 @@ export default class Ios extends Command {
         } else {
           const url = await uploadFile(path)
           clipboardy.writeSync(url)
-          cli.action.stop(`🎉 Video uploaded ->  ${url}`)
+          cli.action.stop(
+            `🎉 Video uploaded. URL is in your clipboard 📋 ->  \n ${url}`
+          )
         }
       } else {
         console.log(

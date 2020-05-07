@@ -53,7 +53,7 @@ export default class Ios extends Command {
       const path = await video.save()
       let outputPath = path
 
-      if (flags.hq) {
+      if (flags.hq && !flags.gif) {
         console.info('ℹ hq flag supplied. Not Compressing \n')
       } else {
         outputPath = path.replace('.mp4', '-compressed.mp4')
@@ -64,18 +64,18 @@ export default class Ios extends Command {
         cli.action.start('🔗 Uploading file...')
 
         if (flags.gif) {
-          console.log('convert to gif')
-          // XcodeVideoToGif(path)
-          console.log('done')
-          // console.log(r)
-          //
-        } else {
-          const url = await uploadFile(outputPath)
-          clipboardy.writeSync(url)
-          cli.action.stop(
-            `🎉 Video uploaded. URL is in your clipboard 📋 ->  \n ${url}`
+          const gifPath = path.replace('.mp4', '')
+          execSync(
+            `ffmpeg -i ${path} -filter_complex 'fps=10,scale=320:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle' ${gifPath}.gif`
           )
+          outputPath = `${gifPath}.gif`
         }
+
+        const url = await uploadFile(outputPath)
+        clipboardy.writeSync(url)
+        cli.action.stop(
+          `🎉 Uploaded. URL is in your clipboard 📋 ->  \n ${url}`
+        )
       } else {
         console.log(
           '🔥 Escape pressed - stopping the recording and deleting the file'

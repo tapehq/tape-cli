@@ -1,3 +1,4 @@
+import { execSync } from 'child_process'
 import { Command, flags } from '@oclif/command'
 import cli from 'cli-ux'
 import * as clipboardy from 'clipboardy'
@@ -11,7 +12,7 @@ export default class Ios extends Command {
   static description = 'Record and take screenshots of the iOS simulator'
 
   static examples = [
-    `$ yggy ios record [screenshot | video]
+    `$ yggy ios record [--image | --video | --gif]
 🎬 Recording started. Press SPACE to save or ESC to abort.
 `,
   ]
@@ -22,6 +23,7 @@ export default class Ios extends Command {
     gif: flags.boolean({ char: 'g', default: false }),
     video: flags.boolean({ char: 'v', default: true }),
     image: flags.boolean({ char: 'i', default: false }),
+    hq: flags.boolean({ default: false }),
   }
 
   async run() {
@@ -49,6 +51,14 @@ export default class Ios extends Command {
       const success = await waitForKeys('space', 'escape')
 
       const path = await video.save()
+      let outputPath = path
+
+      if (flags.hq) {
+        console.info('ℹ hq flag supplied. Not Compressing \n')
+      } else {
+        outputPath = path.replace('.mp4', '-compressed.mp4')
+        execSync(`ffmpeg -i ${path} -vcodec h264 -an -b:v 800k ${outputPath}`)
+      }
 
       if (success) {
         cli.action.start('🔗 Uploading file...')
@@ -60,7 +70,7 @@ export default class Ios extends Command {
           // console.log(r)
           //
         } else {
-          const url = await uploadFile(path)
+          const url = await uploadFile(outputPath)
           clipboardy.writeSync(url)
           cli.action.stop(
             `🎉 Video uploaded. URL is in your clipboard 📋 ->  \n ${url}`

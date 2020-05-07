@@ -1,3 +1,4 @@
+import { install } from './../helpers/ffmpeg'
 import { Command, flags } from '@oclif/command'
 import * as fs from 'fs'
 import * as os from 'os'
@@ -34,5 +35,7 @@ export default class Bucket extends Command {
     const json = JSON.parse(content)
 
     fs.writeFileSync(file, JSON.stringify({ bucket: args.name }))
+
+    install()
   }
 }

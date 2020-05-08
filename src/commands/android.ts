@@ -12,7 +12,7 @@ export default class Android extends Command {
   static description = 'Record and take screenshots of the Android simulator'
 
   static examples = [
-    `$ yggy android [--video | --gif | --image]
+    `$ rec android [--video | --gif | --image]
 🎬 Recording started. Press SPACE to save or ESC to abort.
 `,
   ]
@@ -23,7 +23,8 @@ export default class Android extends Command {
     gif: flags.boolean({ char: 'g', default: false }),
     video: flags.boolean({ char: 'v', default: true }),
     image: flags.boolean({ char: 'i', default: false }),
-    hq: flags.boolean({ default: false }),  }
+    hq: flags.boolean({ default: false }),
+  }
 
   async run() {
     const { flags } = this.parse(Android)

@@ -8,7 +8,7 @@ import config, { bucketName } from '../services/config'
 export default class Config extends Command {
   static description = 'Configuration'
 
-  static examples = ['$ yggy config']
+  static examples = ['$ rec config']
 
   static flags = {
     help: flags.help({ char: 'h' }),

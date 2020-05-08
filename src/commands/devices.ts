@@ -5,7 +5,7 @@ import { getDevices as getAndroidDevices } from '../services/android-devices'
 export default class Devices extends Command {
   static description = 'List devices'
 
-  static examples = ['$ yggy devices']
+  static examples = ['$ rec devices']
 
   static flags = {
     help: flags.help({ char: 'h' }),

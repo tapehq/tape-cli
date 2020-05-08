@@ -4,7 +4,7 @@ import { uploadFile } from '../helpers/s3'
 export default class Upload extends Command {
   static description = 'Upload a file to an S3 bucket'
 
-  static examples = ['$ yggy upload [file]']
+  static examples = ['$ rec upload [file]']
 
   static flags = {
     help: flags.help({ char: 'h' }),

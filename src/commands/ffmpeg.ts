@@ -4,7 +4,7 @@ import { install } from '../helpers/ffmpeg'
 export default class Ffmpeg extends Command {
   static description = 'Install ffmpeg'
 
-  static examples = ['$ yggy ffmpeg']
+  static examples = ['$ rec ffmpeg']
 
   static flags = {
     help: flags.help({ char: 'h' }),

@@ -1,11 +1,11 @@
 {
-  "name": "yggy",
-  "version": "0.0.1",
+  "name": "rec",
+  "version": "0.1.0",
   "author": "Ingmaras Keleras @ingmaras",
   "bin": {
-    "yggy": "./bin/yggy"
+    "rec": "./bin/rec"
   },
-  "bugs": "https://github.com/ingmaras/yggy/issues",
+  "bugs": "https://github.com/edamameldn/yggy/issues",
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -22,11 +22,8 @@
     "decompress": "^4.2.1",
     "decompress-tarxz": "^3.0.0",
     "decompress-unzip": "^4.0.1",
-<<<<<<< HEAD
     "inquirer": "^7.1.0",
-=======
     "filesize": "^6.1.0",
->>>>>>> WIP: Add Android video
     "lodash": "^4.17.15",
     "mime-types": "^2.1.27",
     "niceware": "^2.0.0",
@@ -58,7 +55,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/ingmaras/yggy",
+  "homepage": "https://github.com/edamameldn/yggy",
   "keywords": [
     "oclif"
   ],
@@ -66,12 +63,12 @@
   "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "yggy",
+    "bin": "rec",
     "plugins": [
       "@oclif/plugin-help"
     ]
   },
-  "repository": "git://github.com/ingmaras/yggy.git",
+  "repository": "git://github.com/edamameldn/yggy.git",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",

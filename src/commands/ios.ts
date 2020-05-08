@@ -14,7 +14,7 @@ export default class Ios extends Command {
   static description = 'Record and take screenshots of the iOS simulator'
 
   static examples = [
-    `$ yggy ios record [--image | --video | --gif]
+    `$ rec ios record [--image | --video | --gif]
 🎬 Recording started. Press SPACE to save or ESC to abort.
 `,
   ]

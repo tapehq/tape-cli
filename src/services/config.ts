@@ -4,8 +4,8 @@ import * as path from 'path'
 
 type ConfigKey = 'bucketName'
 
-const DIR = path.join(os.homedir(), '.yggy')
-const FILE = path.join(os.homedir(), '.yggy', 'config.json')
+const DIR = path.join(os.homedir(), '.rec')
+const FILE = path.join(os.homedir(), '.rec', 'config.json')
 
 const setupConfigFile = () => {
   if (!fs.existsSync(DIR)) {

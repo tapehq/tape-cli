@@ -2,6 +2,8 @@ import { execSync } from 'child_process'
 import { Command, flags } from '@oclif/command'
 import cli from 'cli-ux'
 import * as clipboardy from 'clipboardy'
+import * as filesize from 'filesize'
+import * as fs from 'fs'
 
 import { uploadFile } from '../helpers/s3'
 import { waitForKeys } from '../helpers/keyboard'
@@ -51,6 +53,7 @@ export default class Ios extends Command {
       const success = await waitForKeys('space', 'escape')
 
       const path = await video.save()
+
       let outputPath = path
 
       if (flags.hq && !flags.gif) {
@@ -70,6 +73,12 @@ export default class Ios extends Command {
           )
           outputPath = `${gifPath}.gif`
         }
+
+        console.log(`Xcode file size: ${filesize(fs.statSync(path).size)}`)
+
+        console.log(
+          `Output file size: ${filesize(fs.statSync(outputPath).size)}`
+        )
 
         const url = await uploadFile(outputPath)
         clipboardy.writeSync(url)

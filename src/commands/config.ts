@@ -1,9 +1,9 @@
-import { install } from './../helpers/ffmpeg'
+import { install } from '../helpers/ffmpeg.helpers'
 import { Command, flags } from '@oclif/command'
 import * as inquirer from 'inquirer'
 import * as chalk from 'chalk'
 
-import config, { bucketName } from '../services/config'
+import config, { bucketName } from '../services/config.service'
 
 export default class Config extends Command {
   static description = 'Configuration'
@@ -33,12 +33,25 @@ export default class Config extends Command {
             value: 'change_bucket_name',
           },
           { name: 'enable hosted version' },
+          {
+            name: 'setup',
+            short: 'full_setup',
+            value: 'full_setup',
+          },
+          {
+            name: 'Cancel',
+          },
         ],
       },
     ])
 
     if (responses.stage === 'change_bucket_name') {
       this.changeBucketName()
+    }
+
+    if (responses.stage === 'full_setup') {
+      await this.changeBucketName()
+      install()
     }
   }
 
@@ -52,6 +65,5 @@ export default class Config extends Command {
     }
     console.log(`Bucket name set to: ${chalk.bold(name)}`)
     config.set('bucketName', name)
-    install()
   }
 }

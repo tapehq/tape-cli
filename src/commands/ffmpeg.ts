@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command'
-import { install } from '../helpers/ffmpeg'
+import { install } from '../helpers/ffmpeg.helpers'
 
 export default class Ffmpeg extends Command {
   static description = 'Install ffmpeg'

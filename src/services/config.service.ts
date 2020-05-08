@@ -4,7 +4,8 @@ import * as path from 'path'
 
 type ConfigKey = 'bucketName'
 
-const DIR = path.join(os.homedir(), '.rec')
+export const DIR = path.join(os.homedir(), '.rec')
+export const BIN_DIR = path.join(DIR, 'bin')
 const FILE = path.join(os.homedir(), '.rec', 'config.json')
 
 const setupConfigFile = () => {

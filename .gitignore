@@ -6,3 +6,4 @@
 /package-lock.json
 /tmp
 node_modules
+bin/rec-deps/ffmpeg

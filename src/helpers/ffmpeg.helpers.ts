@@ -1,3 +1,5 @@
+import { BIN_DIR } from '../services/config.service'
+
 const { get } = require('https')
 const { cursorTo } = require('readline')
 const decompress = require('decompress')
@@ -36,11 +38,14 @@ function callback(res) {
     cursorTo(process.stdout, 0, null)
     console.log(`Downloading binary: [${'='.repeat(20)}] 100%`)
 
-    decompress(buf, 'bin', {
+    decompress(buf, BIN_DIR, {
       plugins: process.platform === 'linux' ? [tarxz()] : [unzip()],
       strip: process.platform === 'linux' ? 1 : 2,
       filter: (x) =>
         x.path === (process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg'),
+      // output: CONFIG_DIR,
+    }).then((files) => {
+      console.log('Downloaded dependencies 🎉')
     })
   })
 }

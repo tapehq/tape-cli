@@ -1,3 +1,4 @@
+import { compressVid } from './../services/ffmpeg.service'
 import { execSync } from 'child_process'
 import { Command, flags } from '@oclif/command'
 import cli from 'cli-ux'
@@ -9,6 +10,7 @@ import { uploadFile } from '../helpers/s3'
 import { waitForKeys } from '../helpers/keyboard'
 import XcodeVideo from '../services/xcode-video'
 import XcodeScreenshot from '../services/xcode-screenshot'
+import { makeGif } from '../services/ffmpeg.service'
 
 export default class Ios extends Command {
   static description = 'Record and take screenshots of the iOS simulator'
@@ -52,29 +54,33 @@ export default class Ios extends Command {
 
       const success = await waitForKeys('space', 'escape')
 
-      const path = await video.save()
+      const rawOutputFile = await video.save()
 
-      let outputPath = path
+      let outputPath = rawOutputFile
 
       if (flags.hq && !flags.gif) {
         console.info('ℹ hq flag supplied. Not Compressing \n')
       } else {
-        outputPath = path.replace('.mp4', '-compressed.mp4')
-        execSync(`ffmpeg -i ${path} -vcodec h264 -an -b:v 800k ${outputPath}`)
+        outputPath = rawOutputFile.replace('.mp4', '-compressed.mp4')
+        await compressVid(rawOutputFile, outputPath)
+      }
+
+      if (flags.gif) {
+        cli.action.start('🚴🏽‍♀️ Making your gif...')
+
+        const gifPath = rawOutputFile.replace('.mp4', '')
+        await makeGif(rawOutputFile, gifPath)
+        outputPath = `${gifPath}.gif`
+
+        cli.action.stop('✔️')
       }
 
       if (success) {
         cli.action.start('🔗 Uploading file...')
 
-        if (flags.gif) {
-          const gifPath = path.replace('.mp4', '')
-          execSync(
-            `ffmpeg -i ${path} -filter_complex 'fps=10,scale=320:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle' ${gifPath}.gif`
-          )
-          outputPath = `${gifPath}.gif`
-        }
-
-        console.log(`Xcode file size: ${filesize(fs.statSync(path).size)}`)
+        console.log(
+          `Xcode file size: ${filesize(fs.statSync(rawOutputFile).size)}`
+        )
 
         console.log(
           `Output file size: ${filesize(fs.statSync(outputPath).size)}`

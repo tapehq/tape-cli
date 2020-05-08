@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as mime from 'mime-types'
 import * as path from 'path'
 
-import { bucketName } from '../services/config'
+import { bucketName } from '../services/config.service'
 
 export const uploadFile = async (source: string): Promise<string> => {
   // Read content from the file

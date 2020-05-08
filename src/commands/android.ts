@@ -6,7 +6,7 @@ export default class Android extends Command {
   static description = 'Record and take screenshots of the Android simulator'
 
   static examples = [
-    `$ yggy android [screenshot]
+    `$ yggy android [--video | --gif | --image]
 🎬 Recording started. Press SPACE to save or ESC to abort.
 `,
   ]

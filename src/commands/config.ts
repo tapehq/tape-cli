@@ -1,41 +1,57 @@
 import { install } from './../helpers/ffmpeg'
 import { Command, flags } from '@oclif/command'
-import * as fs from 'fs'
-import * as os from 'os'
-import * as path from 'path'
+import * as inquirer from 'inquirer'
+import * as chalk from 'chalk'
 
-export default class Bucket extends Command {
-  static description = 'Set bucket name'
+import config, { bucketName } from '../services/config'
 
-  static examples = ['$ yggy config [S3 bucket namee]']
+export default class Config extends Command {
+  static description = 'Configuration'
+
+  static examples = ['$ yggy config']
 
   static flags = {
     help: flags.help({ char: 'h' }),
   }
 
-  static args = [{ name: 'name', required: true }]
+  static args = [{ name: 'name', required: false }]
 
   async run() {
-    const { args } = this.parse(Bucket)
-    const { name } = args
+    this.parse(Config)
 
-    console.log(`Setting bucket name to: ${name}`)
+    const responses = await inquirer.prompt([
+      {
+        name: 'stage',
+        message: 'config',
+        type: 'list',
+        choices: [
+          {
+            name: `change bucket name (current: ${chalk.bold(
+              await bucketName()
+            )})`,
+            short: 'change bucket name',
+            value: 'change_bucket_name',
+          },
+          { name: 'enable hosted version' },
+        ],
+      },
+    ])
 
-    const homedir = path.join(os.homedir(), '.yggy')
-    if (!fs.existsSync(homedir)) {
-      fs.mkdirSync(homedir)
+    if (responses.stage === 'change_bucket_name') {
+      this.changeBucketName()
     }
+  }
 
-    const file = path.join(os.homedir(), '.yggy', 'config.json')
-    if (!fs.existsSync(file)) {
-      fs.writeFileSync(file, JSON.stringify({}))
+  async changeBucketName() {
+    const { name } = await inquirer.prompt([
+      { name: 'name', type: 'input', message: 'Enter bucket name' },
+    ])
+    if (name.length === 0) {
+      console.warn('Invalid bucket name')
+      return
     }
-
-    const content = await fs.readFileSync(file, 'utf8')
-    const json = JSON.parse(content)
-
-    fs.writeFileSync(file, JSON.stringify({ bucket: args.name }))
-
+    console.log(`Bucket name set to: ${chalk.bold(name)}`)
+    config.set('bucketName', name)
     install()
   }
 }

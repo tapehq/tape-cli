@@ -3,7 +3,6 @@ import * as fs from 'fs'
 import * as mime from 'mime-types'
 import * as path from 'path'
 
-import { randomString } from './random'
 import { bucketName } from '../services/config'
 
 export const uploadFile = async (source: string): Promise<string> => {

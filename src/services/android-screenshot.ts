@@ -5,7 +5,7 @@ import * as adb from 'adbkit'
 import { randomString } from '../helpers/random'
 import { getDevices } from './android-devices'
 
-export default class XcodeScreenshot {
+export default class AndroidScreenShot {
   fileName: string
 
   path: string

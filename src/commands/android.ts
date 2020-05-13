@@ -7,6 +7,7 @@ import * as adb from 'adbkit'
 import AndroidVideo from '../services/android-video'
 import cli from 'cli-ux'
 import * as clipboardy from 'clipboardy'
+import { waitForKeys } from '../helpers/keyboard'
 
 export default class Android extends Command {
   static description = 'Record and take screenshots of the Android simulator'
@@ -28,11 +29,6 @@ export default class Android extends Command {
 
   async run() {
     const { flags } = this.parse(Android)
-
-    if (!flags.image) {
-      console.error('TODO: android video not implemented yet')
-      return
-    }
 
     if (flags.image) {
       const screenshot = new AndroidScreenshot({ verbose: flags.debug })

@@ -85,6 +85,11 @@ export const getActiveDevice = async (): Promise<Device | null> => {
       return activeDevice
     } else {
       // Their active device is not booted
+
+      if (bootedDevices.length === 1) {
+        // console.log('You only have 1 device running so defaulting to that')
+        return bootedDevices[0]
+      }
       console.log('Your chosen device is no longer booted.')
       const device = await chooseDevicePrompt()
       console.log('Use `rec devices` to set an active device')

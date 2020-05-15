@@ -1,6 +1,6 @@
 import { Device, getDevices } from '../services/device.service'
 import * as inquirer from 'inquirer'
-import chalk from 'chalk'
+import * as chalk from 'chalk'
 
 export const chooseDevicePrompt = async () => {
   const devices = await getDevices()

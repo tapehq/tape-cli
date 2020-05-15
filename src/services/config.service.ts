@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 
-type ConfigKey = 'bucketName'
+type ConfigKey = 'bucketName' | 'device'
 
 export const DIR = path.join(os.homedir(), '.rec')
 export const BIN_DIR = path.join(DIR, 'bin')

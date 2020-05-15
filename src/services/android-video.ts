@@ -5,6 +5,10 @@ import * as filesize from 'filesize'
 
 import { randomString } from '../helpers/random'
 
+import * as path from 'path'
+import { BIN_DIR } from './config.service'
+const FFMPEG = path.join(BIN_DIR, 'ffmpeg')
+
 export default class AndroidVideo {
   process: ChildProcess | null = null
 
@@ -77,7 +81,7 @@ export default class AndroidVideo {
           const OUTPUT_FILE = `${this.path}.mp4`
 
           execSync(
-            `ffmpeg -vcodec h264 -i ${this.path}.raw -vcodec copy -acodec copy ${OUTPUT_FILE}`
+            `${FFMPEG} -vcodec h264 -i ${this.path}.raw -vcodec copy -acodec copy ${OUTPUT_FILE}`
           )
           resolve(OUTPUT_FILE)
           // } else {

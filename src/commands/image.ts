@@ -1,11 +1,13 @@
 import { Command, flags } from '@oclif/command'
 import cli from 'cli-ux'
 import * as clipboardy from 'clipboardy'
+import * as chalk from 'chalk'
 
 import { uploadFile } from '../helpers/s3'
 import XcodeScreenshot from '../services/xcode-screenshot'
 import { getDevices, getActiveDevice } from '../services/device.service'
 import AndroidScreenShot from '../services/android-screenshot'
+import { deviceString } from '../helpers/device.helpers'
 
 export default class Image extends Command {
   static description = 'Record and take screenshots of the iOS simulator'
@@ -34,6 +36,8 @@ export default class Image extends Command {
     const device = await getActiveDevice()
 
     if (!device) return
+
+    console.log(`📱 Device: ${deviceString(device)}`)
 
     const ScreenshotKlass =
       device.type === 'android' ? AndroidScreenShot : XcodeScreenshot

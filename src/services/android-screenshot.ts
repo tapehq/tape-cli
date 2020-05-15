@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as adb from 'adbkit'
 
 import { randomString } from '../helpers/random'
-import { getDevices } from './android-devices'
+import { getAndroidDevices } from './device.service'
 
 export default class AndroidScreenShot {
   fileName: string
@@ -21,7 +21,7 @@ export default class AndroidScreenShot {
 
   save = async (): Promise<string> => {
     const client = adb.createClient()
-    const devices = await getDevices()
+    const devices = await getAndroidDevices()
     const screenshot = await client.screencap(devices[0].id)
 
     return new Promise((resolve, reject) => {

@@ -1,7 +1,7 @@
 import { install } from '../helpers/ffmpeg.helpers'
 import { Command, flags } from '@oclif/command'
 import * as inquirer from 'inquirer'
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 
 import config, { bucketName } from '../services/config.service'
 

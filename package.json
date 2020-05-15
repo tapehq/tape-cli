@@ -66,7 +66,10 @@
     "bin": "rec",
     "plugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "hooks": {
+      "init": "./src/hooks/command-not-found.hook"
+    }
   },
   "repository": "git://github.com/edamameldn/yggy.git",
   "scripts": {

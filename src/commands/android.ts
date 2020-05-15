@@ -2,8 +2,6 @@ import { Command, flags } from '@oclif/command'
 import { uploadFile } from '../helpers/s3'
 import AndroidScreenshot from '../services/android-screenshot'
 
-import { exec } from 'child_process'
-import * as adb from 'adbkit'
 import AndroidVideo from '../services/android-video'
 import cli from 'cli-ux'
 import * as clipboardy from 'clipboardy'

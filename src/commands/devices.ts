@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command'
-import { getDevices as getIosDevices } from '../services/xcode-devices'
-import { getDevices as getAndroidDevices } from '../services/android-devices'
+import configService from '../services/config.service'
+import { chooseDevicePrompt } from '../helpers/device.helpers'
 
 export default class Devices extends Command {
   static description = 'List devices'
@@ -9,14 +9,21 @@ export default class Devices extends Command {
 
   static flags = {
     help: flags.help({ char: 'h' }),
+    clear: flags.boolean({ char: 'c' }),
   }
 
   static args = []
 
   async run() {
-    const devices = await getIosDevices()
-    console.log(devices)
-    const androidDevices = await getAndroidDevices()
-    console.log(androidDevices)
+    const { flags } = this.parse(Devices)
+
+    if (flags.clear) {
+      configService.set('device', null)
+      console.log('Active device cleared')
+      return
+    }
+
+    const device = await chooseDevicePrompt()
+    configService.set('device', device)
   }
 }

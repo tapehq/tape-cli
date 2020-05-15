@@ -21,10 +21,7 @@ export default class Image extends Command {
   static flags = {
     help: flags.help({ char: 'h' }),
     debug: flags.boolean({ char: 'd' }),
-    gif: flags.boolean({ char: 'g', default: false }),
-    video: flags.boolean({ char: 'v', default: true }),
-    image: flags.boolean({ char: 'i', default: false }),
-    hq: flags.boolean({ default: false }),
+    local: flags.boolean({ char: 'l' }), // dont upload
   }
 
   async run() {
@@ -44,12 +41,17 @@ export default class Image extends Command {
     const screenshot = new ScreenshotKlass({ verbose: flags.debug })
     const path = await screenshot.save()
 
-    cli.action.start('🔗 Uploading file...')
-    const url = await uploadFile(path)
-    clipboardy.writeSync(url)
-    cli.action.stop(
-      `🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! -> \n ${url}`
-    )
-    screenshot.destroy()
+    if (flags.local) {
+      clipboardy.writeSync(path)
+      console.log('🎉 Screenshot saved locally. Path in your clipboard')
+    } else {
+      cli.action.start('🔗 Uploading file...')
+      const url = await uploadFile(path)
+      clipboardy.writeSync(url)
+      cli.action.stop(
+        `🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! -> \n ${url}`
+      )
+      screenshot.destroy()
+    }
   }
 }

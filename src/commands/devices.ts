@@ -23,7 +23,7 @@ export default class Devices extends Command {
       return
     }
 
-    const device = await chooseDevicePrompt()
+    const device = await chooseDevicePrompt(true)
     ConfigService.set('device', device)
   }
 }

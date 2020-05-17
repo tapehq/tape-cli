@@ -75,39 +75,32 @@ export const getActiveDevice = async (): Promise<Device | null> => {
     return null
   }
   const activeDevice = await configService.get('device')
-  // console.log({ activeDevice })
-  if (activeDevice) {
-    // console.log(JSON.stringify(activeDevice))
-    const isBooted = bootedDevices.find(
-      (bootedDevice) => bootedDevice.id === activeDevice.id
-    )
-    if (isBooted) {
-      // Their active device is booted
-      return activeDevice
-    } else {
-      // Their active device is not booted
 
-      if (bootedDevices.length === 1) {
-        // console.log('You only have 1 device running so defaulting to that')
-        return bootedDevices[0]
-      }
-      console.log('Your chosen device is no longer booted.')
-      const device = await chooseDevicePrompt()
-      console.log('Use `rec devices` to set an active device')
-
-      return device
-    }
-  } else {
+  if (!activeDevice) {
     // console.log('no active device has been set')
+    if (bootedDevices.length === 1) return bootedDevices[0]
 
-    if (bootedDevices.length === 1) {
-      // console.log('You only have 1 device running so defaulting to that')
-      return bootedDevices[0]
-    }
     const device = await chooseDevicePrompt()
     console.log('Use `rec devices` to set an active device')
     return device
   }
+
+  const isBooted = bootedDevices.find(
+    (bootedDevice) => bootedDevice.id === activeDevice.id
+  )
+  // Their active device is booted
+  if (isBooted) return activeDevice
+
+  // Their active device is not booted, but they're only running one device.
+  if (bootedDevices.length === 1) {
+    // console.log('You only have 1 device running so defaulting to that')
+    return bootedDevices[0]
+  }
+  console.log('Your chosen device is no longer booted.')
+  const device = await chooseDevicePrompt()
+  console.log('Use `rec devices` to set an active device')
+
+  return device
 }
 
 export default {

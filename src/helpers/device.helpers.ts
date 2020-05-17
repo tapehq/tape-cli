@@ -10,15 +10,24 @@ export const deviceToFriendlyString = (device: Device) => {
   return `${type} ${name} ${id}`
 }
 
-export const chooseDevicePrompt = async () => {
+export const chooseDevicePrompt = async (displayNone = false) => {
   const devices = await getDevices()
 
-  const choices = devices.map((device: Device) => {
-    return {
-      name: deviceToFriendlyString(device),
-      value: device,
+  const choices: { name: string; value: Device | null }[] = devices.map(
+    (device: Device) => {
+      return {
+        name: deviceToFriendlyString(device),
+        value: device,
+      }
     }
-  })
+  )
+
+  if (displayNone) {
+    choices.push({
+      name: 'None - remove default device',
+      value: null,
+    })
+  }
 
   const { device } = await inquirer.prompt([
     {

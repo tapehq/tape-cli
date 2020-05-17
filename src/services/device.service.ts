@@ -1,6 +1,7 @@
 import * as adb from 'adbkit'
 import { execSync } from 'child_process'
 import { filter, flatMap } from 'lodash'
+
 import configService from './config.service'
 import { chooseDevicePrompt } from '../helpers/device.helpers'
 
@@ -13,6 +14,7 @@ export interface Device {
 interface AndroidDevice {
   id: string
   type: string
+  name: string
 }
 
 interface XcodeDevice {
@@ -28,12 +30,28 @@ interface XcodeDevice {
 export const getAndroidDevices = async (): Promise<AndroidDevice[]> => {
   const client = adb.createClient()
   const devices = await client.listDevices()
-  return devices
-  // console.log(await client.listDevicesWithPaths())
-  // console.log(await client.getFeatures(devices[0].id))
+  const out: Promise<AndroidDevice[]> = Promise.all(
+    devices.map(async (device: Device) => {
+      const properties = await client.getProperties(device.id)
+      const brand = properties['ro.product.board']
+      const deviceName = properties['ro.product.device']
+      const productName = properties['ro.product.name']
+      const manufacturer = properties['ro.product.manufacturer']
+      const model = properties['ro.product.model']
+      const sdk = properties['ro.build.version.sdk']
 
-  // const raw = execSync('adb devices -l').toString()
-  // console.log(JSON.stringify(raw))
+      const deviceDescription = [manufacturer, model, productName, brand]
+
+      const name = `${deviceName} (${deviceDescription.join(
+        ', '
+      )}) - SDK ${sdk}`
+      return {
+        ...device,
+        name,
+      }
+    })
+  )
+  return out
 }
 
 export const getXcodeDevices = (): XcodeDevice[] => {
@@ -52,7 +70,7 @@ export const getDevices = async (): Promise<Device[]> => {
     return {
       type: 'android',
       id: device.id,
-      name: device.type, // TODO: get device name/model properly and change me
+      name: device.name,
     }
   })
 
@@ -74,37 +92,37 @@ export const getActiveDevice = async (): Promise<Device | null> => {
     return null
   }
   const activeDevice = await configService.get('device')
-  // console.log({ activeDevice })
-  if (activeDevice) {
-    // console.log(JSON.stringify(activeDevice))
-    const isBooted = bootedDevices.find(
-      (bootedDevice) => bootedDevice.id === activeDevice.id
-    )
-    if (isBooted) {
-      // Their active device is booted
-      return activeDevice
-    } else {
-      // Their active device is not booted
 
-      if (bootedDevices.length === 1) {
-        // console.log('You only have 1 device running so defaulting to that')
-        return bootedDevices[0]
-      }
-      console.log('Your chosen device is no longer booted.')
-      const device = await chooseDevicePrompt()
-      console.log('Use `rec devices` to set an active device')
-
-      return device
-    }
-  } else {
+  if (!activeDevice) {
     // console.log('no active device has been set')
+    if (bootedDevices.length === 1) return bootedDevices[0]
 
-    if (bootedDevices.length === 1) {
-      // console.log('You only have 1 device running so defaulting to that')
-      return bootedDevices[0]
-    }
     const device = await chooseDevicePrompt()
     console.log('Use `rec devices` to set an active device')
     return device
   }
+
+  const isBooted = bootedDevices.find(
+    (bootedDevice) => bootedDevice.id === activeDevice.id
+  )
+  // Their active device is booted
+  if (isBooted) return activeDevice
+
+  // Their active device is not booted, but they're only running one device.
+  if (bootedDevices.length === 1) {
+    // console.log('You only have 1 device running so defaulting to that')
+    return bootedDevices[0]
+  }
+  console.log('Your chosen device is no longer booted.')
+  const device = await chooseDevicePrompt()
+  console.log('Use `rec devices` to set an active device')
+
+  return device
+}
+
+export default {
+  getActiveDevice,
+  getDevices,
+  getAndroidDevices,
+  getXcodeDevices,
 }

@@ -6,15 +6,15 @@ const decompress = require('decompress')
 const tarxz = require('decompress-tarxz')
 const unzip = require('decompress-unzip')
 
-function callback(res) {
-  let last
+function callback(res: any) {
+  let last: any
   let complete = 0
   const total = parseInt(res.headers['content-length'], 10)
 
   let index = 0
   const buf = Buffer.alloc(total)
 
-  res.on('data', (chunk) => {
+  res.on('data', (chunk: any) => {
     chunk.copy(buf, index)
     index += chunk.length
 
@@ -41,10 +41,10 @@ function callback(res) {
     decompress(buf, BIN_DIR, {
       plugins: process.platform === 'linux' ? [tarxz()] : [unzip()],
       strip: process.platform === 'linux' ? 1 : 2,
-      filter: (x) =>
+      filter: (x: any) =>
         x.path === (process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg'),
       // output: CONFIG_DIR,
-    }).then((files) => {
+    }).then(() => {
       console.log('Downloaded dependencies 🎉')
     })
   })

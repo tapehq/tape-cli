@@ -1,7 +1,8 @@
-import { BIN_DIR } from './config.service'
 import * as util from 'util'
 import { exec as originalExec } from 'child_process'
 import * as path from 'path'
+
+import { BIN_DIR } from './config.service'
 
 const FFMPEG = path.join(BIN_DIR, 'ffmpeg')
 
@@ -20,3 +21,5 @@ export const compressVid = (inputVideoFile: string, outputFile: string) => {
     `${FFMPEG} -i ${inputVideoFile} -vcodec h264 -an -b:v 800k ${outputFile}`
   )
 }
+
+export default { makeGif, compressVid }

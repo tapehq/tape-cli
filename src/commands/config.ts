@@ -1,9 +1,9 @@
-import { install } from '../helpers/ffmpeg.helpers'
+import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
 import { Command, flags } from '@oclif/command'
 import * as inquirer from 'inquirer'
 import * as chalk from 'chalk'
 
-import config, { bucketName } from '../services/config.service'
+import ConfigService from '../services/config.service'
 
 export default class Config extends Command {
   static description = 'Configuration'
@@ -27,12 +27,11 @@ export default class Config extends Command {
         choices: [
           {
             name: `change bucket name (current: ${chalk.bold(
-              await bucketName()
+              await ConfigService.get('bucketName')
             )})`,
             short: 'change bucket name',
             value: 'change_bucket_name',
           },
-          { name: 'enable hosted version' },
           {
             name: 'setup',
             short: 'full_setup',
@@ -51,7 +50,7 @@ export default class Config extends Command {
 
     if (responses.stage === 'full_setup') {
       await this.changeBucketName()
-      install()
+      installFfmpeg()
     }
   }
 
@@ -64,6 +63,6 @@ export default class Config extends Command {
       return
     }
     console.log(`Bucket name set to: ${chalk.bold(name)}`)
-    config.set('bucketName', name)
+    ConfigService.set('bucketName', name)
   }
 }

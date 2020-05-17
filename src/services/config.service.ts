@@ -30,17 +30,11 @@ const get = async (key: ConfigKey) => {
   return config[key]
 }
 
-const set = async (key: ConfigKey, value: string) => {
+const set = async (key: ConfigKey, value: string | null) => {
   setupConfigFile()
   const config = await read()
   const newConfig = { ...config, [key]: value }
   fs.writeFileSync(FILE, JSON.stringify(newConfig))
-}
-
-export const bucketName = async () => {
-  const bucket = await get('bucketName')
-  console.info(`ℹ️  Bucket name is s3://${bucket} \n`)
-  return bucket
 }
 
 export default { get, set }

@@ -14,6 +14,7 @@ export interface Device {
 interface AndroidDevice {
   id: string
   type: string
+  name: string
 }
 
 interface XcodeDevice {
@@ -29,12 +30,28 @@ interface XcodeDevice {
 export const getAndroidDevices = async (): Promise<AndroidDevice[]> => {
   const client = adb.createClient()
   const devices = await client.listDevices()
-  return devices
-  // console.log(await client.listDevicesWithPaths())
-  // console.log(await client.getFeatures(devices[0].id))
+  const out: Promise<AndroidDevice[]> = Promise.all(
+    devices.map(async (device: Device) => {
+      const properties = await client.getProperties(device.id)
+      const brand = properties['ro.product.board']
+      const deviceName = properties['ro.product.device']
+      const productName = properties['ro.product.name']
+      const manufacturer = properties['ro.product.manufacturer']
+      const model = properties['ro.product.model']
+      const sdk = properties['ro.build.version.sdk']
 
-  // const raw = execSync('adb devices -l').toString()
-  // console.log(JSON.stringify(raw))
+      const deviceDescription = [manufacturer, model, productName, brand]
+
+      const name = `${deviceName} (${deviceDescription.join(
+        ', '
+      )}) - SDK ${sdk}`
+      return {
+        ...device,
+        name,
+      }
+    })
+  )
+  return out
 }
 
 export const getXcodeDevices = (): XcodeDevice[] => {
@@ -53,7 +70,7 @@ export const getDevices = async (): Promise<Device[]> => {
     return {
       type: 'android',
       id: device.id,
-      name: device.type, // TODO: get device name/model properly and change me
+      name: device.name,
     }
   })
 

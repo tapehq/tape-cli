@@ -25,7 +25,7 @@ function callback(res: any) {
       cursorTo(process.stdout, 0, null)
 
       process.stdout.write(
-        `Downloading binary: [${'='.repeat(progress)}${[
+        `Downloading dependencies: [${'='.repeat(progress)}${[
           ' '.repeat(20 - progress),
         ]}] ${Math.round((complete / total) * 100)}%`
       )
@@ -36,7 +36,7 @@ function callback(res: any) {
 
   res.on('end', () => {
     cursorTo(process.stdout, 0, null)
-    console.log(`Downloading binary: [${'='.repeat(20)}] 100%`)
+    console.log(`Downloading dependencies: [${'='.repeat(20)}] 100%`)
 
     decompress(buf, BIN_DIR, {
       plugins: process.platform === 'linux' ? [tarxz()] : [unzip()],
@@ -45,12 +45,15 @@ function callback(res: any) {
         x.path === (process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg'),
       // output: CONFIG_DIR,
     }).then(() => {
-      console.log('Downloaded dependencies 🎉')
+      console.log("You're good to go! 🎉")
+      console.log('Some examples: rec image | rec video | rec video --gif')
     })
   })
 }
 
 export const install = () => {
+  console.log(`ℹ️ Detected ${process.platform} ${process.arch}`)
+
   if (process.platform === 'win32') {
     switch (process.arch) {
       case 'x64':
@@ -72,13 +75,13 @@ export const install = () => {
     switch (process.arch) {
       case 'x64':
         get(
-          'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz',
+          'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz',
           callback
         )
         break
       case 'ia32':
         get(
-          'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-32bit-static.tar.xz',
+          'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-i686-static.tar.xz',
           callback
         )
         break

@@ -74,13 +74,16 @@ export const getDevices = async (): Promise<Device[]> => {
     }
   })
 
-  const xcode = getXcodeDevices().map((device: XcodeDevice) => {
-    return {
-      type: 'ios',
-      id: device.udid,
-      name: device.name,
-    }
-  })
+  const xcode =
+    (process.platform === 'darwin' &&
+      getXcodeDevices().map((device: XcodeDevice) => {
+        return {
+          type: 'ios',
+          id: device.udid,
+          name: device.name,
+        }
+      })) ||
+    []
 
   return [...android, ...xcode]
 }

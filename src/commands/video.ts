@@ -78,14 +78,14 @@ export default class Video extends Command {
         clipboardy.writeSync(outputPath)
         console.log('🎉 Video saved locally. Path in your clipboard')
       } else {
-        cli.action.start('🔗 Uploading file...')
+        cli.action.start('🔗  Uploading file...')
 
         console.log(
-          `Xcode file size: ${filesize(fs.statSync(rawOutputFile).size)}`
+          `Original file size: ${filesize(fs.statSync(rawOutputFile).size)}`
         )
 
         console.log(
-          `Output file size: ${filesize(fs.statSync(outputPath).size)}`
+          `Rec output file size: ${filesize(fs.statSync(outputPath).size)}`
         )
 
         const url = await uploadFile(outputPath, {

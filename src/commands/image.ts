@@ -1,7 +1,6 @@
 import { Command, flags } from '@oclif/command'
 import cli from 'cli-ux'
 import * as clipboardy from 'clipboardy'
-import * as chalk from 'chalk'
 
 import { uploadFile } from '../helpers/s3'
 import {
@@ -36,9 +35,9 @@ export default class Image extends Command {
     console.log(`📱 Device: ${deviceToFriendlyString(device)}`)
 
     const ScreenshotKlass =
-      device.type === 'android'
-        ? AndroidScreenshotService
-        : XcodeScreenshotService
+      device.type === 'android' ?
+        AndroidScreenshotService :
+        XcodeScreenshotService
     const screenshot = new ScreenshotKlass({ verbose: flags.debug })
     const path = await screenshot.save()
 

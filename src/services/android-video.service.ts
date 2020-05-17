@@ -28,7 +28,7 @@ export default class AndroidVideo {
     this.process = spawn('adb', [
       'shell',
       'screenrecord',
-      `/sdcard/output.raw`,
+      '/sdcard/output.raw',
       '--bit-rate',
       '10M',
       '--output-format',

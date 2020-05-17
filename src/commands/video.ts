@@ -1,7 +1,6 @@
 import { Command, flags } from '@oclif/command'
 import cli from 'cli-ux'
 import * as clipboardy from 'clipboardy'
-import * as chalk from 'chalk'
 import * as filesize from 'filesize'
 import * as fs from 'fs'
 

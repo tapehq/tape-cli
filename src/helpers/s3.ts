@@ -58,9 +58,9 @@ export const uploadFile = async (
   }
 
   if (options.log) {
-    const clipboard = options.copyToClipboard
-      ? 'Copied URL to clipboard 🔖 ! '
-      : ''
+    const clipboard = options.copyToClipboard ?
+      'Copied URL to clipboard 🔖 ! ' :
+      ''
 
     cli.action.stop(
       `\n🎉 ${

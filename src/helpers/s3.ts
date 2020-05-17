@@ -5,7 +5,7 @@ import * as path from 'path'
 import * as clipboardy from 'clipboardy'
 import cli from 'cli-ux'
 
-import { bucketName } from '../services/config.service'
+import ConfigService from '../services/config.service'
 
 const uploadFileRaw = async (source: string): Promise<string> => {
   // Read content from the file
@@ -13,7 +13,7 @@ const uploadFileRaw = async (source: string): Promise<string> => {
 
   const key = path.parse(source).base
   const params = {
-    Bucket: await bucketName(),
+    Bucket: await ConfigService.get('bucketName'),
     Key: key, // File name you want to save as in S3
     Body: fileContent,
     ACL: 'public-read',
@@ -48,6 +48,7 @@ export const uploadFile = async (
   options: UploadFileOptions = {}
 ): Promise<string> => {
   if (options.log) {
+    console.info(`ℹ️  Bucket name is s3://${bucket} \n`)
     cli.action.start('🔗 Uploading file...')
   }
 

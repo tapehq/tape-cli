@@ -37,10 +37,4 @@ const set = async (key: ConfigKey, value: string | null) => {
   fs.writeFileSync(FILE, JSON.stringify(newConfig))
 }
 
-export const bucketName = async () => {
-  const bucket = await get('bucketName')
-  console.info(`ℹ️  Bucket name is s3://${bucket} \n`)
-  return bucket
-}
-
 export default { get, set }

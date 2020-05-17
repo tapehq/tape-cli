@@ -3,7 +3,7 @@ import { Command, flags } from '@oclif/command'
 import * as inquirer from 'inquirer'
 import * as chalk from 'chalk'
 
-import ConfigService, { bucketName } from '../services/config.service'
+import ConfigService from '../services/config.service'
 
 export default class Config extends Command {
   static description = 'Configuration'
@@ -27,12 +27,11 @@ export default class Config extends Command {
         choices: [
           {
             name: `change bucket name (current: ${chalk.bold(
-              await bucketName()
+              await ConfigService.get('bucketName')
             )})`,
             short: 'change bucket name',
             value: 'change_bucket_name',
           },
-          { name: 'enable hosted version' },
           {
             name: 'setup',
             short: 'full_setup',

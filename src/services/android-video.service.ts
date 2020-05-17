@@ -75,6 +75,7 @@ export default class AndroidVideo {
   async destroy() {
     this.log('Destroying temporary video file')
     await fs.unlinkSync(this.path)
+    // TODO: also destroy the video file on the android side
   }
 
   private log(text: string) {

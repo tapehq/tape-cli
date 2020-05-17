@@ -4,6 +4,7 @@ import * as adb from 'adbkit'
 
 import { randomString } from '../helpers/random'
 import { DeviceService } from '.'
+import { Device } from './device.service'
 
 export default class AndroidScreenShot {
   fileName: string
@@ -12,17 +13,18 @@ export default class AndroidScreenShot {
 
   verbose: boolean
 
-  constructor(options: { verbose: boolean }) {
+  device: Device
+
+  constructor(options: { device: Device; verbose?: boolean }) {
     this.fileName = `${randomString()}.png`
     this.path = `${os.tmpdir()}/${this.fileName}`
-
+    this.device = options.device
     this.verbose = options.verbose || false
   }
 
   save = async (): Promise<string> => {
     const client = adb.createClient()
-    const devices = await DeviceService.getAndroidDevices()
-    const screenshot = await client.screencap(devices[0].id)
+    const screenshot = await client.screencap(this.device.id)
 
     return new Promise((resolve, reject) => {
       this.log(`Taking screenshot and saving to ${this.path}`)

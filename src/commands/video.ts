@@ -44,7 +44,7 @@ export default class Video extends Command {
     const VideoKlass =
       device.type === 'android' ? AndroidVideoService : XcodeVideoService
 
-    const video = new VideoKlass({ verbose: flags.debug })
+    const video = new VideoKlass({ device, verbose: flags.debug })
     video.record()
     console.log(
       '\n 🎬 Recording started. Press SPACE to save or ESC to abort. \n'
@@ -74,21 +74,30 @@ export default class Video extends Command {
     }
 
     if (success) {
-      cli.action.start('🔗 Uploading file...')
+      if (flags.local) {
+        clipboardy.writeSync(outputPath)
+        console.log('🎉 Video saved locally. Path in your clipboard')
+      } else {
+        cli.action.start('🔗 Uploading file...')
 
-      console.log(
-        `Xcode file size: ${filesize(fs.statSync(rawOutputFile).size)}`
-      )
+        console.log(
+          `Xcode file size: ${filesize(fs.statSync(rawOutputFile).size)}`
+        )
 
-      console.log(`Output file size: ${filesize(fs.statSync(outputPath).size)}`)
+        console.log(
+          `Output file size: ${filesize(fs.statSync(outputPath).size)}`
+        )
 
-      const url = await uploadFile(outputPath, {
-        copyToClipboard: true,
-        log: true,
-        fileType: 'Video',
-      })
-      clipboardy.writeSync(url)
-      cli.action.stop(`🎉 Uploaded. URL is in your clipboard 📋 ->  \n ${url}`)
+        const url = await uploadFile(outputPath, {
+          copyToClipboard: true,
+          log: true,
+          fileType: 'Video',
+        })
+        clipboardy.writeSync(url)
+        cli.action.stop(
+          `🎉 Uploaded. URL is in your clipboard 📋 ->  \n ${url}`
+        )
+      }
     } else {
       console.log(
         '🔥 Escape pressed - stopping the recording and deleting the file'

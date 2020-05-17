@@ -7,13 +7,16 @@ import cli from 'cli-ux'
 
 import ConfigService from '../services/config.service'
 
-const uploadFileRaw = async (source: string): Promise<string> => {
+const uploadFileRaw = async (
+  source: string,
+  bucketName: string
+): Promise<string> => {
   // Read content from the file
   const fileContent = fs.readFileSync(source)
 
   const key = path.parse(source).base
   const params = {
-    Bucket: await ConfigService.get('bucketName'),
+    Bucket: bucketName,
     Key: key, // File name you want to save as in S3
     Body: fileContent,
     ACL: 'public-read',
@@ -47,12 +50,13 @@ export const uploadFile = async (
   source: string,
   options: UploadFileOptions = {}
 ): Promise<string> => {
+  const bucketName = await ConfigService.get('bucketName')
   if (options.log) {
-    console.info(`ℹ️  Bucket name is s3://${bucket} \n`)
+    console.info(`ℹ️  Bucket name is s3://${bucketName} \n`)
     cli.action.start('🔗 Uploading file...')
   }
 
-  const url = await uploadFileRaw(source)
+  const url = await uploadFileRaw(source, bucketName)
 
   if (options.copyToClipboard) {
     clipboardy.writeSync(url)

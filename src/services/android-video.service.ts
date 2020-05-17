@@ -5,6 +5,7 @@ import * as path from 'path'
 
 import { randomString } from '../helpers/random'
 import { BIN_DIR } from './config.service'
+import { Device } from './device.service'
 
 const FFMPEG = path.join(BIN_DIR, 'ffmpeg')
 
@@ -17,15 +18,19 @@ export default class AndroidVideo {
 
   verbose: boolean
 
-  constructor(options: { verbose: boolean }) {
+  device: Device
+
+  constructor(options: { device: Device; verbose?: boolean }) {
     this.fileName = `${randomString()}.mp4`
     this.path = `${os.tmpdir()}/${this.fileName}`
-
+    this.device = options.device
     this.verbose = options.verbose || false
   }
 
   record() {
     this.process = spawn('adb', [
+      '-s',
+      this.device.id,
       'shell',
       'screenrecord',
       '/sdcard/output.raw',
@@ -60,7 +65,9 @@ export default class AndroidVideo {
 
         this.process.on('close', async (code: number) => {
           // TODO: investigate why this process ends with a null exit code and reject promise if we can get a proper exit code
-          execSync(`adb pull /sdcard/output.raw ${this.path}.raw`)
+          execSync(
+            `adb -s ${this.device.id} pull /sdcard/output.raw ${this.path}.raw`
+          )
           this.log('[process] File saved and ready to upload!')
 
           execSync(

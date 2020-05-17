@@ -3,6 +3,7 @@ import * as os from 'os'
 import * as fs from 'fs'
 
 import { randomString } from '../helpers/random'
+import { Device } from './device.service'
 
 export default class XcodeScreenshot {
   xcrun: ChildProcess | null = null
@@ -13,10 +14,12 @@ export default class XcodeScreenshot {
 
   verbose: boolean
 
-  constructor(options: { verbose: boolean }) {
+  device: Device
+
+  constructor(options: { device: Device; verbose?: boolean }) {
     this.fileName = `${randomString()}.png`
     this.path = `${os.tmpdir()}/${this.fileName}`
-
+    this.device = options.device
     this.verbose = options.verbose || false
   }
 
@@ -25,7 +28,7 @@ export default class XcodeScreenshot {
     const xcrun = spawn('xcrun', [
       'simctl',
       'io',
-      'booted',
+      this.device.id,
       'screenshot',
       this.path,
     ])

@@ -38,7 +38,7 @@ export default class Image extends Command {
       device.type === 'android' ?
         AndroidScreenshotService :
         XcodeScreenshotService
-    const screenshot = new ScreenshotKlass({ verbose: flags.debug })
+    const screenshot = new ScreenshotKlass({ device, verbose: flags.debug })
     const path = await screenshot.save()
 
     if (flags.local) {

@@ -2,7 +2,7 @@ import { Device, getDevices } from '../services/device.service'
 import * as inquirer from 'inquirer'
 import * as chalk from 'chalk'
 
-export const deviceString = (device: Device) => {
+export const deviceToFriendlyString = (device: Device) => {
   const type = chalk.bold(`[${device.type}]`)
   const name = chalk.white(device.name)
   const id = chalk.grey(`(${device.id})`)
@@ -15,7 +15,7 @@ export const chooseDevicePrompt = async () => {
 
   const choices = devices.map((device: Device) => {
     return {
-      name: deviceString(device),
+      name: deviceToFriendlyString(device),
       value: device,
     }
   })

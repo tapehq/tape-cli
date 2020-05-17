@@ -33,11 +33,11 @@ export default class XcodeVideo {
 
     this.log(`[xcrun] Recording started in ${this.path}.`)
 
-    this.xcrun.stdout.on('data', (data) => {
+    this.xcrun.stdout!.on('data', (data) => {
       console.log(`[xcrun] stdout: ${data}`)
     })
 
-    this.xcrun.stderr.on('data', (data) => {
+    this.xcrun.stderr!.on('data', (data) => {
       console.log(`[xcrun] stderr: ${data}`)
     })
 

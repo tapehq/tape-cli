@@ -30,7 +30,7 @@ const get = async (key: ConfigKey) => {
   return config[key]
 }
 
-const set = async (key: ConfigKey, value: string) => {
+const set = async (key: ConfigKey, value: string | null) => {
   setupConfigFile()
   const config = await read()
   const newConfig = { ...config, [key]: value }

@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command'
-import configService from '../services/config.service'
+import { ConfigService } from '../services'
 import { chooseDevicePrompt } from '../helpers/device.helpers'
 
 export default class Devices extends Command {
@@ -18,12 +18,12 @@ export default class Devices extends Command {
     const { flags } = this.parse(Devices)
 
     if (flags.clear) {
-      configService.set('device', null)
+      ConfigService.set('device', null)
       console.log('Active device cleared')
       return
     }
 
     const device = await chooseDevicePrompt()
-    configService.set('device', device)
+    ConfigService.set('device', device)
   }
 }

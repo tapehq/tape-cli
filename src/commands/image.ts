@@ -4,13 +4,15 @@ import * as clipboardy from 'clipboardy'
 import * as chalk from 'chalk'
 
 import { uploadFile } from '../helpers/s3'
-import XcodeScreenshot from '../services/xcode-screenshot'
-import { getDevices, getActiveDevice } from '../services/device.service'
-import AndroidScreenShot from '../services/android-screenshot'
-import { deviceString } from '../helpers/device.helpers'
+import {
+  AndroidScreenshotService,
+  XcodeScreenshotService,
+  DeviceService,
+} from '../services'
+import { deviceToFriendlyString } from '../helpers/device.helpers'
 
 export default class Image extends Command {
-  static description = 'Record and take screenshots of the iOS simulator'
+  static description = 'Take screenshots of iOS/Android devices/simulators'
 
   static examples = [
     `$ rec image
@@ -25,19 +27,18 @@ export default class Image extends Command {
   }
 
   async run() {
-    // Check # of devices
-    // If more than one device, ask to select device and advise that they can set their active device using 'rec devices'
-    // If only one device, go ahead
     const { flags } = this.parse(Image)
 
-    const device = await getActiveDevice()
+    const device = await DeviceService.getActiveDevice()
 
     if (!device) return
 
-    console.log(`📱 Device: ${deviceString(device)}`)
+    console.log(`📱 Device: ${deviceToFriendlyString(device)}`)
 
     const ScreenshotKlass =
-      device.type === 'android' ? AndroidScreenShot : XcodeScreenshot
+      device.type === 'android'
+        ? AndroidScreenshotService
+        : XcodeScreenshotService
     const screenshot = new ScreenshotKlass({ verbose: flags.debug })
     const path = await screenshot.save()
 
@@ -45,12 +46,11 @@ export default class Image extends Command {
       clipboardy.writeSync(path)
       console.log('🎉 Screenshot saved locally. Path in your clipboard')
     } else {
-      cli.action.start('🔗 Uploading file...')
-      const url = await uploadFile(path)
-      clipboardy.writeSync(url)
-      cli.action.stop(
-        `🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! -> \n ${url}`
-      )
+      await uploadFile(path, {
+        copyToClipboard: true,
+        log: true,
+        fileType: 'Screenshot',
+      })
       screenshot.destroy()
     }
   }

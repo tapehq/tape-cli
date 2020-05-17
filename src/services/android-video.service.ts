@@ -1,12 +1,11 @@
-import { spawn, ChildProcess, exec, execSync } from 'child_process'
+import { spawn, ChildProcess, execSync } from 'child_process'
 import * as os from 'os'
 import * as fs from 'fs'
-import * as filesize from 'filesize'
+import * as path from 'path'
 
 import { randomString } from '../helpers/random'
-
-import * as path from 'path'
 import { BIN_DIR } from './config.service'
+
 const FFMPEG = path.join(BIN_DIR, 'ffmpeg')
 
 export default class AndroidVideo {
@@ -19,7 +18,7 @@ export default class AndroidVideo {
   verbose: boolean
 
   constructor(options: { verbose: boolean }) {
-    this.fileName = `${randomString()}`
+    this.fileName = `${randomString()}.mp4`
     this.path = `${os.tmpdir()}/${this.fileName}`
 
     this.verbose = options.verbose || false
@@ -36,25 +35,13 @@ export default class AndroidVideo {
       'h264',
     ])
 
-    // [
-    //     'shell',
-    //     'screenrecord',
-    //     '--bit-rate',
-    //     '10M',
-    //     '--output-format',
-    //     '=h264',
-    //     '-',
-    //     '>',
-    //     `${this.path}.raw`,
-    //   ]
-
     this.log(`Recording started in ${this.path}.`)
 
-    this.process.stdout.on('data', (data) => {
+    this.process.stdout!.on('data', (data) => {
       console.log(`[process] stdout: ${data}`)
     })
 
-    this.process.stderr.on('data', (data) => {
+    this.process.stderr!.on('data', (data) => {
       console.log(`[process] stderr: ${data}`)
     })
 
@@ -72,23 +59,14 @@ export default class AndroidVideo {
         this.log('[process] SIGINT BHOTKA time.')
 
         this.process.on('close', async (code: number) => {
-          console.log(`process code ${code}`)
-          // if (code === 0) {
-          //   await new Promise((resolve) => setTimeout(resolve, 2000))
+          // TODO: investigate why this process ends with a null exit code and reject promise if we can get a proper exit code
           execSync(`adb pull /sdcard/output.raw ${this.path}.raw`)
           this.log('[process] File saved and ready to upload!')
 
-          const OUTPUT_FILE = `${this.path}.mp4`
-
           execSync(
-            `${FFMPEG} -vcodec h264 -i ${this.path}.raw -vcodec copy -acodec copy ${OUTPUT_FILE}`
+            `${FFMPEG} -vcodec h264 -i ${this.path}.raw -vcodec copy -acodec copy ${this.path}`
           )
-          resolve(OUTPUT_FILE)
-          // } else {
-          //   this.log('[process] process died unsuccessfully')
-          //   console.log(`xxx - code`, code)
-          //   reject()
-          // }
+          resolve(this.path)
         })
       }
     })

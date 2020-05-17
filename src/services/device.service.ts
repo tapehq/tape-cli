@@ -1,6 +1,7 @@
 import * as adb from 'adbkit'
 import { execSync } from 'child_process'
 import { filter, flatMap } from 'lodash'
+
 import configService from './config.service'
 import { chooseDevicePrompt } from '../helpers/device.helpers'
 
@@ -107,4 +108,11 @@ export const getActiveDevice = async (): Promise<Device | null> => {
     console.log('Use `rec devices` to set an active device')
     return device
   }
+}
+
+export default {
+  getActiveDevice,
+  getDevices,
+  getAndroidDevices,
+  getXcodeDevices,
 }

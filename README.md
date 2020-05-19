@@ -6,62 +6,78 @@
 [![License](https://img.shields.io/npm/l/rec.svg)](https://github.com/ingmaras/rec/blob/master/package.json)
 
 <!-- toc -->
-
-- [Usage](#usage)
-- [Commands](#commands)
+* [rec](#rec)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
-$ npm install -g rec
-$ rec COMMAND
+$ npm install -g tape-cli
+$ tape COMMAND
 running command...
-$ rec (-v|--version|version)
-rec/0.0.1 darwin-x64 node-v12.12.0
-$ rec --help [COMMAND]
+$ tape (-v|--version|version)
+tape-cli/0.1.0 darwin-x64 node-v12.12.0
+$ tape --help [COMMAND]
 USAGE
-  $ rec COMMAND
+  $ tape COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
+* [`tape config [NAME]`](#tape-config-name)
+* [`tape devices`](#tape-devices)
+* [`tape help [COMMAND]`](#tape-help-command)
+* [`tape image`](#tape-image)
+* [`tape video`](#tape-video)
 
-- [`rec config NAME`](#rec-config-name)
-- [`rec help [COMMAND]`](#rec-help-command)
-- [`rec ios TYPE`](#rec-ios-type)
-- [`rec upload FILE`](#rec-upload-file)
+## `tape config [NAME]`
 
-## `rec config NAME`
-
-Set bucket name
+Configuration
 
 ```
 USAGE
-  $ rec config NAME
+  $ tape config [NAME]
 
 OPTIONS
   -h, --help  show CLI help
 
 EXAMPLE
-  $ rec config [S3 bucket namee]
+  $ tape config
 ```
 
-_See code: [src/commands/config.ts](https://github.com/ingmaras/rec/blob/v0.0.1/src/commands/config.ts)_
+_See code: [src/commands/config.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.0/src/commands/config.ts)_
 
-## `rec help [COMMAND]`
+## `tape devices`
 
-display help for rec
+List devices
 
 ```
 USAGE
-  $ rec help [COMMAND]
+  $ tape devices
+
+OPTIONS
+  -c, --clear
+  -h, --help   show CLI help
+
+EXAMPLE
+  $ tape devices
+```
+
+_See code: [src/commands/devices.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.0/src/commands/devices.ts)_
+
+## `tape help [COMMAND]`
+
+display help for tape
+
+```
+USAGE
+  $ tape help [COMMAND]
 
 ARGUMENTS
   COMMAND  command to show help for
@@ -72,40 +88,47 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
 
-## `rec ios TYPE`
+## `tape image`
 
-Record and take screenshots of the iOS simulator
+Take screenshots of iOS/Android devices/simulators
 
 ```
 USAGE
-  $ rec ios TYPE
+  $ tape image
 
 OPTIONS
-  -h, --help     show CLI help
-  -v, --verbose
+  -d, --debug
+  -h, --help   show CLI help
+  -l, --local
 
 EXAMPLE
-  $ rec ios record [screenshot | video]
+  $ tape image
+  🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! -> 
+    https://example.com/image.png
+```
+
+_See code: [src/commands/image.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.0/src/commands/image.ts)_
+
+## `tape video`
+
+Record iOS/Android devices/simulators
+
+```
+USAGE
+  $ tape video
+
+OPTIONS
+  -d, --debug
+  -g, --gif
+  -h, --help   show CLI help
+  -l, --local
+  -v, --video
+  --hq
+
+EXAMPLE
+  $ tape video [--hq | --gif | --local]
   🎬 Recording started. Press SPACE to save or ESC to abort.
 ```
 
-_See code: [src/commands/ios.ts](https://github.com/ingmaras/rec/blob/v0.0.1/src/commands/ios.ts)_
-
-## `rec upload FILE`
-
-Upload a file to an S3 bucket
-
-```
-USAGE
-  $ rec upload FILE
-
-OPTIONS
-  -h, --help  show CLI help
-
-EXAMPLE
-  $ rec upload [file]
-```
-
-_See code: [src/commands/upload.ts](https://github.com/ingmaras/rec/blob/v0.0.1/src/commands/upload.ts)_
-
+_See code: [src/commands/video.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.0/src/commands/video.ts)_
 <!-- commandsstop -->

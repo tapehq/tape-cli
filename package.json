@@ -57,7 +57,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/edamameldn/tape-cli",
+  "homepage": "https://tape.sh",
   "keywords": [
     "oclif"
   ],

@@ -1,6 +1,12 @@
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
+import { cli } from 'cli-ux'
+import * as chalk from 'chalk'
+import * as commandExists from 'command-exists'
+import * as adb from 'adbkit'
+
+import { isMac } from '../helpers/utils'
 
 type ConfigKey = 'bucketName' | 'device'
 
@@ -35,6 +41,58 @@ const set = async (key: ConfigKey, value: string | null) => {
   const config = await read()
   const newConfig = { ...config, [key]: value }
   fs.writeFileSync(FILE, JSON.stringify(newConfig))
+}
+
+export const checkDependencies = async () => {
+  cli.action.start('🩺  Checking your system setup.')
+
+  // Check if config is writable
+  fs.access(DIR, fs.constants.W_OK, (err) => {
+    if (err) {
+      console.error(
+        `   Tape Setup -> ${chalk.red(
+          '🤦 Need permissions to write to'
+        )} ${DIR}`
+      )
+    }
+
+    console.log('   Tape Config Writable ✅')
+  })
+
+  // Check for adb
+  try {
+    const adbClient = adb.createClient()
+    await adbClient.listDevices()
+    console.log('   Android Setup ✅')
+    // eslint-disable-next-line unicorn/catch-error-name
+  } catch (e) {
+    console.error(
+      `   Android Setup -> ${chalk.red('🤦🏽‍♀️ Could not locate android sdk')}`
+    )
+    console.log(
+      `     ℹ  To install the android sdk ${chalk.blue(
+        'brew cask install android-sdk or visit https://developer.android.com/studio'
+      )}`
+    )
+  }
+
+  // Check for xcrun
+  if (isMac()) {
+    try {
+      await commandExists('xcrun')
+      console.log('   iOS Setup ✅')
+      // eslint-disable-next-line unicorn/catch-error-name
+    } catch (e) {
+      console.error(`   iOS Setup -> ${chalk.red('🤦🏽‍♀️ Could not find xcrun.')}`)
+      console.log(
+        `     ℹ  You can install it by running:  ${chalk.blue(
+          'xcode-select --install'
+        )}`
+      )
+    }
+  }
+
+  cli.action.stop()
 }
 
 export default { get, set }

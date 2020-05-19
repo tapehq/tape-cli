@@ -4,6 +4,7 @@ import { filter, flatMap } from 'lodash'
 
 import configService from './config.service'
 import { chooseDevicePrompt } from '../helpers/device.helpers'
+import * as chalk from 'chalk'
 
 export interface Device {
   type: string
@@ -94,7 +95,7 @@ export const getActiveDevice = async (): Promise<Device | null> => {
     console.log('Error: no devices detected.')
     return null
   }
-  const activeDevice = await configService.get('device')
+  const activeDevice: Device = await configService.get('device')
 
   if (!activeDevice) {
     // console.log('no active device has been set')
@@ -109,7 +110,14 @@ export const getActiveDevice = async (): Promise<Device | null> => {
     (bootedDevice) => bootedDevice.id === activeDevice.id
   )
   // Their active device is booted
-  if (isBooted) return activeDevice
+  if (isBooted) {
+    console.log(
+      `\n ℹ  Using preselected device. Use ${chalk.yellow(
+        'rec devices'
+      )} to choose a different device \n`
+    )
+    return activeDevice
+  }
 
   // Their active device is not booted, but they're only running one device.
   if (bootedDevices.length === 1) {
@@ -117,6 +125,7 @@ export const getActiveDevice = async (): Promise<Device | null> => {
     return bootedDevices[0]
   }
   console.log('Your chosen device is no longer booted.')
+
   const device = await chooseDevicePrompt()
   console.log('Use `tape devices` to set an active device')
 

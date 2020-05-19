@@ -46,7 +46,7 @@ function callback(res: any) {
       // output: CONFIG_DIR,
     }).then(() => {
       console.log("You're good to go! 🎉")
-      console.log('Some examples: rec image | rec video | rec video --gif')
+      console.log('Some examples: tape image | tape video | tape video --gif')
     })
   })
 }

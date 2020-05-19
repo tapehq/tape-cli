@@ -10,7 +10,9 @@ export const deviceToFriendlyString = (device: Device) => {
   return `${type} ${name} ${id}`
 }
 
-export const chooseDevicePrompt = async (displayNone = false) => {
+export const chooseDevicePrompt = async (
+  displayNone = false
+): Promise<Device> => {
   const devices = await getDevices()
 
   const choices: { name: string; value: Device | null }[] = devices.map(

@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import { cli } from 'cli-ux'
 import * as chalk from 'chalk'
 import * as commandExists from 'command-exists'
 import * as adb from 'adbkit'
@@ -44,10 +43,8 @@ const set = async (key: ConfigKey, value: string | null) => {
 }
 
 export const checkDependencies = async () => {
-  cli.action.start('🩺  Checking your system setup.')
-
   // Check if config is writable
-  fs.access(DIR, fs.constants.W_OK, (err) => {
+  fs.access(os.homedir(), fs.constants.W_OK, (err) => {
     if (err) {
       console.error(
         `   Tape Setup -> ${chalk.red(
@@ -67,11 +64,11 @@ export const checkDependencies = async () => {
     // eslint-disable-next-line unicorn/catch-error-name
   } catch (e) {
     console.error(
-      `   Android Setup -> ${chalk.red('🤦🏽‍♀️ Could not locate android sdk')}`
+      `   Android Setup -> ${chalk.red('🤦🏻‍♂️ Could not locate android sdk')}`
     )
     console.log(
       `     ℹ  To install the android sdk ${chalk.blue(
-        'brew cask install android-sdk or visit https://developer.android.com/studio'
+        'Visit https://developer.android.com/studio or brew cask install android-sdk'
       )}`
     )
   }
@@ -91,8 +88,6 @@ export const checkDependencies = async () => {
       )
     }
   }
-
-  cli.action.stop()
 }
 
 export default { get, set }

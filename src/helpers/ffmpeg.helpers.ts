@@ -52,7 +52,7 @@ function callback(res: any) {
 }
 
 export const install = () => {
-  console.log(`ℹ️ Detected ${process.platform} ${process.arch}`)
+  console.log(`ℹ️  Detected ${process.platform} ${process.arch}`)
 
   if (process.platform === 'win32') {
     switch (process.arch) {

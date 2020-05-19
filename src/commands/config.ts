@@ -1,3 +1,4 @@
+import { checkIfNeeded } from './../services/ffmpeg.service'
 import { checkDependencies } from './../services/config.service'
 import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
 import { Command, flags } from '@oclif/command'
@@ -63,9 +64,36 @@ export default class Config extends Command {
   }
 
   async fullSetup() {
-    // await this.changeBucketName()
     await checkDependencies()
-    // installFfmpeg()
+    await this.changeBucketName()
+    if (checkIfNeeded()) {
+      const { choice: redownload } = await inquirer.prompt([
+        {
+          name: 'choice',
+          message: 'Reinstall dependencies?',
+          type: 'list',
+          choices: [
+            {
+              name: 'Nope.',
+              value: false,
+            },
+            {
+              name: 'Yes please!',
+              value: true,
+            },
+          ],
+        },
+      ])
+
+      if (redownload) {
+        installFfmpeg()
+      } else {
+        console.log("You're good to go! 🎉")
+        console.log('Some examples: tape image | tape video | tape video --gif')
+      }
+    } else {
+      installFfmpeg()
+    }
   }
 
   async changeBucketName() {

@@ -19,6 +19,8 @@ export default class Config extends Command {
   async run() {
     this.parse(Config)
 
+    const currentBucketName = await ConfigService.get('bucketName')
+
     const responses = await inquirer.prompt([
       {
         name: 'stage',
@@ -26,8 +28,8 @@ export default class Config extends Command {
         type: 'list',
         choices: [
           {
-            name: `change bucket name (current: ${chalk.bold(
-              await ConfigService.get('bucketName')
+            name: `change bucket name (current: ${chalk.yellow(
+              currentBucketName
             )})`,
             short: 'change bucket name',
             value: 'change_bucket_name',
@@ -55,14 +57,29 @@ export default class Config extends Command {
   }
 
   async changeBucketName() {
+    const oldName = await ConfigService.get('bucketName')
+
     const { name } = await inquirer.prompt([
-      { name: 'name', type: 'input', message: 'Enter bucket name' },
+      {
+        name: 'name',
+        type: 'input',
+        message: `Enter bucket name  (current: ${chalk.yellow(oldName)})`,
+      },
     ])
+
     if (name.length === 0) {
-      console.warn('Invalid bucket name')
-      return
+      console.log(
+        `No input, using previous bucket name ${chalk.bold(oldName)}..`
+      )
     }
-    console.log(`Bucket name set to: ${chalk.bold(name)}`)
-    ConfigService.set('bucketName', name)
+
+    if (name.length === 0 && oldName.length === 0) {
+      console.warn('Please set a bucket name.')
+    }
+
+    const newName = name || oldName
+
+    console.log(`Bucket name set to: ${chalk.green(newName)}`)
+    ConfigService.set('bucketName', newName)
   }
 }

@@ -1,11 +1,11 @@
 {
-  "name": "rec",
+  "name": "tape-cli",
   "version": "0.1.0",
-  "author": "Ingmaras Keleras @ingmaras",
+  "author": "Edamame Studio @ingmaras",
   "bin": {
-    "rec": "./bin/rec"
+    "tape": "./bin/tape"
   },
-  "bugs": "https://github.com/edamameldn/yggy/issues",
+  "bugs": "https://github.com/edamameldn/tape-cli/issues",
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -57,7 +57,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/edamameldn/yggy",
+  "homepage": "https://tape.sh",
   "keywords": [
     "oclif"
   ],
@@ -65,7 +65,7 @@
   "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "rec",
+    "bin": "tape",
     "plugins": [
       "@oclif/plugin-help"
     ],
@@ -73,13 +73,14 @@
       "init": "./src/hooks/command-not-found.hook"
     }
   },
-  "repository": "git://github.com/edamameldn/yggy.git",
+  "repository": "git://github.com/edamameldn/tape-cli.git",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "docs": "oclif-dev readme"
   },
   "types": "lib/index.d.ts"
 }

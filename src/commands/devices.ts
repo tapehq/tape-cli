@@ -5,7 +5,7 @@ import { chooseDevicePrompt } from '../helpers/device.helpers'
 export default class Devices extends Command {
   static description = 'List devices'
 
-  static examples = ['$ rec devices']
+  static examples = ['$ tape devices']
 
   static flags = {
     help: flags.help({ char: 'h' }),

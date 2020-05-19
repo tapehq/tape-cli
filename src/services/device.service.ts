@@ -98,7 +98,7 @@ export const getActiveDevice = async (): Promise<Device | null> => {
     if (bootedDevices.length === 1) return bootedDevices[0]
 
     const device = await chooseDevicePrompt()
-    console.log('Use `rec devices` to set an active device')
+    console.log('Use `tape devices` to set an active device')
     return device
   }
 
@@ -115,7 +115,7 @@ export const getActiveDevice = async (): Promise<Device | null> => {
   }
   console.log('Your chosen device is no longer booted.')
   const device = await chooseDevicePrompt()
-  console.log('Use `rec devices` to set an active device')
+  console.log('Use `tape devices` to set an active device')
 
   return device
 }

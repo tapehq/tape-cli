@@ -4,9 +4,9 @@ import * as path from 'path'
 
 type ConfigKey = 'bucketName' | 'device'
 
-export const DIR = path.join(os.homedir(), '.rec')
+export const DIR = path.join(os.homedir(), '.tape')
 export const BIN_DIR = path.join(DIR, 'bin')
-const FILE = path.join(os.homedir(), '.rec', 'config.json')
+const FILE = path.join(os.homedir(), '.tape', 'config.json')
 
 const setupConfigFile = () => {
   if (!fs.existsSync(DIR)) {

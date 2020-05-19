@@ -8,7 +8,7 @@ import ConfigService from '../services/config.service'
 export default class Config extends Command {
   static description = 'Configuration'
 
-  static examples = ['$ rec config']
+  static examples = ['$ tape config']
 
   static flags = {
     help: flags.help({ char: 'h' }),

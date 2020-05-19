@@ -14,7 +14,7 @@ export default class Image extends Command {
   static description = 'Take screenshots of iOS/Android devices/simulators'
 
   static examples = [
-    `$ rec image
+    `$ tape image
 🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! -> \n https://example.com/image.png
 `,
   ]

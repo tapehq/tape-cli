@@ -46,13 +46,13 @@ function callback(res: any) {
       // output: CONFIG_DIR,
     }).then(() => {
       console.log("You're good to go! 🎉")
-      console.log('Some examples: rec image | rec video | rec video --gif')
+      console.log('Some examples: tape image | tape video | tape video --gif')
     })
   })
 }
 
 export const install = () => {
-  console.log(`ℹ️ Detected ${process.platform} ${process.arch}`)
+  console.log(`ℹ️  Detected ${process.platform} ${process.arch}`)
 
   if (process.platform === 'win32') {
     switch (process.arch) {

@@ -1,6 +1,7 @@
 import * as util from 'util'
 import { exec as originalExec } from 'child_process'
 import * as path from 'path'
+import * as commandExists from 'command-exists'
 
 import { BIN_DIR } from './config.service'
 
@@ -19,6 +20,10 @@ export const compressVid = (inputVideoFile: string, outputFile: string) => {
   return exec(
     `${FFMPEG} -i ${inputVideoFile} -vcodec h264 -an -b:v 800k ${outputFile}`
   )
+}
+
+export const checkIfNeeded = () => {
+  return commandExists.sync(FFMPEG)
 }
 
 export default { makeGif, compressVid }

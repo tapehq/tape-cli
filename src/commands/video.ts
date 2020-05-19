@@ -78,25 +78,30 @@ export default class Video extends Command {
         clipboardy.writeSync(outputPath)
         console.log('🎉 Video saved locally. Path in your clipboard')
       } else {
-        cli.action.start('🔗  Uploading file...')
-
         console.log(
           `Original file size: ${filesize(fs.statSync(rawOutputFile).size)}`
         )
 
         console.log(
-          `Rec output file size: ${filesize(fs.statSync(outputPath).size)}`
+          `📼  Tape output file size: ${filesize(fs.statSync(outputPath).size)}`
         )
 
-        const url = await uploadFile(outputPath, {
-          copyToClipboard: true,
-          log: true,
-          fileType: 'Video',
-        })
-        clipboardy.writeSync(url)
-        cli.action.stop(
-          `🎉 Uploaded. URL is in your clipboard 📋 ->  \n ${url}`
-        )
+        try {
+          const url = await uploadFile(outputPath, {
+            copyToClipboard: true,
+            log: true,
+            fileType: 'Video',
+          })
+
+          clipboardy.writeSync(url)
+
+          cli.action.stop(
+            `🎉 Uploaded. URL is in your clipboard 📋 ->  \n ${url}`
+          )
+        } catch (e) {
+          console.error(e)
+          cli.action.stop('💥 Something went wrong', e)
+        }
       }
     } else {
       console.log(

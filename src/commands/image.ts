@@ -1,6 +1,5 @@
+import { commonFlags } from './../helpers/utils'
 import { Command, flags } from '@oclif/command'
-import cli from 'cli-ux'
-import * as clipboardy from 'clipboardy'
 
 import { uploadFile } from '../helpers/s3'
 import {
@@ -9,6 +8,7 @@ import {
   DeviceService,
 } from '../services'
 import { deviceToFriendlyString } from '../helpers/device.helpers'
+import { copyToLocalOutput } from '../helpers/utils'
 
 export default class Image extends Command {
   static description = 'Take screenshots of iOS/Android devices/simulators'
@@ -19,11 +19,9 @@ export default class Image extends Command {
 `,
   ]
 
-  static flags = {
-    help: flags.help({ char: 'h' }),
-    debug: flags.boolean({ char: 'd' }),
-    local: flags.boolean({ char: 'l' }), // dont upload
-  }
+  static flags = commonFlags
+
+  static aliases = ['i', 'screenshot']
 
   async run() {
     const { flags } = this.parse(Image)
@@ -32,7 +30,7 @@ export default class Image extends Command {
 
     if (!device) return
 
-    console.log(`📱 Device: ${deviceToFriendlyString(device)}`)
+    this.log(`📱 Device: ${deviceToFriendlyString(device)}`)
 
     const ScreenshotKlass =
       device.type === 'android' ?
@@ -42,8 +40,8 @@ export default class Image extends Command {
     const path = await screenshot.save()
 
     if (flags.local) {
-      clipboardy.writeSync(path)
-      console.log('🎉 Screenshot saved locally. Path in your clipboard')
+      const localFilePath = copyToLocalOutput(path, flags.local)
+      this.log(`\n 🎉 Video saved locally to ${localFilePath}.`)
     } else {
       await uploadFile(path, {
         copyToClipboard: true,

@@ -6,7 +6,7 @@ import * as clipboardy from 'clipboardy'
 import cli from 'cli-ux'
 
 import ConfigService from '../services/config.service'
-import { getUploadUrl, putFile } from '../api/upload'
+import { generateSignedUploadURL, putFile } from '../api/upload'
 
 const uploadFileRaw = async (
   source: string,
@@ -36,7 +36,7 @@ const uploadFileRaw = async (
   // Hosted flow
   console.log('using Hosted flow')
 
-  const uploadUrl = await getUploadUrl(fileName)
+  const uploadUrl = await generateSignedUploadURL(fileName)
 
   putFile(fileContent, uploadUrl, {
     'Content-Type': mime.lookup(source) || 'application/octet-stream',

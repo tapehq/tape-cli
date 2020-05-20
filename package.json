@@ -16,6 +16,7 @@
     "adbkit": "^2.11.1",
     "await-exec": "^0.1.2",
     "aws-sdk": "^2.663.0",
+    "axios": "^0.19.2",
     "chalk": "^4.0.0",
     "cli-ux": "^5.4.5",
     "clipboardy": "^2.3.0",

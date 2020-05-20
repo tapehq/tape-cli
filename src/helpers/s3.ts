@@ -6,6 +6,7 @@ import * as clipboardy from 'clipboardy'
 import cli from 'cli-ux'
 
 import ConfigService from '../services/config.service'
+import { generateSignedUploadURL, putFile } from '../api/upload'
 
 const uploadFileRaw = async (
   source: string,
@@ -13,22 +14,36 @@ const uploadFileRaw = async (
 ): Promise<string> => {
   // Read content from the file
   const fileContent = fs.readFileSync(source)
+  const fileName = path.parse(source).base
 
-  const key = path.parse(source).base
-  const params = {
-    Bucket: bucketName,
-    Key: key, // File name you want to save as in S3
-    Body: fileContent,
-    ACL: 'public-read',
-    ContentType: mime.lookup(source) || 'application/octet-stream',
+  if (bucketName && bucketName !== 'hosted') {
+    // TODO improve me
+    console.log('Using self defined bucket flow')
+    const s3 = new AWS.S3({ apiVersion: '2006-03-01', signatureVersion: 'v4' })
+    const params = {
+      Bucket: bucketName,
+      Key: fileName,
+      Body: fileContent,
+      ACL: 'public-read',
+      ContentType: mime.lookup(source) || 'application/octet-stream',
+    }
+
+    const result = await s3.upload(params).promise()
+    const url = result.Location
+    return url
   }
 
-  const s3 = new AWS.S3({ apiVersion: '2006-03-01', signatureVersion: 'v4' })
-  const result = await s3.upload(params).promise()
-  // return result.Location.replace('s3.eu-west-2.amazonaws.com/', '')
-  const url = result.Location
+  // Hosted flow
+  console.log('using Hosted flow')
 
-  return url
+  const uploadUrl = await generateSignedUploadURL(fileName)
+
+  putFile(fileContent, uploadUrl, {
+    'Content-Type': mime.lookup(source) || 'application/octet-stream',
+  })
+
+  const url = new URL(uploadUrl)
+  return [url.origin, url.pathname].join('')
 }
 
 interface UploadFileOptions {

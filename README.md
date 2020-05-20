@@ -75,7 +75,7 @@ _See code: [src/commands/devices.ts](https://github.com/edamameldn/tape-cli/blob
 
 ## `tape gif`
 
-Record iOS/Android devices/simulators
+Record iOS simulators and Android devices/emulators and output a gif file
 
 ```
 USAGE

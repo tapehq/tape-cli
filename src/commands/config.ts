@@ -88,8 +88,8 @@ export default class Config extends Command {
       if (redownload) {
         installFfmpeg()
       } else {
-        console.log("You're good to go! 🎉")
-        console.log('Some examples: tape image | tape video | tape video --gif')
+        this.log("You're good to go! 🎉")
+        this.log('Some examples: tape image | tape video | tape video --gif')
       }
     } else {
       installFfmpeg()
@@ -108,18 +108,16 @@ export default class Config extends Command {
     ])
 
     if (name.length === 0) {
-      console.log(
-        `No input, using previous bucket name ${chalk.bold(oldName)}..`
-      )
+      this.log(`No input, using previous bucket name ${chalk.bold(oldName)}..`)
     }
 
     if (name.length === 0 && oldName.length === 0) {
-      console.warn('Please set a bucket name.')
+      this.warn('Please set a bucket name.')
     }
 
     const newName = name || oldName
 
-    console.log(`Bucket name set to: ${chalk.green(newName)}`)
+    this.log(`Bucket name set to: ${chalk.green(newName)}`)
     ConfigService.set('bucketName', newName)
   }
 }

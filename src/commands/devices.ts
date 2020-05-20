@@ -19,7 +19,7 @@ export default class Devices extends Command {
 
     if (flags.clear) {
       ConfigService.set('device', null)
-      console.log('Active device cleared')
+      this.log('Active device cleared')
       return
     }
 

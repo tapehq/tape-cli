@@ -13,23 +13,23 @@ import {
 } from '../services'
 import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { waitForKeys } from '../helpers/keyboard'
+import { copyToLocalOutput, commonFlags } from '../helpers/utils'
 
 export default class Video extends Command {
   static description = 'Record iOS/Android devices/simulators'
 
   static examples = [
-    `$ tape video [--hq | --gif | --local]
+    `$ tape video [--hq | --gif | --local $OUTPUTPATH]
 🎬 Recording started. Press SPACE to save or ESC to abort.
 `,
   ]
 
+  static aliases = ['video', 'vid', 'm']
+
   static flags = {
-    help: flags.help({ char: 'h' }),
-    debug: flags.boolean({ char: 'd' }),
+    ...commonFlags,
     gif: flags.boolean({ char: 'g', default: false }),
-    video: flags.boolean({ char: 'v', default: true }),
     hq: flags.boolean({ default: false }),
-    local: flags.boolean({ char: 'l' }), // dont upload
   }
 
   async run() {
@@ -39,34 +39,36 @@ export default class Video extends Command {
 
     if (!device) return
 
-    console.log(`📱 Device: ${deviceToFriendlyString(device)}`)
+    this.log(` 📱 Device: ${deviceToFriendlyString(device)}`)
 
     const VideoKlass =
       device.type === 'android' ? AndroidVideoService : XcodeVideoService
 
     const video = new VideoKlass({ device, verbose: flags.debug })
     video.record()
-    console.log(
-      '\n 🎬 Recording started. Press SPACE to save or ESC to abort. \n'
+    cli.action.start(
+      ' 🎬 Recording started. Press SPACE to save or ESC to abort.'
     )
 
     const success = await waitForKeys('space', 'escape')
+
+    cli.action.stop()
 
     const rawOutputFile = await video.save()
 
     let outputPath = rawOutputFile
 
     if (flags.hq && !flags.gif) {
-      console.info('ℹ hq flag supplied. Not Compressing \n')
+      this.log(' ℹ hq flag supplied. Not Compressing \n')
     } else {
-      outputPath = rawOutputFile.replace('.mp4', '-compressed.mp4')
+      outputPath = rawOutputFile.replace('-raw.mp4', '.mp4')
       await FfmpegService.compressVid(rawOutputFile, outputPath)
     }
 
     if (flags.gif) {
-      cli.action.start('🚴🏽‍♀️ Making your gif...')
+      cli.action.start(' 🚴🏽‍♀️ Making your gif...')
 
-      const gifPath = rawOutputFile.replace('.mp4', '')
+      const gifPath = rawOutputFile.replace('-raw.mp4', '')
       await FfmpegService.makeGif(rawOutputFile, gifPath)
       outputPath = `${gifPath}.gif`
 
@@ -75,14 +77,14 @@ export default class Video extends Command {
 
     if (success) {
       if (flags.local) {
-        clipboardy.writeSync(outputPath)
-        console.log('🎉 Video saved locally. Path in your clipboard')
+        const localFilePath = copyToLocalOutput(outputPath, flags.local)
+        this.log(`\n 🎉 Video saved locally to ${localFilePath}.`)
       } else {
-        console.log(
+        this.log(
           `Original file size: ${filesize(fs.statSync(rawOutputFile).size)}`
         )
 
-        console.log(
+        this.log(
           `📼  Tape output file size: ${filesize(fs.statSync(outputPath).size)}`
         )
 
@@ -96,15 +98,15 @@ export default class Video extends Command {
           clipboardy.writeSync(url)
 
           cli.action.stop(
-            `🎉 Uploaded. URL is in your clipboard 📋 ->  \n ${url}`
+            `\n 🎉 Uploaded. URL is in your clipboard 📋 ->  \n ${url}`
           )
         } catch (error) {
-          console.error(error)
+          this.error(error)
           cli.action.stop('💥 Something went wrong')
         }
       }
     } else {
-      console.log(
+      this.log(
         '🔥 Escape pressed - stopping the recording and deleting the file'
       )
     }

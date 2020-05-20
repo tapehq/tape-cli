@@ -17,7 +17,7 @@ export default class XcodeScreenshot {
   device: Device
 
   constructor(options: { device: Device; verbose?: boolean }) {
-    this.fileName = `${randomString()}.png`
+    this.fileName = `${randomString()}-raw.png`
     this.path = `${os.tmpdir()}/${this.fileName}`
     this.device = options.device
     this.verbose = options.verbose || false

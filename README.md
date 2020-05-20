@@ -6,14 +6,16 @@
 [![License](https://img.shields.io/npm/l/rec.svg)](https://github.com/edamameldn/tape-cli/blob/master/package.json)
 
 <!-- toc -->
-* [tape-cli](#tape-cli)
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [tape-cli](#tape-cli)
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g tape-cli
 $ tape COMMAND
@@ -25,16 +27,18 @@ USAGE
   $ tape COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`tape config [NAME]`](#tape-config-name)
-* [`tape devices`](#tape-devices)
-* [`tape help [COMMAND]`](#tape-help-command)
-* [`tape image`](#tape-image)
-* [`tape video`](#tape-video)
+
+- [`tape config [NAME]`](#tape-config-name)
+- [`tape devices`](#tape-devices)
+- [`tape help [COMMAND]`](#tape-help-command)
+- [`tape image`](#tape-image)
+- [`tape video`](#tape-video)
 
 ## `tape config [NAME]`
 
@@ -104,7 +108,7 @@ OPTIONS
 
 EXAMPLE
   $ tape image
-  🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! -> 
+  🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! ->
     https://example.com/image.png
 ```
 
@@ -127,9 +131,10 @@ OPTIONS
   --hq
 
 EXAMPLE
-  $ tape video [--hq | --gif | --local]
+  $ tape video [--hq | --gif | --local $OUTPUTPATH]
   🎬 Recording started. Press SPACE to save or ESC to abort.
 ```
 
 _See code: [src/commands/video.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/video.ts)_
+
 <!-- commandsstop -->

@@ -8,7 +8,7 @@ export default class Gif extends Command {
   static description = 'Record iOS/Android devices/simulators'
 
   static examples = [
-    `$ tape gif [--local]
+    `$ tape gif [--local $OUTPUTPATH]
 🎬 Recording started. Press SPACE to save or ESC to abort.
 `,
   ]

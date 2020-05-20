@@ -19,7 +19,7 @@ export default class Video extends Command {
   static description = 'Record iOS/Android devices/simulators'
 
   static examples = [
-    `$ tape video [--hq | --gif | --local]
+    `$ tape video [--hq | --gif | --local $OUTPUTPATH]
 🎬 Recording started. Press SPACE to save or ESC to abort.
 `,
   ]

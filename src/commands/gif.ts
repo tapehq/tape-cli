@@ -5,7 +5,7 @@ import { commonFlags } from './../helpers/utils'
 import Video from './video'
 
 export default class Gif extends Command {
-  static description = 'Record iOS/Android devices/simulators'
+  static description = 'Record iOS simulators and Android devices/emulators and output a gif file'
 
   static examples = [
     `$ tape gif [--local $OUTPUTPATH]

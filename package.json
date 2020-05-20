@@ -11,6 +11,7 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/plugin-not-found": "^1.2.4",
+    "@oclif/plugin-warn-if-update-available": "^1.7.0",
     "@types/command-exists": "^1.2.0",
     "adbkit": "^2.11.1",
     "await-exec": "^0.1.2",
@@ -72,8 +73,14 @@
     "bin": "tape",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-not-found"
+      "@oclif/plugin-not-found",
+      "@oclif/plugin-warn-if-update-available"
     ],
+    "warn-if-update-available": {
+      "timeoutInDays": 7,
+      "message": "<%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>.",
+      "registry": "https://registry.npmjs.org"
+    },
     "hooks": {
       "init": "./src/hooks/command-not-found.hook"
     }

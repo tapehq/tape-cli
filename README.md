@@ -6,16 +6,14 @@
 [![License](https://img.shields.io/npm/l/rec.svg)](https://github.com/edamameldn/tape-cli/blob/master/package.json)
 
 <!-- toc -->
-
-- [tape-cli](#tape-cli)
-- [Usage](#usage)
-- [Commands](#commands)
+* [tape-cli](#tape-cli)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g tape-cli
 $ tape COMMAND
@@ -27,18 +25,17 @@ USAGE
   $ tape COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-
-- [`tape config [NAME]`](#tape-config-name)
-- [`tape devices`](#tape-devices)
-- [`tape help [COMMAND]`](#tape-help-command)
-- [`tape image`](#tape-image)
-- [`tape video`](#tape-video)
+* [`tape config [NAME]`](#tape-config-name)
+* [`tape devices`](#tape-devices)
+* [`tape gif`](#tape-gif)
+* [`tape help [COMMAND]`](#tape-help-command)
+* [`tape image`](#tape-image)
+* [`tape video`](#tape-video)
 
 ## `tape config [NAME]`
 
@@ -76,6 +73,30 @@ EXAMPLE
 
 _See code: [src/commands/devices.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/devices.ts)_
 
+## `tape gif`
+
+Record iOS/Android devices/simulators
+
+```
+USAGE
+  $ tape gif
+
+OPTIONS
+  -d, --debug
+  -h, --help               show CLI help
+  -l, --local=~/Documents
+
+ALIASES
+  $ tape gif
+  $ tape g
+
+EXAMPLE
+  $ tape gif [--local $OUTPUTPATH]
+  🎬 Recording started. Press SPACE to save or ESC to abort.
+```
+
+_See code: [src/commands/gif.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/gif.ts)_
+
 ## `tape help [COMMAND]`
 
 display help for tape
@@ -103,12 +124,16 @@ USAGE
 
 OPTIONS
   -d, --debug
-  -h, --help   show CLI help
-  -l, --local
+  -h, --help               show CLI help
+  -l, --local=~/Documents
+
+ALIASES
+  $ tape i
+  $ tape screenshot
 
 EXAMPLE
   $ tape image
-  🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! ->
+  🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! -> 
     https://example.com/image.png
 ```
 
@@ -125,10 +150,14 @@ USAGE
 OPTIONS
   -d, --debug
   -g, --gif
-  -h, --help   show CLI help
-  -l, --local
-  -v, --video
+  -h, --help               show CLI help
+  -l, --local=~/Documents
   --hq
+
+ALIASES
+  $ tape video
+  $ tape vid
+  $ tape m
 
 EXAMPLE
   $ tape video [--hq | --gif | --local $OUTPUTPATH]
@@ -136,5 +165,4 @@ EXAMPLE
 ```
 
 _See code: [src/commands/video.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/video.ts)_
-
 <!-- commandsstop -->

@@ -1,19 +1,21 @@
-# rec
+# tape-cli
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/rec.svg)](https://npmjs.org/package/rec)
-[![Downloads/week](https://img.shields.io/npm/dw/rec.svg)](https://npmjs.org/package/rec)
-[![License](https://img.shields.io/npm/l/rec.svg)](https://github.com/ingmaras/rec/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/tape-cli.svg)](https://npmjs.org/package/tape-cli)
+[![Downloads/week](https://img.shields.io/npm/dw/tape-cli.svg)](https://npmjs.org/package/tape-cli)
+[![License](https://img.shields.io/npm/l/rec.svg)](https://github.com/edamameldn/tape-cli/blob/master/package.json)
 
 <!-- toc -->
-* [rec](#rec)
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [rec](#rec)
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g tape-cli
 $ tape COMMAND
@@ -25,16 +27,18 @@ USAGE
   $ tape COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`tape config [NAME]`](#tape-config-name)
-* [`tape devices`](#tape-devices)
-* [`tape help [COMMAND]`](#tape-help-command)
-* [`tape image`](#tape-image)
-* [`tape video`](#tape-video)
+
+- [`tape config [NAME]`](#tape-config-name)
+- [`tape devices`](#tape-devices)
+- [`tape help [COMMAND]`](#tape-help-command)
+- [`tape image`](#tape-image)
+- [`tape video`](#tape-video)
 
 ## `tape config [NAME]`
 
@@ -104,7 +108,7 @@ OPTIONS
 
 EXAMPLE
   $ tape image
-  🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! -> 
+  🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! ->
     https://example.com/image.png
 ```
 
@@ -132,4 +136,5 @@ EXAMPLE
 ```
 
 _See code: [src/commands/video.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.1/src/commands/video.ts)_
+
 <!-- commandsstop -->

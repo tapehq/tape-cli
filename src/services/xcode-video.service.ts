@@ -17,7 +17,7 @@ export default class XcodeVideo {
   device: Device
 
   constructor(options: { device: Device; verbose?: boolean }) {
-    this.fileName = `${randomString()}.mp4`
+    this.fileName = `${randomString()}-raw.mp4`
     this.path = `${os.tmpdir()}/${this.fileName}`
     this.device = options.device
     this.verbose = options.verbose || false

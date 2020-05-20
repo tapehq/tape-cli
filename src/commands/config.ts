@@ -6,6 +6,7 @@ import * as inquirer from 'inquirer'
 import * as chalk from 'chalk'
 
 import ConfigService from '../services/config.service'
+import { isEmpty } from 'lodash'
 
 export default class Config extends Command {
   static description = 'Configuration'
@@ -36,10 +37,14 @@ export default class Config extends Command {
         type: 'list',
         choices: [
           {
-            name: `Change bucket name (current: ${chalk.yellow(
-              currentBucketName
+            name: 'Use Tape.sh for uploads',
+            value: 'use_tape',
+          },
+          {
+            name: `Set bucket name (current: ${chalk.yellow(
+              currentBucketName || 'Tape.sh hosted'
             )})`,
-            short: 'Change bucket name',
+            short: 'Set bucket name',
             value: 'change_bucket_name',
           },
           {
@@ -58,14 +63,27 @@ export default class Config extends Command {
       this.changeBucketName()
     }
 
+    if (responses.choice === 'use_tape') {
+      this.useTape()
+    }
+
     if (responses.choice === 'full_setup') {
       await this.fullSetup()
     }
   }
 
+  useTape() {
+    ConfigService.set('bucketName', null)
+    this.log(
+      `\n 🍰 Will use Tape.sh for your uploads. \n Your dashboard -> ${chalk.yellow(
+        'https://dashboard.tape.sh'
+      )}`
+    )
+  }
+
   async fullSetup() {
     await checkDependencies()
-    await this.changeBucketName()
+    // await this.changeBucketName()
     if (checkIfNeeded()) {
       const { choice: redownload } = await inquirer.prompt([
         {
@@ -99,6 +117,8 @@ export default class Config extends Command {
   async changeBucketName() {
     const oldName = await ConfigService.get('bucketName')
 
+    this.log(' 🎩 BYOB eh? (Bring your own bucket)')
+
     const { name } = await inquirer.prompt([
       {
         name: 'name',
@@ -107,17 +127,21 @@ export default class Config extends Command {
       },
     ])
 
-    if (name.length === 0) {
-      this.log(`No input, using previous bucket name ${chalk.bold(oldName)}..`)
-    }
-
-    if (name.length === 0 && oldName.length === 0) {
-      this.warn('Please set a bucket name.')
-    }
-
     const newName = name || oldName
 
-    this.log(`Bucket name set to: ${chalk.green(newName)}`)
+    if (name.length === 0) {
+      if (isEmpty(oldName)) {
+        this.log(` ${chalk.cyan('Custom bucket not set')}`)
+        this.useTape()
+      } else {
+        this.log(
+          ` No input, using previous bucket name ${chalk.bold(oldName)}..`
+        )
+      }
+    } else {
+      this.log(`Bucket name set to: ${chalk.green(newName)}`)
+    }
+
     ConfigService.set('bucketName', newName)
   }
 }

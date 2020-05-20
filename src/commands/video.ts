@@ -3,6 +3,7 @@ import cli from 'cli-ux'
 import * as clipboardy from 'clipboardy'
 import * as filesize from 'filesize'
 import * as fs from 'fs'
+import * as chalk from 'chalk'
 
 import { uploadFile } from '../helpers/s3'
 import {
@@ -81,11 +82,17 @@ export default class Video extends Command {
         this.log(`\n 🎉 Video saved locally to ${localFilePath}.`)
       } else {
         this.log(
-          `Original file size: ${filesize(fs.statSync(rawOutputFile).size)}`
+          `${chalk.grey(
+            `Original file size: ${filesize(fs.statSync(rawOutputFile).size)}`
+          )}`
         )
 
         this.log(
-          `📼  Tape output file size: ${filesize(fs.statSync(outputPath).size)}`
+          `${chalk.grey(
+            `📼  Tape output file size: ${filesize(
+              fs.statSync(outputPath).size
+            )}`
+          )}`
         )
 
         try {

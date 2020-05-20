@@ -6,6 +6,7 @@ import * as commandExists from 'command-exists'
 import * as adb from 'adbkit'
 
 import { isMac } from '../helpers/utils'
+import { omit, isEmpty } from 'lodash'
 
 type ConfigKey = 'bucketName' | 'device'
 
@@ -39,6 +40,11 @@ const set = async (key: ConfigKey, value: string | object | null) => {
   setupConfigFile()
   const config = await read()
   const newConfig = { ...config, [key]: value }
+
+  if (isEmpty(value)) {
+    omit(newConfig, key)
+  }
+
   fs.writeFileSync(FILE, JSON.stringify(newConfig))
 }
 

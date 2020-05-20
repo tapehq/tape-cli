@@ -8,7 +8,22 @@ import cli from 'cli-ux'
 import ConfigService from '../services/config.service'
 import { generateSignedUploadURL, putFile } from '../api/upload'
 
-const uploadFileRaw = async (
+const uploadFileToTape = async (source: string): Promise<string> => {
+  // Read content from the file
+  const fileContent = fs.readFileSync(source)
+  const fileName = path.parse(source).base
+
+  const uploadUrl = await generateSignedUploadURL(fileName)
+
+  await putFile(fileContent, uploadUrl, {
+    'Content-Type': mime.lookup(source) || 'application/octet-stream',
+  })
+
+  const url = new URL(uploadUrl)
+  return [url.origin, url.pathname].join('')
+}
+
+const uploadFileToBucket = async (
   source: string,
   bucketName: string
 ): Promise<string> => {
@@ -16,34 +31,20 @@ const uploadFileRaw = async (
   const fileContent = fs.readFileSync(source)
   const fileName = path.parse(source).base
 
-  if (bucketName && bucketName !== 'hosted') {
-    // TODO improve me
-    console.log('Using self defined bucket flow')
-    const s3 = new AWS.S3({ apiVersion: '2006-03-01', signatureVersion: 'v4' })
-    const params = {
-      Bucket: bucketName,
-      Key: fileName,
-      Body: fileContent,
-      ACL: 'public-read',
-      ContentType: mime.lookup(source) || 'application/octet-stream',
-    }
+  console.info(` ℹ️  Brought your own bucket: s3://${bucketName} \n`)
 
-    const result = await s3.upload(params).promise()
-    const url = result.Location
-    return url
+  const s3 = new AWS.S3({ apiVersion: '2006-03-01', signatureVersion: 'v4' })
+  const params = {
+    Bucket: bucketName,
+    Key: fileName,
+    Body: fileContent,
+    ACL: 'public-read',
+    ContentType: mime.lookup(source) || 'application/octet-stream',
   }
 
-  // Hosted flow
-  console.log('using Hosted flow')
-
-  const uploadUrl = await generateSignedUploadURL(fileName)
-
-  putFile(fileContent, uploadUrl, {
-    'Content-Type': mime.lookup(source) || 'application/octet-stream',
-  })
-
-  const url = new URL(uploadUrl)
-  return [url.origin, url.pathname].join('')
+  const result = await s3.upload(params).promise()
+  const url = result.Location
+  return url
 }
 
 interface UploadFileOptions {
@@ -67,11 +68,16 @@ export const uploadFile = async (
 ): Promise<string> => {
   const bucketName = await ConfigService.get('bucketName')
   if (options.log) {
-    console.info(`ℹ️  Bucket name is s3://${bucketName} \n`)
     cli.action.start('🔗 Uploading file...')
   }
 
-  const url = await uploadFileRaw(source, bucketName)
+  let url
+
+  if (bucketName) {
+    url = await uploadFileToBucket(source, bucketName)
+  } else {
+    url = await uploadFileToTape(source)
+  }
 
   if (options.copyToClipboard) {
     clipboardy.writeSync(url)

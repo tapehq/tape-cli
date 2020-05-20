@@ -98,9 +98,9 @@ export default class Video extends Command {
           cli.action.stop(
             `🎉 Uploaded. URL is in your clipboard 📋 ->  \n ${url}`
           )
-        } catch (e) {
-          console.error(e)
-          cli.action.stop('💥 Something went wrong', e)
+        } catch (error) {
+          console.error(error)
+          cli.action.stop('💥 Something went wrong')
         }
       }
     } else {

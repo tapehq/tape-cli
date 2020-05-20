@@ -10,6 +10,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@oclif/plugin-not-found": "^1.2.4",
     "@types/command-exists": "^1.2.0",
     "adbkit": "^2.11.1",
     "await-exec": "^0.1.2",
@@ -69,7 +70,8 @@
     "commands": "./lib/commands",
     "bin": "tape",
     "plugins": [
-      "@oclif/plugin-help"
+      "@oclif/plugin-help",
+      "@oclif/plugin-not-found"
     ],
     "hooks": {
       "init": "./src/hooks/command-not-found.hook"

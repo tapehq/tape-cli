@@ -6,7 +6,7 @@ import cli from 'cli-ux'
 
 import ConfigService from '../services/config.service'
 import { generateSignedUploadURL, putFile } from '../api/upload'
-import { copyLink, CopyFormats } from './copy.helpers'
+import { formatLink, CopyFormats } from './copy.helpers'
 
 const uploadFileToTape = async (source: string): Promise<string> => {
   // Read content from the file
@@ -80,9 +80,7 @@ export const uploadFile = async (
     url = await uploadFileToTape(source)
   }
 
-  if (options.copyToClipboard) {
-    copyLink(url, options.format)
-  }
+  const formattedLink = formatLink(url, options.format, options.copyToClipboard)
 
   if (options.log) {
     const clipboard = options.copyToClipboard ?
@@ -92,7 +90,7 @@ export const uploadFile = async (
     cli.action.stop(
       `\n🎉 ${
         options.fileType || 'Screenshot'
-      } uploaded. ${clipboard} -> \n ${url}`
+      } uploaded. ${clipboard} -> \n ${formattedLink}`
     )
   }
 

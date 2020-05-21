@@ -83,8 +83,10 @@ USAGE
 
 OPTIONS
   -d, --debug
-  -h, --help               show CLI help
+  -h, --help                             show CLI help
   -l, --local=~/Documents
+  --format=md|href|html|url
+  --nocopy Disable copying to clipboard
 
 ALIASES
   $ tape gif
@@ -124,8 +126,10 @@ USAGE
 
 OPTIONS
   -d, --debug
-  -h, --help               show CLI help
+  -h, --help                             show CLI help
   -l, --local=~/Documents
+  --format=md|href|html|url
+  --nocopy Disable copying to clipboard
 
 ALIASES
   $ tape i
@@ -150,9 +154,11 @@ USAGE
 OPTIONS
   -d, --debug
   -g, --gif
-  -h, --help               show CLI help
+  -h, --help                             show CLI help
   -l, --local=~/Documents
+  --format=md|href|html|url
   --hq
+  --nocopy Disable copying to clipboard
 
 ALIASES
   $ tape video

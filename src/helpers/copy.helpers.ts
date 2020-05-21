@@ -7,7 +7,11 @@ export enum CopyFormats {
   URL = 'url',
 }
 
-export const copyLink = (link: string, format?: CopyFormats) => {
+export const formatLink = (
+  link: string,
+  format: CopyFormats | undefined,
+  copy?: boolean
+) => {
   let formattedLink
 
   switch (format) {
@@ -29,7 +33,9 @@ export const copyLink = (link: string, format?: CopyFormats) => {
       break
   }
 
-  clipboardy.writeSync(formattedLink)
+  if (copy) {
+    clipboardy.writeSync(formattedLink)
+  }
 
   return formattedLink
 }

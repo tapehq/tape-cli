@@ -45,7 +45,7 @@ export default class Image extends Command {
       this.log(`\n 🎉 Saved locally to ${localFilePath}.`)
     } else {
       await uploadFile(path, {
-        copyToClipboard: true,
+        copyToClipboard: !flags.nocopy,
         log: true,
         fileType: 'Screenshot',
         format: flags.format as CopyFormats,

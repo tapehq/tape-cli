@@ -15,7 +15,6 @@ import {
 import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { waitForKeys } from '../helpers/keyboard'
 import { copyToLocalOutput, commonFlags } from '../helpers/utils'
-import { copyLink } from '../helpers/copy.helpers'
 
 export default class Video extends Command {
   static description = 'Record iOS/Android devices/simulators'
@@ -97,8 +96,8 @@ export default class Video extends Command {
         )
 
         try {
-          const url = await uploadFile(outputPath, {
-            copyToClipboard: true,
+          await uploadFile(outputPath, {
+            copyToClipboard: !flags.nocopy,
             log: true,
             fileType: 'Video',
             format: flags.format as CopyFormats,

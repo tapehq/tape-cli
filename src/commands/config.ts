@@ -1,3 +1,4 @@
+import { logoAscii } from './../helpers/logo.ascii'
 import { checkIfNeeded } from './../services/ffmpeg.service'
 import { checkDependencies } from './../services/config.service'
 import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
@@ -22,6 +23,8 @@ export default class Config extends Command {
 
   async run() {
     const { flags } = this.parse(Config)
+
+    console.log(logoAscii)
 
     if (flags.setup) {
       await this.fullSetup()

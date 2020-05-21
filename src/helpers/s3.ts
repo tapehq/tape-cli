@@ -2,11 +2,11 @@ import * as AWS from 'aws-sdk'
 import * as fs from 'fs'
 import * as mime from 'mime-types'
 import * as path from 'path'
-import * as clipboardy from 'clipboardy'
 import cli from 'cli-ux'
 
 import ConfigService from '../services/config.service'
 import { generateSignedUploadURL, putFile } from '../api/upload'
+import { copyLink, CopyFormats } from './copy.helpers'
 
 const uploadFileToTape = async (source: string): Promise<string> => {
   // Read content from the file
@@ -51,6 +51,7 @@ interface UploadFileOptions {
   copyToClipboard?: boolean
   log?: boolean
   fileType?: string
+  format?: CopyFormats | undefined
 }
 
 /**
@@ -80,12 +81,12 @@ export const uploadFile = async (
   }
 
   if (options.copyToClipboard) {
-    clipboardy.writeSync(url)
+    copyLink(url, options.format)
   }
 
   if (options.log) {
     const clipboard = options.copyToClipboard ?
-      'Copied URL to clipboard 🔖 ! ' :
+      `Copied ${options.format} to clipboard 🔖 ! ` :
       ''
 
     cli.action.stop(

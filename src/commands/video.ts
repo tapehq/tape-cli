@@ -1,6 +1,6 @@
+import { CopyFormats } from './../helpers/copy.helpers'
 import { Command, flags } from '@oclif/command'
 import cli from 'cli-ux'
-import * as clipboardy from 'clipboardy'
 import * as filesize from 'filesize'
 import * as fs from 'fs'
 import * as chalk from 'chalk'
@@ -15,6 +15,7 @@ import {
 import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { waitForKeys } from '../helpers/keyboard'
 import { copyToLocalOutput, commonFlags } from '../helpers/utils'
+import { copyLink } from '../helpers/copy.helpers'
 
 export default class Video extends Command {
   static description = 'Record iOS/Android devices/simulators'
@@ -100,13 +101,8 @@ export default class Video extends Command {
             copyToClipboard: true,
             log: true,
             fileType: 'Video',
+            format: flags.format as CopyFormats,
           })
-
-          clipboardy.writeSync(url)
-
-          cli.action.stop(
-            `\n 🎉 Uploaded. URL is in your clipboard 📋 ->  \n ${url}`
-          )
         } catch (error) {
           this.error(error)
           cli.action.stop('💥 Something went wrong')

@@ -9,6 +9,7 @@ import {
 } from '../services'
 import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { copyToLocalOutput } from '../helpers/utils'
+import { CopyFormats } from '../helpers/copy.helpers'
 
 export default class Image extends Command {
   static description = 'Take screenshots of iOS/Android devices/simulators'
@@ -41,12 +42,13 @@ export default class Image extends Command {
 
     if (flags.local) {
       const localFilePath = copyToLocalOutput(path, flags.local)
-      this.log(`\n 🎉 Video saved locally to ${localFilePath}.`)
+      this.log(`\n 🎉 Saved locally to ${localFilePath}.`)
     } else {
       await uploadFile(path, {
         copyToClipboard: true,
         log: true,
         fileType: 'Screenshot',
+        format: flags.format as CopyFormats,
       })
       screenshot.destroy()
     }

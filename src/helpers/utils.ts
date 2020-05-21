@@ -1,3 +1,4 @@
+import { CopyFormats } from './copy.helpers'
 import * as path from 'path'
 import * as fs from 'fs'
 import { flags } from '@oclif/command'
@@ -21,4 +22,7 @@ export const commonFlags = {
     char: 'l',
     helpValue: '~/Documents',
   }), // dont upload
+  format: flags.string({
+    options: Object.values(CopyFormats),
+  }),
 }

@@ -1,8 +1,9 @@
+import { CopyFormats } from './../helpers/copy.helpers'
 import { Command, flags } from '@oclif/command'
 import cli from 'cli-ux'
-import * as clipboardy from 'clipboardy'
 import * as filesize from 'filesize'
 import * as fs from 'fs'
+import * as chalk from 'chalk'
 
 import { uploadFile } from '../helpers/s3'
 import {
@@ -81,25 +82,26 @@ export default class Video extends Command {
         this.log(`\n 🎉 Video saved locally to ${localFilePath}.`)
       } else {
         this.log(
-          `Original file size: ${filesize(fs.statSync(rawOutputFile).size)}`
+          `${chalk.grey(
+            `Original file size: ${filesize(fs.statSync(rawOutputFile).size)}`
+          )}`
         )
 
         this.log(
-          `📼  Tape output file size: ${filesize(fs.statSync(outputPath).size)}`
+          `${chalk.grey(
+            `📼  Tape output file size: ${filesize(
+              fs.statSync(outputPath).size
+            )}`
+          )}`
         )
 
         try {
-          const url = await uploadFile(outputPath, {
-            copyToClipboard: true,
+          await uploadFile(outputPath, {
+            copyToClipboard: !flags.nocopy,
             log: true,
             fileType: 'Video',
+            format: flags.format as CopyFormats,
           })
-
-          clipboardy.writeSync(url)
-
-          cli.action.stop(
-            `\n 🎉 Uploaded. URL is in your clipboard 📋 ->  \n ${url}`
-          )
         } catch (error) {
           this.error(error)
           cli.action.stop('💥 Something went wrong')

@@ -2,43 +2,20 @@ import * as AWS from 'aws-sdk'
 import * as fs from 'fs'
 import * as mime from 'mime-types'
 import * as path from 'path'
-import * as clipboardy from 'clipboardy'
 import cli from 'cli-ux'
 
 import ConfigService from '../services/config.service'
 import { generateSignedUploadURL, putFile } from '../api/upload'
+import { formatLink, CopyFormats } from './copy.helpers'
 
-const uploadFileRaw = async (
-  source: string,
-  bucketName: string
-): Promise<string> => {
+const uploadFileToTape = async (source: string): Promise<string> => {
   // Read content from the file
   const fileContent = fs.readFileSync(source)
   const fileName = path.parse(source).base
 
-  if (bucketName && bucketName !== 'hosted') {
-    // TODO improve me
-    console.log('Using self defined bucket flow')
-    const s3 = new AWS.S3({ apiVersion: '2006-03-01', signatureVersion: 'v4' })
-    const params = {
-      Bucket: bucketName,
-      Key: fileName,
-      Body: fileContent,
-      ACL: 'public-read',
-      ContentType: mime.lookup(source) || 'application/octet-stream',
-    }
-
-    const result = await s3.upload(params).promise()
-    const url = result.Location
-    return url
-  }
-
-  // Hosted flow
-  console.log('using Hosted flow')
-
   const uploadUrl = await generateSignedUploadURL(fileName)
 
-  putFile(fileContent, uploadUrl, {
+  await putFile(fileContent, uploadUrl, {
     'Content-Type': mime.lookup(source) || 'application/octet-stream',
   })
 
@@ -46,10 +23,35 @@ const uploadFileRaw = async (
   return [url.origin, url.pathname].join('')
 }
 
+const uploadFileToBucket = async (
+  source: string,
+  bucketName: string
+): Promise<string> => {
+  // Read content from the file
+  const fileContent = fs.readFileSync(source)
+  const fileName = path.parse(source).base
+
+  console.info(` ℹ️  Brought your own bucket: s3://${bucketName} \n`)
+
+  const s3 = new AWS.S3({ apiVersion: '2006-03-01', signatureVersion: 'v4' })
+  const params = {
+    Bucket: bucketName,
+    Key: fileName,
+    Body: fileContent,
+    ACL: 'public-read',
+    ContentType: mime.lookup(source) || 'application/octet-stream',
+  }
+
+  const result = await s3.upload(params).promise()
+  const url = result.Location
+  return url
+}
+
 interface UploadFileOptions {
   copyToClipboard?: boolean
   log?: boolean
   fileType?: string
+  format?: CopyFormats | undefined
 }
 
 /**
@@ -67,25 +69,28 @@ export const uploadFile = async (
 ): Promise<string> => {
   const bucketName = await ConfigService.get('bucketName')
   if (options.log) {
-    console.info(`ℹ️  Bucket name is s3://${bucketName} \n`)
     cli.action.start('🔗 Uploading file...')
   }
 
-  const url = await uploadFileRaw(source, bucketName)
+  let url
 
-  if (options.copyToClipboard) {
-    clipboardy.writeSync(url)
+  if (bucketName) {
+    url = await uploadFileToBucket(source, bucketName)
+  } else {
+    url = await uploadFileToTape(source)
   }
+
+  const formattedLink = formatLink(url, options.format, options.copyToClipboard)
 
   if (options.log) {
     const clipboard = options.copyToClipboard ?
-      'Copied URL to clipboard 🔖 ! ' :
+      `Copied ${options.format} to clipboard 🔖 ! ` :
       ''
 
     cli.action.stop(
       `\n🎉 ${
         options.fileType || 'Screenshot'
-      } uploaded. ${clipboard} -> \n ${url}`
+      } uploaded. ${clipboard} -> \n ${formattedLink}`
     )
   }
 

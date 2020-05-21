@@ -1,6 +1,8 @@
+import { CopyFormats } from './copy.helpers'
 import * as path from 'path'
 import * as fs from 'fs'
 import { flags } from '@oclif/command'
+import * as chalk from 'chalk'
 
 export const isMac = () => process.platform === 'darwin'
 
@@ -21,4 +23,11 @@ export const commonFlags = {
     char: 'l',
     helpValue: '~/Documents',
   }), // dont upload
+  format: flags.string({
+    options: Object.values(CopyFormats),
+  }),
+  nocopy: flags.boolean({
+    default: false,
+    helpLabel: `--nocopy ${chalk.grey('Disable copying to clipboard')}`,
+  }),
 }

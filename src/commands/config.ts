@@ -127,6 +127,14 @@ export default class Config extends Command {
     ])
 
     await ConfigService.set('token', cliToken || oldToken)
+
+    this.log("\n 🎉  You're good to go! Some examples:")
+    this.log(
+      `
+      ${chalk.green('tape image')}
+      ${chalk.yellow('tape video')}
+      ${chalk.blue('tape gif --format md')}`
+    )
   }
 
   async fullSetup() {
@@ -153,9 +161,6 @@ export default class Config extends Command {
 
       if (redownload) {
         installFfmpeg()
-      } else {
-        this.log("You're good to go! 🎉")
-        this.log('Some examples: tape image | tape video | tape video --gif')
       }
     } else {
       installFfmpeg()

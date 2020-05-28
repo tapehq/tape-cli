@@ -1,5 +1,5 @@
-import { commonFlags } from './../helpers/utils'
-import { Command, flags } from '@oclif/command'
+import { Command } from '@oclif/command'
+import * as chalk from 'chalk'
 
 import { uploadFile } from '../helpers/s3'
 import {
@@ -8,7 +8,7 @@ import {
   DeviceService,
 } from '../services'
 import { deviceToFriendlyString } from '../helpers/device.helpers'
-import { copyToLocalOutput } from '../helpers/utils'
+import { copyToLocalOutput, commonFlags } from '../helpers/utils'
 import { CopyFormats } from '../helpers/copy.helpers'
 
 export default class Image extends Command {
@@ -44,12 +44,16 @@ export default class Image extends Command {
       const localFilePath = copyToLocalOutput(path, flags.local)
       this.log(`\n 🎉 Saved locally to ${localFilePath}.`)
     } else {
-      await uploadFile(path, {
-        copyToClipboard: !flags.nocopy,
-        log: true,
-        fileType: 'Screenshot',
-        format: flags.format as CopyFormats,
-      })
+      try {
+        await uploadFile(path, {
+          copyToClipboard: !flags.nocopy,
+          log: true,
+          fileType: 'Screenshot',
+          format: flags.format as CopyFormats,
+        })
+      } catch (error) {
+        this.error(`${chalk.dim(error?.message)}`)
+      }
       screenshot.destroy()
     }
   }

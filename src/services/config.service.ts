@@ -8,7 +8,7 @@ import * as adb from 'adbkit'
 import { isMac } from '../helpers/utils'
 import { omit, isEmpty } from 'lodash'
 
-type ConfigKey = 'bucketName' | 'device'
+type ConfigKey = 'bucketName' | 'device' | 'token'
 
 export const DIR = path.join(os.homedir(), '.tape')
 export const BIN_DIR = path.join(DIR, 'bin')
@@ -94,6 +94,12 @@ export const checkDependencies = async () => {
       )
     }
   }
+}
+
+export const hasAccessToken = async () => {
+  const token = await get('token')
+
+  return !isEmpty(token)
 }
 
 export default { get, set }

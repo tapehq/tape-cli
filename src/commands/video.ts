@@ -103,6 +103,9 @@ export default class Video extends Command {
             format: flags.format as CopyFormats,
           })
         } catch (error) {
+          if (flags.debug) {
+            this.error(error)
+          }
           this.error(`${chalk.dim(error?.message)}`)
         }
       }

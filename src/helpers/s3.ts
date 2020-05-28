@@ -103,7 +103,6 @@ export const uploadFile = async (
     return url
   } catch (error) {
     cli.action.stop(`😨 ${chalk.redBright('Upload failed.')}`)
-
     throw error
   }
 }

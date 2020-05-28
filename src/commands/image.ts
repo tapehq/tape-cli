@@ -22,7 +22,7 @@ export default class Image extends Command {
 
   static flags = commonFlags
 
-  static aliases = ['i', 'screenshot']
+  static aliases = ['i', 'screenshot', 'img']
 
   async run() {
     const { flags } = this.parse(Image)
@@ -52,6 +52,9 @@ export default class Image extends Command {
           format: flags.format as CopyFormats,
         })
       } catch (error) {
+        if (flags.debug) {
+          this.error(error)
+        }
         this.error(`${chalk.dim(error?.message)}`)
       }
       screenshot.destroy()

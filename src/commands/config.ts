@@ -1,13 +1,14 @@
-import { logoAscii } from './../helpers/logo.ascii'
-import { checkIfNeeded } from './../services/ffmpeg.service'
-import { checkDependencies } from './../services/config.service'
-import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
 import { Command, flags } from '@oclif/command'
 import * as inquirer from 'inquirer'
-import * as chalk from 'chalk'
-
-import ConfigService from '../services/config.service'
 import { isEmpty } from 'lodash'
+import * as chalk from 'chalk'
+import * as open from 'open'
+
+import { logoAscii } from './../helpers/logo.ascii'
+import { checkDependencies, hasAccessToken } from './../services/config.service'
+import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
+import { checkIfNeeded as checkIfFfmpegNeeded } from './../services/ffmpeg.service'
+import ConfigService from '../services/config.service'
 
 export default class Config extends Command {
   static description = 'Configuration'
@@ -56,27 +57,47 @@ export default class Config extends Command {
             value: 'full_setup',
           },
           {
+            name: 'Login to Tape.sh',
+            value: 'login',
+          },
+          {
             name: 'Cancel',
           },
         ],
       },
     ])
 
-    if (responses.choice === 'change_bucket_name') {
-      this.changeBucketName()
-    }
+    switch (responses.choice) {
+      case 'change_bucket_name':
+        await this.changeBucketName()
+        break
 
-    if (responses.choice === 'use_tape') {
-      this.useTape()
-    }
+      case 'use_tape':
+        await this.useTape()
+        break
 
-    if (responses.choice === 'full_setup') {
-      await this.fullSetup()
+      case 'full_setup':
+        await this.fullSetup()
+        break
+
+      case 'login':
+        await this.login()
+        break
+
+      default:
+      // do not thing
     }
   }
 
-  useTape() {
-    ConfigService.set('bucketName', null)
+  async useTape() {
+    await ConfigService.set('bucketName', null)
+
+    const isLoggedIn = await hasAccessToken()
+
+    if (!isLoggedIn) {
+      await this.login()
+    }
+
     this.log(
       `\n 🍰 Will use Tape.sh for your uploads. \n Your dashboard -> ${chalk.yellow(
         'https://dashboard.tape.sh'
@@ -84,10 +105,28 @@ export default class Config extends Command {
     )
   }
 
+  async login() {
+    await open('http://localhost:8910/cli-tokens/new')
+
+    const oldToken = await ConfigService.get('token')
+
+    const { cliToken } = await inquirer.prompt([
+      {
+        name: 'cliToken',
+        type: 'input',
+        message: `Paste the token from the browser  (current: ${chalk.yellow(
+          oldToken
+        )})`,
+      },
+    ])
+
+    await ConfigService.set('token', cliToken || oldToken)
+  }
+
   async fullSetup() {
     await checkDependencies()
     // await this.changeBucketName()
-    if (checkIfNeeded()) {
+    if (checkIfFfmpegNeeded()) {
       const { choice: redownload } = await inquirer.prompt([
         {
           name: 'choice',
@@ -115,6 +154,8 @@ export default class Config extends Command {
     } else {
       installFfmpeg()
     }
+
+    await this.login()
   }
 
   async changeBucketName() {

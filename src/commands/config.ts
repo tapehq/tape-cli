@@ -3,6 +3,7 @@ import * as inquirer from 'inquirer'
 import { isEmpty } from 'lodash'
 import * as chalk from 'chalk'
 import * as open from 'open'
+import * as os from 'os'
 
 import { logoAscii } from './../helpers/logo.ascii'
 import { checkDependencies, hasAccessToken } from './../services/config.service'
@@ -112,7 +113,11 @@ export default class Config extends Command {
   }
 
   async login() {
-    await open('http://localhost:8910/cli-tokens/new')
+    // const TAPE_HOST = 'https://tape.sh'
+    const TAPE_HOST = 'http://localhost:8910'
+
+    const label = os.hostname()
+    await open(`${TAPE_HOST}/cli-tokens/new?label=${label}`)
 
     const oldToken = await ConfigService.get('token')
 

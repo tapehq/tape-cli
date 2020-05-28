@@ -14,7 +14,7 @@ export const generateSignedUploadURL = async (
   const accessToken = await ConfigService.get('token')
 
   if (isEmpty(accessToken)) {
-    throw new Error('Please login, run: tape config or tape config --setup')
+    throw new Error('Please login, run: tape login or tape config')
   }
 
   const { data } = await axios.post(

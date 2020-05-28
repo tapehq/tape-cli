@@ -2,6 +2,7 @@ import * as AWS from 'aws-sdk'
 import * as fs from 'fs'
 import * as mime from 'mime-types'
 import * as path from 'path'
+import * as chalk from 'chalk'
 import cli from 'cli-ux'
 
 import ConfigService from '../services/config.service'
@@ -66,7 +67,7 @@ interface UploadFileOptions {
 export const uploadFile = async (
   source: string,
   options: UploadFileOptions = {}
-): Promise<string> => {
+): Promise<string | null> => {
   const bucketName = await ConfigService.get('bucketName')
   if (options.log) {
     cli.action.start('🔗 Uploading file...')
@@ -74,25 +75,34 @@ export const uploadFile = async (
 
   let url
 
-  if (bucketName) {
-    url = await uploadFileToBucket(source, bucketName)
-  } else {
-    url = await uploadFileToTape(source)
-  }
+  try {
+    if (bucketName) {
+      url = await uploadFileToBucket(source, bucketName)
+    } else {
+      url = await uploadFileToTape(source)
+    }
 
-  const formattedLink = formatLink(url, options.format, options.copyToClipboard)
-
-  if (options.log) {
-    const clipboard = options.copyToClipboard ?
-      `Copied ${options.format} to clipboard 🔖 ! ` :
-      ''
-
-    cli.action.stop(
-      `\n🎉 ${
-        options.fileType || 'Screenshot'
-      } uploaded. ${clipboard} -> \n ${formattedLink}`
+    const formattedLink = formatLink(
+      url,
+      options.format,
+      options.copyToClipboard
     )
-  }
 
-  return url
+    if (options.log) {
+      const clipboard = options.copyToClipboard ?
+        `Copied ${options.format} to clipboard 🔖 ! ` :
+        ''
+
+      cli.action.stop(
+        `\n🎉 ${
+          options.fileType || 'Screenshot'
+        } uploaded. ${clipboard} -> \n ${formattedLink}`
+      )
+    }
+
+    return url
+  } catch (error) {
+    cli.action.stop(`😨 ${chalk.redBright('Upload failed.')}`)
+    throw error
+  }
 }

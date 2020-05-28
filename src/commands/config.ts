@@ -1,13 +1,15 @@
-import { logoAscii } from './../helpers/logo.ascii'
-import { checkIfNeeded } from './../services/ffmpeg.service'
-import { checkDependencies } from './../services/config.service'
-import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
 import { Command, flags } from '@oclif/command'
 import * as inquirer from 'inquirer'
-import * as chalk from 'chalk'
-
-import ConfigService from '../services/config.service'
 import { isEmpty } from 'lodash'
+import * as chalk from 'chalk'
+import * as open from 'open'
+import * as os from 'os'
+
+import { logoAscii } from './../helpers/logo.ascii'
+import { checkDependencies, hasAccessToken } from './../services/config.service'
+import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
+import { checkIfNeeded as checkIfFfmpegNeeded } from './../services/ffmpeg.service'
+import ConfigService from '../services/config.service'
 
 export default class Config extends Command {
   static description = 'Configuration'
@@ -17,6 +19,7 @@ export default class Config extends Command {
   static flags = {
     help: flags.help({ char: 'h' }),
     setup: flags.boolean({ char: 's' }),
+    login: flags.boolean(),
   }
 
   static args = [{ name: 'name', required: false }]
@@ -31,6 +34,11 @@ export default class Config extends Command {
       return
     }
 
+    if (flags.login) {
+      await this.login()
+      return
+    }
+
     const currentBucketName = await ConfigService.get('bucketName')
 
     const responses = await inquirer.prompt([
@@ -39,6 +47,15 @@ export default class Config extends Command {
         message: 'What would you like to configure?',
         type: 'list',
         choices: [
+          {
+            name: 'Login to Tape.sh',
+            value: 'login',
+          },
+          {
+            name: 'Run full Setup',
+            short: 'Setup 📼 Tape',
+            value: 'full_setup',
+          },
           {
             name: 'Use Tape.sh for uploads',
             value: 'use_tape',
@@ -51,32 +68,43 @@ export default class Config extends Command {
             value: 'change_bucket_name',
           },
           {
-            name: 'Setup',
-            short: 'Setup 📼 Tape',
-            value: 'full_setup',
-          },
-          {
             name: 'Cancel',
           },
         ],
       },
     ])
 
-    if (responses.choice === 'change_bucket_name') {
-      this.changeBucketName()
-    }
+    switch (responses.choice) {
+      case 'change_bucket_name':
+        await this.changeBucketName()
+        break
 
-    if (responses.choice === 'use_tape') {
-      this.useTape()
-    }
+      case 'use_tape':
+        await this.useTape()
+        break
 
-    if (responses.choice === 'full_setup') {
-      await this.fullSetup()
+      case 'full_setup':
+        await this.fullSetup()
+        break
+
+      case 'login':
+        await this.login()
+        break
+
+      default:
+      // do nothing
     }
   }
 
-  useTape() {
-    ConfigService.set('bucketName', null)
+  async useTape() {
+    await ConfigService.set('bucketName', null)
+
+    const isLoggedIn = await hasAccessToken()
+
+    if (!isLoggedIn) {
+      await this.login()
+    }
+
     this.log(
       `\n 🍰 Will use Tape.sh for your uploads. \n Your dashboard -> ${chalk.yellow(
         'https://dashboard.tape.sh'
@@ -84,10 +112,40 @@ export default class Config extends Command {
     )
   }
 
+  async login() {
+    // const TAPE_HOST = 'https://tape.sh'
+    const TAPE_HOST = 'http://localhost:8910'
+
+    const label = os.hostname()
+    await open(`${TAPE_HOST}/cli-tokens/new?label=${label}`)
+
+    const oldToken = await ConfigService.get('token')
+
+    const { cliToken } = await inquirer.prompt([
+      {
+        name: 'cliToken',
+        type: 'input',
+        message: `Paste the token from the browser  (current: ${chalk.yellow(
+          oldToken
+        )})`,
+      },
+    ])
+
+    await ConfigService.set('token', cliToken || oldToken)
+
+    this.log("\n 🎉  You're good to go! Some examples:")
+    this.log(
+      `
+      ${chalk.green('tape image')}
+      ${chalk.yellow('tape video')}
+      ${chalk.blue('tape gif --format md')}`
+    )
+  }
+
   async fullSetup() {
     await checkDependencies()
     // await this.changeBucketName()
-    if (checkIfNeeded()) {
+    if (checkIfFfmpegNeeded()) {
       const { choice: redownload } = await inquirer.prompt([
         {
           name: 'choice',
@@ -108,13 +166,12 @@ export default class Config extends Command {
 
       if (redownload) {
         installFfmpeg()
-      } else {
-        this.log("You're good to go! 🎉")
-        this.log('Some examples: tape image | tape video | tape video --gif')
       }
     } else {
       installFfmpeg()
     }
+
+    await this.login()
   }
 
   async changeBucketName() {

@@ -57,26 +57,26 @@ export default class Video extends Command {
 
     const rawOutputFile = await video.save()
 
-    let outputPath = rawOutputFile
-
-    if (flags.hq && !flags.gif) {
-      this.log(' ℹ hq flag supplied. Not Compressing \n')
-    } else {
-      outputPath = rawOutputFile.replace('-raw.mp4', '.mp4')
-      await FfmpegService.compressVid(rawOutputFile, outputPath)
-    }
-
-    if (flags.gif) {
-      cli.action.start(' 🚴🏽‍♀️ Making your gif...')
-
-      const gifPath = rawOutputFile.replace('-raw.mp4', '')
-      await FfmpegService.makeGif(rawOutputFile, gifPath)
-      outputPath = `${gifPath}.gif`
-
-      cli.action.stop('✔️')
-    }
-
     if (success) {
+      let outputPath = rawOutputFile
+
+      if (flags.hq && !flags.gif) {
+        this.log(' ℹ hq flag supplied. Not Compressing \n')
+      } else {
+        outputPath = rawOutputFile.replace('-raw.mp4', '.mp4')
+        await FfmpegService.compressVid(rawOutputFile, outputPath)
+      }
+
+      if (flags.gif) {
+        cli.action.start(' 🚴🏽‍♀️ Making your gif...')
+
+        const gifPath = rawOutputFile.replace('-raw.mp4', '')
+        await FfmpegService.makeGif(rawOutputFile, gifPath)
+        outputPath = `${gifPath}.gif`
+
+        cli.action.stop('✔️')
+      }
+
       if (flags.local) {
         const localFilePath = copyToLocalOutput(outputPath, flags.local)
         this.log(`\n 🎉 Video saved locally to ${localFilePath}.`)
@@ -103,8 +103,10 @@ export default class Video extends Command {
             format: flags.format as CopyFormats,
           })
         } catch (error) {
-          this.error(error)
-          cli.action.stop('💥 Something went wrong')
+          if (flags.debug) {
+            this.error(error)
+          }
+          this.error(`${chalk.dim(error?.message)}`)
         }
       }
     } else {

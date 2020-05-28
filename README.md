@@ -35,6 +35,7 @@ USAGE
 * [`tape gif`](#tape-gif)
 * [`tape help [COMMAND]`](#tape-help-command)
 * [`tape image`](#tape-image)
+* [`tape login`](#tape-login)
 * [`tape video`](#tape-video)
 
 ## `tape config [NAME]`
@@ -48,6 +49,7 @@ USAGE
 OPTIONS
   -h, --help   show CLI help
   -s, --setup
+  --login
 
 EXAMPLE
   $ tape config
@@ -85,7 +87,7 @@ OPTIONS
   -d, --debug
   -h, --help                             show CLI help
   -l, --local=~/Documents
-  --format=md|href|html|url
+  --format=md|href|html|url              [default: url]
   --nocopy Disable copying to clipboard
 
 ALIASES
@@ -128,12 +130,13 @@ OPTIONS
   -d, --debug
   -h, --help                             show CLI help
   -l, --local=~/Documents
-  --format=md|href|html|url
+  --format=md|href|html|url              [default: url]
   --nocopy Disable copying to clipboard
 
 ALIASES
   $ tape i
   $ tape screenshot
+  $ tape img
 
 EXAMPLE
   $ tape image
@@ -142,6 +145,24 @@ EXAMPLE
 ```
 
 _See code: [src/commands/image.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/image.ts)_
+
+## `tape login`
+
+Log in to Tape.sh
+
+```
+USAGE
+  $ tape login
+
+ALIASES
+  $ tape auth
+  $ tape authorize
+
+EXAMPLE
+  $ tape login
+```
+
+_See code: [src/commands/login.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/login.ts)_
 
 ## `tape video`
 
@@ -156,7 +177,7 @@ OPTIONS
   -g, --gif
   -h, --help                             show CLI help
   -l, --local=~/Documents
-  --format=md|href|html|url
+  --format=md|href|html|url              [default: url]
   --hq
   --nocopy Disable copying to clipboard
 

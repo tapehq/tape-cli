@@ -1,14 +1,42 @@
 import axios from 'axios'
+import { isEmpty } from 'lodash'
+
+import { ConfigService } from '../services'
+
+// const TAPE_HOST = 'https://tape.sh'
+
+// For local debugging
+const TAPE_HOST = 'http://localhost:8911'
 
 export const generateSignedUploadURL = async (
   fileName: string
 ): Promise<string> => {
-  const { data } = await axios.get(
-    'https://www.tape.sh/.netlify/functions/sign',
-    // 'http://localhost:8911/sign',
-    { params: { key: fileName } }
+  const accessToken = await ConfigService.get('token')
+
+  if (isEmpty(accessToken)) {
+    throw new Error('Please login, run: tape login or tape config')
+  }
+
+  const { data } = await axios.post(
+    `${TAPE_HOST}/graphql`,
+    {
+      query: `mutation createTape($fileName: String!) {
+      createTape(fileName: $fileName) {
+        url
+      }
+    }`,
+      operationName: 'createTape',
+      variables: { fileName },
+    },
+    {
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+        'auth-provider': 'jwt',
+      },
+    }
   )
-  return data.url
+
+  return data.data.createTape.url
 }
 
 export const putFile = async (
@@ -16,7 +44,7 @@ export const putFile = async (
   signedUrl: string,
   headers: object
 ) => {
-  await axios.put(signedUrl, file, {
+  return axios.put(signedUrl, file, {
     headers,
   })
 }

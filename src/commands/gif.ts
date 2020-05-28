@@ -5,7 +5,8 @@ import { commonFlags } from './../helpers/utils'
 import Video from './video'
 
 export default class Gif extends Command {
-  static description = 'Record iOS simulators and Android devices/emulators and output a gif file'
+  static description =
+    'Record iOS simulators and Android devices/emulators and output a gif file'
 
   static examples = [
     `$ tape gif [--local $OUTPUTPATH]
@@ -20,14 +21,16 @@ export default class Gif extends Command {
   async run() {
     const { flags } = this.parse(Gif)
 
-    const flattenedFlags: string[] = ['--gif']
+    const flattenedFlags = ['--gif']
 
     forEach(flags, (flagValue, flagKey) => {
-      if (flagValue === true) {
+      if (typeof flagValue === 'boolean' && flagValue === true) {
         flattenedFlags.push(`--${flagKey}`)
-      } else {
+      }
+
+      if (typeof flagValue === 'string') {
         flattenedFlags.push(`--${flagKey}`)
-        flattenedFlags.push(`${flagValue}`)
+        flattenedFlags.push(flagValue)
       }
     })
 

@@ -25,6 +25,7 @@ export const commonFlags = {
   }), // dont upload
   format: flags.string({
     options: Object.values(CopyFormats),
+    default: CopyFormats.URL,
   }),
   nocopy: flags.boolean({
     default: false,

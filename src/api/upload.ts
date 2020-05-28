@@ -1,13 +1,24 @@
 import axios from 'axios'
+import { isEmpty } from 'lodash'
+
 import { ConfigService } from '../services'
+
+// const TAPE_HOST = 'https://tape.sh'
+
+// For local debugging
+const TAPE_HOST = 'http://localhost:8911'
 
 export const generateSignedUploadURL = async (
   fileName: string
 ): Promise<string> => {
   const accessToken = await ConfigService.get('token')
 
+  if (isEmpty(accessToken)) {
+    throw new Error('Please login, run: tape config or tape config --setup')
+  }
+
   const { data } = await axios.post(
-    'http://localhost:8911/graphql',
+    `${TAPE_HOST}/graphql`,
     {
       query: `mutation createTape($fileName: String!) {
       createTape(fileName: $fileName) {

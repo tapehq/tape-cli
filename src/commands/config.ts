@@ -41,6 +41,15 @@ export default class Config extends Command {
         type: 'list',
         choices: [
           {
+            name: 'Login to Tape.sh',
+            value: 'login',
+          },
+          {
+            name: 'Run full Setup',
+            short: 'Setup 📼 Tape',
+            value: 'full_setup',
+          },
+          {
             name: 'Use Tape.sh for uploads',
             value: 'use_tape',
           },
@@ -50,15 +59,6 @@ export default class Config extends Command {
             )})`,
             short: 'Set bucket name',
             value: 'change_bucket_name',
-          },
-          {
-            name: 'Setup',
-            short: 'Setup 📼 Tape',
-            value: 'full_setup',
-          },
-          {
-            name: 'Login to Tape.sh',
-            value: 'login',
           },
           {
             name: 'Cancel',

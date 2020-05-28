@@ -18,6 +18,7 @@ export default class Config extends Command {
   static flags = {
     help: flags.help({ char: 'h' }),
     setup: flags.boolean({ char: 's' }),
+    login: flags.boolean(),
   }
 
   static args = [{ name: 'name', required: false }]
@@ -29,6 +30,11 @@ export default class Config extends Command {
 
     if (flags.setup) {
       await this.fullSetup()
+      return
+    }
+
+    if (flags.login) {
+      await this.login()
       return
     }
 
@@ -85,7 +91,7 @@ export default class Config extends Command {
         break
 
       default:
-      // do not thing
+      // do nothing
     }
   }
 

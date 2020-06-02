@@ -3,10 +3,10 @@ import { isEmpty } from 'lodash'
 
 import { ConfigService } from '../services'
 
-// const TAPE_HOST = 'https://tape.sh'
+const TAPE_HOST = 'https://tape.sh'
 
 // For local debugging
-const TAPE_HOST = 'http://localhost:8911'
+// const TAPE_HOST = 'http://localhost:8910'
 
 export const generateSignedUploadURL = async (
   fileName: string
@@ -18,7 +18,7 @@ export const generateSignedUploadURL = async (
   }
 
   const { data } = await axios.post(
-    `${TAPE_HOST}/graphql`,
+    `${TAPE_HOST}/.netlify/functions/graphql`,
     {
       query: `mutation createTape($fileName: String!) {
       createTape(fileName: $fileName) {

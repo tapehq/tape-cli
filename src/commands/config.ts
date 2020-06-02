@@ -113,8 +113,8 @@ export default class Config extends Command {
   }
 
   async login() {
-    // const TAPE_HOST = 'https://tape.sh'
-    const TAPE_HOST = 'http://localhost:8910'
+    const TAPE_HOST = 'https://tape.sh'
+    // const TAPE_HOST = 'http://localhost:8910'
 
     const label = os.hostname()
     await open(`${TAPE_HOST}/cli-tokens/new?label=${label}`)

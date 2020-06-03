@@ -113,7 +113,7 @@ export const getActiveDevice = async (): Promise<Device | null> => {
   if (isBooted) {
     console.log(
       `\n ℹ  Using preselected device. Use ${chalk.yellow(
-        'rec devices'
+        'tape devices'
       )} to choose a different device \n`
     )
     return activeDevice

@@ -21,7 +21,7 @@ const uploadFileToTape = async (source: string): Promise<string> => {
   })
 
   const url = new URL(uploadUrl)
-  return [url.origin, url.pathname].join('')
+  return ['https://tapes.tape.sh', url.pathname].join('')
 }
 
 const uploadFileToBucket = async (
@@ -89,9 +89,9 @@ export const uploadFile = async (
     )
 
     if (options.log) {
-      const clipboard = options.copyToClipboard ?
-        `Copied ${options.format} to clipboard 🔖 ! ` :
-        ''
+      const clipboard = options.copyToClipboard
+        ? `Copied ${options.format} to clipboard 🔖 ! `
+        : ''
 
       cli.action.stop(
         `\n🎉 ${

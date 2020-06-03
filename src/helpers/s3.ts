@@ -18,6 +18,7 @@ const uploadFileToTape = async (source: string): Promise<string> => {
 
   await putFile(fileContent, uploadUrl, {
     'Content-Type': mime.lookup(source) || 'application/octet-stream',
+    'Cache-Control': 'public, max-age=604800, immutable',
   })
 
   const url = new URL(uploadUrl)

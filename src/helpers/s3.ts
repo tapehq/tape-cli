@@ -13,16 +13,19 @@ const uploadFileToTape = async (source: string): Promise<string> => {
   // Read content from the file
   const fileContent = fs.readFileSync(source)
   const fileName = path.parse(source).base
+  const contentType = mime.lookup(source) || 'application/octet-stream'
 
-  const uploadUrl = await generateSignedUploadURL(fileName)
+  const { url: uploadUrl, tapeUrl } = await generateSignedUploadURL(
+    fileName,
+    contentType
+  )
 
   await putFile(fileContent, uploadUrl, {
-    'Content-Type': mime.lookup(source) || 'application/octet-stream',
+    'Content-Type': contentType,
     'Cache-Control': 'public, max-age=604800, immutable',
   })
 
-  const url = new URL(uploadUrl)
-  return ['https://tapes.tape.sh', url.pathname].join('')
+  return tapeUrl
 }
 
 const uploadFileToBucket = async (

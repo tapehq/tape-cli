@@ -6,7 +6,11 @@ import * as open from 'open'
 import * as os from 'os'
 
 import { logoAscii } from './../helpers/logo.ascii'
-import { checkDependencies, hasAccessToken } from './../services/config.service'
+import {
+  checkDependencies,
+  hasAccessToken,
+  TAPE_HOST,
+} from './../services/config.service'
 import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
 import { checkIfNeeded as checkIfFfmpegNeeded } from './../services/ffmpeg.service'
 import ConfigService from '../services/config.service'
@@ -27,7 +31,7 @@ export default class Config extends Command {
   async run() {
     const { flags } = this.parse(Config)
 
-    console.log(logoAscii)
+    this.log(logoAscii)
 
     if (flags.setup) {
       await this.fullSetup()
@@ -113,9 +117,6 @@ export default class Config extends Command {
   }
 
   async login() {
-    const TAPE_HOST = 'https://tape.sh'
-    // const TAPE_HOST = 'http://localhost:8910'
-
     const label = os.hostname()
     await open(`${TAPE_HOST}/cli-tokens/new?label=${label}`)
 

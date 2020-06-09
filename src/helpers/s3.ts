@@ -9,7 +9,10 @@ import ConfigService from '../services/config.service'
 import { generateSignedUploadURL, putFile } from '../api/upload'
 import { formatLink, CopyFormats } from './copy.helpers'
 
-const uploadFileToTape = async (source: string): Promise<string> => {
+const uploadFileToTape = async (
+  source: string,
+  metadata: object
+): Promise<string> => {
   // Read content from the file
   const fileContent = fs.readFileSync(source)
   const fileName = path.parse(source).base
@@ -17,7 +20,8 @@ const uploadFileToTape = async (source: string): Promise<string> => {
 
   const { url: uploadUrl, tapeUrl } = await generateSignedUploadURL(
     fileName,
-    contentType
+    contentType,
+    metadata
   )
 
   await putFile(fileContent, uploadUrl, {
@@ -57,6 +61,7 @@ interface UploadFileOptions {
   log?: boolean
   fileType?: string
   format?: CopyFormats | undefined
+  metadata?: object
 }
 
 /**
@@ -65,6 +70,7 @@ interface UploadFileOptions {
  * @param options Optional configuration
  * @param options.copyToClipboard - Copy to clipboard
  * @param options.log - Friendly console.logs indicating progress
+ * @param options.metadata - Metadata
  * @param options.fileType - If log is set to true, gives the user more context in logs as to what kind of file is being uploaded
  * @example uploadFile(path, { copyToClipboard: true, log: true, fileType: 'Screenshot' })
  */
@@ -83,7 +89,7 @@ export const uploadFile = async (
     if (bucketName) {
       url = await uploadFileToBucket(source, bucketName)
     } else {
-      url = await uploadFileToTape(source)
+      url = await uploadFileToTape(source, options.metadata || {})
     }
 
     const formattedLink = formatLink(

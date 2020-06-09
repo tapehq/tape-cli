@@ -30,13 +30,12 @@ export default class Image extends Command {
     const device = await DeviceService.getActiveDevice()
 
     if (!device) return
-
     this.log(`📱 Device: ${deviceToFriendlyString(device)}`)
 
     const ScreenshotKlass =
-      device.type === 'android' ?
-        AndroidScreenshotService :
-        XcodeScreenshotService
+      device.type === 'android'
+        ? AndroidScreenshotService
+        : XcodeScreenshotService
     const screenshot = new ScreenshotKlass({ device, verbose: flags.debug })
     const path = await screenshot.save()
 
@@ -47,9 +46,14 @@ export default class Image extends Command {
       try {
         await uploadFile(path, {
           copyToClipboard: !flags.nocopy,
-          log: true,
           fileType: 'Screenshot',
           format: flags.format as CopyFormats,
+          log: true,
+          metadata: {
+            os: device.type,
+            deviceName: device.name,
+            deviceId: device.id,
+          },
         })
       } catch (error) {
         if (flags.debug) {

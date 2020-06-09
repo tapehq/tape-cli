@@ -21,7 +21,8 @@ interface CreateTape {
 
 export const generateSignedUploadURL = async (
   fileName: string,
-  contentType: string
+  contentType: string,
+  metadata: object
 ) => {
   const accessToken = await ConfigService.get('token')
 
@@ -32,17 +33,18 @@ export const generateSignedUploadURL = async (
   const { data } = await axios.post<CreateTapeResponse>(
     `${TAPE_HOST}/.netlify/functions/graphql`,
     {
-      query: `mutation createTape($fileName: String!, $contentType: String) {
+      query: `mutation createTape($fileName: String!, $contentType: String, $metadata: TapeMetadataInput) {
       createTape(input: {
         fileName: $fileName
         contentType: $contentType
+        metadata: $metadata
       }) {
         url
         tapeUrl
       }
     }`,
       operationName: 'createTape',
-      variables: { fileName, contentType },
+      variables: { fileName, contentType, metadata },
     },
     {
       headers: {

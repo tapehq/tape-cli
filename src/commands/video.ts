@@ -98,9 +98,14 @@ export default class Video extends Command {
         try {
           await uploadFile(outputPath, {
             copyToClipboard: !flags.nocopy,
-            log: true,
             fileType: 'Video',
             format: flags.format as CopyFormats,
+            log: true,
+            metadata: {
+              os: device.type,
+              deviceName: device.name,
+              deviceId: device.id,
+            },
           })
         } catch (error) {
           if (flags.debug) {

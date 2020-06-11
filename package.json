@@ -26,6 +26,7 @@
     "decompress-tarxz": "^3.0.0",
     "decompress-unzip": "^4.0.1",
     "filesize": "^6.1.0",
+    "graphql-request": "2.1.0-next.1",
     "inquirer": "^7.1.0",
     "lodash": "^4.17.15",
     "mime-types": "^2.1.27",

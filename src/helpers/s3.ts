@@ -6,7 +6,7 @@ import * as chalk from 'chalk'
 import cli from 'cli-ux'
 
 import ConfigService from '../services/config.service'
-import { generateSignedUploadURL, putFile } from '../api/upload'
+import { generateSignedUploadURL, putFile, confirmTape } from '../api/upload'
 import { formatLink, CopyFormats } from './copy.helpers'
 
 const uploadFileToTape = async (
@@ -18,7 +18,7 @@ const uploadFileToTape = async (
   const fileName = path.parse(source).base
   const contentType = mime.lookup(source) || 'application/octet-stream'
 
-  const { url: uploadUrl, tapeUrl } = await generateSignedUploadURL(
+  const { url: uploadUrl, tapeUrl, id } = await generateSignedUploadURL(
     fileName,
     contentType,
     metadata
@@ -29,6 +29,7 @@ const uploadFileToTape = async (
     'Cache-Control': 'public, max-age=604800, immutable',
   })
 
+  await confirmTape(id)
   return tapeUrl
 }
 

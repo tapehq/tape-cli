@@ -63,6 +63,8 @@ export const generateSignedUploadURL = async (
         'Authentication error. Try again after running -> tape login '
       )
     }
+
+    throw error
   }
 }
 

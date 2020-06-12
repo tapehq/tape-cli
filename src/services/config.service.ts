@@ -103,4 +103,10 @@ export const hasAccessToken = async () => {
   return !isEmpty(token)
 }
 
+export const isUsingCustomBucket = async () => {
+  const bucketName = await get('bucketName')
+
+  return !isEmpty(bucketName)
+}
+
 export default { get, set }

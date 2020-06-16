@@ -18,7 +18,7 @@ export const makeGif = (
   outputFile: string,
   hq: boolean
 ) => {
-  const outputScale = hq ? 750 : 375
+  const outputScale = hq ? 'iw' : 'iw*0.5'
   return exec(
     `${FFMPEG} -i ${inputVideoFile} -filter_complex 'fps=24,scale=${outputScale}:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle' ${outputFile}.gif`
   )

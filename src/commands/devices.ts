@@ -7,6 +7,8 @@ export default class Devices extends Command {
 
   static examples = ['$ tape devices']
 
+  static aliases = ['device', 'emu', 'sims']
+
   static flags = {
     help: flags.help({ char: 'h' }),
     clear: flags.boolean({ char: 'c' }),

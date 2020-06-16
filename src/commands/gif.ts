@@ -1,5 +1,6 @@
 import { Command } from '@oclif/command'
 import { forEach } from 'lodash'
+import { flags } from '@oclif/command'
 
 import { commonFlags } from './../helpers/utils'
 import Video from './video'
@@ -16,7 +17,7 @@ export default class Gif extends Command {
 
   static aliases = ['gif', 'g']
 
-  static flags = commonFlags
+  static flags = { ...commonFlags, hq: flags.boolean({ default: false }) }
 
   async run() {
     const { flags } = this.parse(Gif)

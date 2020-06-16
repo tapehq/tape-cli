@@ -7,7 +7,10 @@ import { randomString } from '../helpers/random'
 import { BIN_DIR } from './config.service'
 import { Device } from './device.service'
 
-const FFMPEG = path.join(BIN_DIR, 'ffmpeg')
+const FFMPEG = path.join(
+  BIN_DIR,
+  'ffmpeg -loglevel warning -nostats -hide_banner'
+)
 
 export default class AndroidVideo {
   process: ChildProcess | null = null
@@ -33,9 +36,7 @@ export default class AndroidVideo {
       this.device.id,
       'shell',
       'screenrecord',
-      '/sdcard/output.raw',
-      '--bit-rate',
-      '10M',
+      `/sdcard/${this.fileName}`,
       '--output-format',
       'h264',
     ])
@@ -66,12 +67,18 @@ export default class AndroidVideo {
         this.process.on('close', async (code: number) => {
           // TODO: investigate why this process ends with a null exit code and reject promise if we can get a proper exit code
           execSync(
-            `adb -s ${this.device.id} pull /sdcard/output.raw ${this.path}.raw`
+            `adb -s ${this.device.id} pull /sdcard/${this.fileName} ${this.path}.h264`
           )
           this.log('[process] File saved and ready to upload!')
 
+          let speedOption = ''
+
+          if (this.device.isEmulator) {
+            speedOption = '-vf "setpts=1.25*PTS"'
+          }
+
           execSync(
-            `${FFMPEG} -vcodec h264 -i ${this.path}.raw -vcodec copy -acodec copy ${this.path}`
+            `${FFMPEG} -vcodec h264 -i ${this.path}.h264 ${speedOption} -r 30 ${this.path}`
           )
           resolve(this.path)
         })

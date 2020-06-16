@@ -24,7 +24,7 @@ export default class XcodeVideo {
   }
 
   record() {
-    this.xcrun = spawn('xcrun', [
+    const args = [
       'simctl',
       'io',
       this.device.id,
@@ -32,7 +32,11 @@ export default class XcodeVideo {
       this.path,
       '--codec=h264',
       '-f',
-    ])
+    ]
+    if (this.device.subtype && this.device.subtype.includes('Apple-TV')) {
+      args.push('--display=external')
+    }
+    this.xcrun = spawn('xcrun', args)
 
     this.log(`[xcrun] Recording started in ${this.path}.`)
 

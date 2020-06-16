@@ -10,6 +10,7 @@ export interface Device {
   type: string
   id: string
   name: string
+  subtype?: string
 }
 
 interface AndroidDevice {
@@ -82,6 +83,7 @@ export const getDevices = async (): Promise<Device[]> => {
           type: 'ios',
           id: device.udid,
           name: device.name,
+          subtype: device.deviceTypeIdentifier,
         }
       })) ||
     []

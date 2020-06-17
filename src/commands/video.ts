@@ -53,7 +53,7 @@ export default class Video extends Command {
 
     const success = await waitForKeys('space', 'escape')
 
-    cli.action.stop()
+    cli.action.start(' 📼 Processing your tape')
 
     const rawOutputFile = await video.save()
 
@@ -65,13 +65,14 @@ export default class Video extends Command {
       } else {
         outputPath = rawOutputFile.replace('-raw.mp4', '.mp4')
         await FfmpegService.compressVid(rawOutputFile, outputPath)
+        cli.action.stop()
       }
 
       if (flags.gif) {
         cli.action.start(' 🚴🏽‍♀️ Making your gif...')
 
         const gifPath = rawOutputFile.replace('-raw.mp4', '')
-        await FfmpegService.makeGif(rawOutputFile, gifPath)
+        await FfmpegService.makeGif(rawOutputFile, gifPath, flags.hq)
         outputPath = `${gifPath}.gif`
 
         cli.action.stop('✔️')

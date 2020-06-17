@@ -11,12 +11,14 @@ export interface Device {
   id: string
   name: string
   subtype?: string
+  isEmulator?: boolean
 }
 
 interface AndroidDevice {
   id: string
   type: string
   name: string
+  isEmulator: boolean
 }
 
 interface XcodeDevice {
@@ -42,13 +44,18 @@ export const getAndroidDevices = async (): Promise<AndroidDevice[]> => {
       const model = properties['ro.product.model']
       const sdk = properties['ro.build.version.sdk']
 
+      const kernelQemu = properties['ro.kernel.qemu']
+
       const deviceDescription = [manufacturer, model, productName, brand]
+
+      const isEmulator = kernelQemu === '1' && deviceName.includes('generic_x')
 
       const name = `${deviceName} (${deviceDescription.join(
         ', '
       )}) - SDK ${sdk}`
       return {
         ...device,
+        isEmulator,
         name,
       }
     })
@@ -73,6 +80,7 @@ export const getDevices = async (): Promise<Device[]> => {
       type: 'android',
       id: device.id,
       name: device.name,
+      isEmulator: device.isEmulator,
     }
   })
 
@@ -84,6 +92,7 @@ export const getDevices = async (): Promise<Device[]> => {
           id: device.udid,
           name: device.name,
           subtype: device.deviceTypeIdentifier,
+          isEmulator: true,
         }
       })) ||
     []

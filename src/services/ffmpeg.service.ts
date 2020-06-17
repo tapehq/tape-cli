@@ -26,7 +26,7 @@ export const makeGif = (
 
 export const compressVid = (inputVideoFile: string, outputFile: string) => {
   return exec(
-    `${FFMPEG} -i ${inputVideoFile} -vcodec h264 -an -b:v 1500k ${outputFile}`
+    `${FFMPEG} -i ${inputVideoFile} -c:v libx264 -crf 23 -maxrate 1.5M -bufsize 1.5M ${outputFile}`
   )
 }
 

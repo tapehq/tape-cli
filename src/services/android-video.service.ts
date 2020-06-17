@@ -74,7 +74,7 @@ export default class AndroidVideo {
           let speedOption = ''
 
           if (this.device.isEmulator) {
-            speedOption = '-vf "setpts=1.25*PTS"'
+            speedOption = '-vf "setpts=1.6*PTS"'
           }
 
           execSync(

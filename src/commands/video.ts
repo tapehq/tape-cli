@@ -121,6 +121,8 @@ export default class Video extends Command {
       )
     }
 
-    video.destroy()
+    if (!flags.local) {
+      video.destroy()
+    }
   }
 }

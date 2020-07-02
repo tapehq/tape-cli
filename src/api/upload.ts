@@ -12,6 +12,13 @@ interface CreateTape {
   id: string
 }
 
+interface QlError {
+  message: string
+  extensions?: {
+    code: string
+  }
+}
+
 const createQlClient = async () => {
   const accessToken = await ConfigService.get('token')
 
@@ -58,9 +65,15 @@ export const generateSignedUploadURL = async (
 
     return data.createTape
   } catch (error) {
-    if (error.response.errors[0].extensions.code === 'UNAUTHENTICATED') {
+    if (error?.response?.errors[0]?.extensions.code === 'UNAUTHENTICATED') {
       throw new Error(
         'Authentication error. Try again after running -> tape login '
+      )
+    }
+
+    if (error?.response?.errors) {
+      throw new Error(
+        error?.response?.errors.map((error: QlError) => error.message)
       )
     }
 

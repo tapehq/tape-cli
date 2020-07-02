@@ -78,7 +78,7 @@ interface UploadFileOptions {
 export const uploadFile = async (
   source: string,
   options: UploadFileOptions = {}
-): Promise<string | null> => {
+) => {
   const bucketName = await ConfigService.get('bucketName')
   if (options.log) {
     cli.action.start('🔗 Uploading file...')
@@ -114,6 +114,15 @@ export const uploadFile = async (
     return url
   } catch (error) {
     cli.action.stop(`😨 ${chalk.redBright('Upload failed.')}`)
-    throw error
+
+    if (error.message.includes('403:')) {
+      console.log(
+        `\n   🤔 Sorry it seems you've reached your tape limit. Run ${chalk.yellow(
+          'tape upgrade'
+        )} for moar`
+      )
+    } else {
+      throw error
+    }
   }
 }

@@ -11,14 +11,14 @@ export default class Upgrade extends Command {
     plan: flags.string({
       char: 'p',
       description: 'Plan name to upgrade to',
-      default: 'Pro',
+      helpValue: 'Pro',
     }),
   }
 
   async run() {
     const { flags } = this.parse(Upgrade)
 
-    const planName = flags.plan
+    const planName = flags.plan ?? 'Pro'
 
     await open(`${TAPE_HOST}/dashboard/profile?subscribe=${planName}`)
   }

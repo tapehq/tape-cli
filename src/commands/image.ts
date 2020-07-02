@@ -1,6 +1,6 @@
-import { Command } from '@oclif/command'
 import * as chalk from 'chalk'
 
+import GithubIssueOnErrorCommand from '../github-issue-on-error-command'
 import { uploadFile } from '../helpers/s3'
 import {
   AndroidScreenshotService,
@@ -11,7 +11,7 @@ import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { copyToLocalOutput, commonFlags } from '../helpers/utils'
 import { CopyFormats } from '../helpers/copy.helpers'
 
-export default class Image extends Command {
+export default class Image extends GithubIssueOnErrorCommand {
   static description = 'Take screenshots of iOS/Android devices/simulators'
 
   static examples = [

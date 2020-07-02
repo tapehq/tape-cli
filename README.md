@@ -36,7 +36,7 @@ USAGE
 * [`tape help [COMMAND]`](#tape-help-command)
 * [`tape image`](#tape-image)
 * [`tape login`](#tape-login)
-* [`tape upgrade [FILE]`](#tape-upgrade-file)
+* [`tape upgrade`](#tape-upgrade)
 * [`tape video`](#tape-video)
 
 ## `tape config [NAME]`
@@ -171,17 +171,17 @@ EXAMPLE
 
 _See code: [src/commands/login.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/login.ts)_
 
-## `tape upgrade [FILE]`
+## `tape upgrade`
 
-describe the command here
+Opens a direct link to upgrade your Tape.sh plan
 
 ```
 USAGE
-  $ tape upgrade [FILE]
+  $ tape upgrade
 
 OPTIONS
   -h, --help       show CLI help
-  -p, --plan=plan  Plan name to upgrade to
+  -p, --plan=plan  [default: Pro] Plan name to upgrade to
 ```
 
 _See code: [src/commands/upgrade.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/upgrade.ts)_

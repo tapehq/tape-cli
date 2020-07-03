@@ -36,6 +36,7 @@ USAGE
 * [`tape help [COMMAND]`](#tape-help-command)
 * [`tape image`](#tape-image)
 * [`tape login`](#tape-login)
+* [`tape upgrade`](#tape-upgrade)
 * [`tape video`](#tape-video)
 
 ## `tape config [NAME]`
@@ -69,6 +70,11 @@ OPTIONS
   -c, --clear
   -h, --help   show CLI help
 
+ALIASES
+  $ tape device
+  $ tape emu
+  $ tape sims
+
 EXAMPLE
   $ tape devices
 ```
@@ -88,6 +94,7 @@ OPTIONS
   -h, --help                             show CLI help
   -l, --local=~/Documents
   --format=md|href|html|url              [default: url]
+  --hq
   --nocopy Disable copying to clipboard
 
 ALIASES
@@ -163,6 +170,21 @@ EXAMPLE
 ```
 
 _See code: [src/commands/login.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/login.ts)_
+
+## `tape upgrade`
+
+Opens a direct link to upgrade your Tape.sh plan
+
+```
+USAGE
+  $ tape upgrade
+
+OPTIONS
+  -h, --help       show CLI help
+  -p, --plan=plan  [default: Pro] Plan name to upgrade to
+```
+
+_See code: [src/commands/upgrade.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/upgrade.ts)_
 
 ## `tape video`
 

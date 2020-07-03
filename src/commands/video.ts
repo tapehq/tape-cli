@@ -1,10 +1,11 @@
 import { CopyFormats } from './../helpers/copy.helpers'
-import { Command, flags } from '@oclif/command'
+import { flags } from '@oclif/command'
 import cli from 'cli-ux'
 import * as filesize from 'filesize'
 import * as fs from 'fs'
 import * as chalk from 'chalk'
 
+import GithubIssueOnErrorCommand from '../github-issue-on-error-command'
 import { uploadFile } from '../helpers/s3'
 import {
   DeviceService,
@@ -16,7 +17,7 @@ import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { waitForKeys } from '../helpers/keyboard'
 import { copyToLocalOutput, commonFlags } from '../helpers/utils'
 
-export default class Video extends Command {
+export default class Video extends GithubIssueOnErrorCommand {
   static description = 'Record iOS/Android devices/simulators'
 
   static examples = [

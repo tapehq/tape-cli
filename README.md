@@ -6,14 +6,17 @@
 [![License](https://img.shields.io/npm/l/rec.svg)](https://github.com/edamameldn/tape-cli/blob/master/package.json)
 
 ![Tape](https://www.tape.sh/media/tape-og.gif)
-Use with [https://www.tape.sh/](https://www.tape.sh/)
 
+> Collaborate better during mobile development, for iOS & tvOS simulators and Android emulators and devices. Share screenshots, screen recordings as video or GIFs. Use with [https://www.tape.sh/](https://www.tape.sh/) or bring your own bucket!
+
+---
 <!-- toc -->
 
 - [tape-cli](#tape-cli)
 - [Usage](#usage)
 - [Commands](#commands)
 <!-- tocstop -->
+---
 
 # Usage
 

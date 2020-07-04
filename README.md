@@ -5,15 +5,15 @@
 [![Downloads/week](https://img.shields.io/npm/dw/tape-cli.svg)](https://npmjs.org/package/tape-cli)
 [![License](https://img.shields.io/npm/l/rec.svg)](https://github.com/edamameldn/tape-cli/blob/master/package.json)
 
+![Tape](https://www.tape.sh/media/tape-og.gif)
+Use with [https://www.tape.sh/](https://www.tape.sh/)
+
 <!-- toc -->
 
 - [tape-cli](#tape-cli)
 - [Usage](#usage)
 - [Commands](#commands)
 <!-- tocstop -->
-
-![Tape](https://www.tape.sh/media/tape-og.gif)
-Use with [https://www.tape.sh/](https://www.tape.sh/)
 
 # Usage
 

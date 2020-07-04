@@ -6,38 +6,44 @@
 [![License](https://img.shields.io/npm/l/rec.svg)](https://github.com/edamameldn/tape-cli/blob/master/package.json)
 
 <!-- toc -->
-* [tape-cli](#tape-cli)
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [tape-cli](#tape-cli)
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
+
+![Tape](https://www.tape.sh/media/tape-og.gif)
+Use with [https://www.tape.sh/](https://www.tape.sh/)
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g tape-cli
 $ tape COMMAND
 running command...
 $ tape (-v|--version|version)
-tape-cli/0.1.2 darwin-x64 node-v14.0.0
+tape-cli/0.9.0 darwin-x64 node-v14.0.0
 $ tape --help [COMMAND]
 USAGE
   $ tape COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`tape config [NAME]`](#tape-config-name)
-* [`tape devices`](#tape-devices)
-* [`tape gif`](#tape-gif)
-* [`tape help [COMMAND]`](#tape-help-command)
-* [`tape image`](#tape-image)
-* [`tape login`](#tape-login)
-* [`tape upgrade`](#tape-upgrade)
-* [`tape video`](#tape-video)
+
+- [`tape config [NAME]`](#tape-config-name)
+- [`tape devices`](#tape-devices)
+- [`tape gif`](#tape-gif)
+- [`tape help [COMMAND]`](#tape-help-command)
+- [`tape image`](#tape-image)
+- [`tape login`](#tape-login)
+- [`tape video`](#tape-video)
 
 ## `tape config [NAME]`
 
@@ -56,7 +62,7 @@ EXAMPLE
   $ tape config
 ```
 
-_See code: [src/commands/config.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/config.ts)_
+_See code: [src/commands/config.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.0/src/commands/config.ts)_
 
 ## `tape devices`
 
@@ -79,7 +85,7 @@ EXAMPLE
   $ tape devices
 ```
 
-_See code: [src/commands/devices.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/devices.ts)_
+_See code: [src/commands/devices.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.0/src/commands/devices.ts)_
 
 ## `tape gif`
 
@@ -106,7 +112,7 @@ EXAMPLE
   🎬 Recording started. Press SPACE to save or ESC to abort.
 ```
 
-_See code: [src/commands/gif.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/gif.ts)_
+_See code: [src/commands/gif.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.0/src/commands/gif.ts)_
 
 ## `tape help [COMMAND]`
 
@@ -147,11 +153,11 @@ ALIASES
 
 EXAMPLE
   $ tape image
-  🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! -> 
+  🎉 Screenshot uploaded. Copied URL to clipboard 🔖 ! ->
     https://example.com/image.png
 ```
 
-_See code: [src/commands/image.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/image.ts)_
+_See code: [src/commands/image.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.0/src/commands/image.ts)_
 
 ## `tape login`
 
@@ -169,7 +175,22 @@ EXAMPLE
   $ tape login
 ```
 
-_See code: [src/commands/login.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/login.ts)_
+_See code: [src/commands/login.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.0/src/commands/login.ts)_
+
+## `tape upgrade`
+
+Opens a direct link to upgrade your Tape.sh plan
+
+```
+USAGE
+  $ tape upgrade
+
+OPTIONS
+  -h, --help      show CLI help
+  -p, --plan=Pro  Plan name to upgrade to
+```
+
+_See code: [src/commands/upgrade.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.0/src/commands/upgrade.ts)_
 
 ## `tape upgrade`
 
@@ -213,5 +234,6 @@ EXAMPLE
   🎬 Recording started. Press SPACE to save or ESC to abort.
 ```
 
-_See code: [src/commands/video.ts](https://github.com/edamameldn/tape-cli/blob/v0.1.2/src/commands/video.ts)_
+_See code: [src/commands/video.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.0/src/commands/video.ts)_
+
 <!-- commandsstop -->

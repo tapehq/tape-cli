@@ -1,7 +1,4 @@
 import { Command } from '@oclif/command'
-import { forEach } from 'lodash'
-
-import { commonFlags } from './../helpers/utils'
 import Config from './config'
 
 export default class Login extends Command {

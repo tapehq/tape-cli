@@ -5,7 +5,7 @@ export const waitForKeys = (
   successfulKey: string,
   failureKey: string
 ): Promise<boolean> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,

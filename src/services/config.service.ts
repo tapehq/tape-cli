@@ -109,4 +109,6 @@ export const isUsingCustomBucket = async () => {
   return !isEmpty(bucketName)
 }
 
+export const adbAvailable = () => commandExists.sync('adb')
+
 export default { get, set }

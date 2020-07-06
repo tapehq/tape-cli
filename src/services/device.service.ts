@@ -2,7 +2,7 @@ import * as adb from 'adbkit'
 import { execSync } from 'child_process'
 import { filter, flatMap } from 'lodash'
 
-import configService from './config.service'
+import configService, { adbAvailable } from './config.service'
 import { chooseDevicePrompt } from '../helpers/device.helpers'
 import * as chalk from 'chalk'
 
@@ -32,6 +32,8 @@ interface XcodeDevice {
 }
 
 export const getAndroidDevices = async (): Promise<AndroidDevice[]> => {
+  if (!adbAvailable()) return []
+
   const client = adb.createClient()
   const devices = await client.listDevices()
   const out: Promise<AndroidDevice[]> = Promise.all(

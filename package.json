@@ -70,7 +70,15 @@
   ],
   "homepage": "https://tape.sh",
   "keywords": [
-    "oclif"
+    "oclif",
+    "simulator",
+    "ios",
+    "android",
+    "screen record",
+    "record",
+    "share screen",
+    "gif",
+    "screenshot"
   ],
   "license": "MIT",
   "main": "lib/index.js",

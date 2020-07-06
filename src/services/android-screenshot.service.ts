@@ -3,7 +3,6 @@ import * as fs from 'fs'
 import * as adb from 'adbkit'
 
 import { randomString } from '../helpers/random'
-import { DeviceService } from '.'
 import { Device } from './device.service'
 
 export default class AndroidScreenShot {

@@ -66,13 +66,23 @@ export const getAndroidDevices = async (): Promise<AndroidDevice[]> => {
 }
 
 export const getXcodeDevices = (): XcodeDevice[] => {
-  const rawJson = execSync('xcrun simctl list --json').toString()
-  const json = JSON.parse(rawJson)
-  const devices: XcodeDevice[] = json.devices
-  return filter(
-    flatMap(devices),
-    (device: XcodeDevice) => device.state === 'Booted'
-  )
+  try {
+    const result = execSync('xcrun simctl list --json', {
+      stdio: ['inherit', 'pipe', 'pipe'],
+    })
+
+    const rawJson = result.toString()
+    const json = JSON.parse(rawJson)
+    const devices: XcodeDevice[] = json.devices
+    return filter(
+      flatMap(devices),
+      (device: XcodeDevice) => device.state === 'Booted'
+    )
+  } catch (error) {
+    console.log(chalk.bold('⚠️  Warning: failed to fetch Xcode devices'))
+    console.log(chalk.dim(error.toString()))
+    return []
+  }
 }
 
 export const getDevices = async (): Promise<Device[]> => {

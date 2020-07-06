@@ -146,7 +146,7 @@ export default class Config extends Command {
   async fullSetup() {
     await checkDependencies()
     // await this.changeBucketName()
-    if (checkIfFfmpegNeeded()) {
+    if (!checkIfFfmpegNeeded()) {
       const { choice: redownload } = await inquirer.prompt([
         {
           name: 'choice',

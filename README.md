@@ -26,7 +26,7 @@ $ npm install -g tape-cli
 $ tape COMMAND
 running command...
 $ tape (-v|--version|version)
-tape-cli/0.9.1 darwin-x64 node-v14.0.0
+tape-cli/0.9.2 darwin-x64 node-v14.0.0
 $ tape --help [COMMAND]
 USAGE
   $ tape COMMAND
@@ -64,7 +64,7 @@ EXAMPLE
   $ tape config
 ```
 
-_See code: [src/commands/config.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.1/src/commands/config.ts)_
+_See code: [src/commands/config.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.2/src/commands/config.ts)_
 
 ## `tape devices`
 
@@ -87,7 +87,7 @@ EXAMPLE
   $ tape devices
 ```
 
-_See code: [src/commands/devices.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.1/src/commands/devices.ts)_
+_See code: [src/commands/devices.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.2/src/commands/devices.ts)_
 
 ## `tape gif`
 
@@ -114,7 +114,7 @@ EXAMPLE
   🎬 Recording started. Press SPACE to save or ESC to abort.
 ```
 
-_See code: [src/commands/gif.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.1/src/commands/gif.ts)_
+_See code: [src/commands/gif.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.2/src/commands/gif.ts)_
 
 ## `tape help [COMMAND]`
 
@@ -159,7 +159,7 @@ EXAMPLE
     https://example.com/image.png
 ```
 
-_See code: [src/commands/image.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.1/src/commands/image.ts)_
+_See code: [src/commands/image.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.2/src/commands/image.ts)_
 
 ## `tape login`
 
@@ -177,7 +177,7 @@ EXAMPLE
   $ tape login
 ```
 
-_See code: [src/commands/login.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.1/src/commands/login.ts)_
+_See code: [src/commands/login.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.2/src/commands/login.ts)_
 
 ## `tape upgrade`
 
@@ -192,7 +192,7 @@ OPTIONS
   -p, --plan=Pro  Plan name to upgrade to
 ```
 
-_See code: [src/commands/upgrade.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.1/src/commands/upgrade.ts)_
+_See code: [src/commands/upgrade.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.2/src/commands/upgrade.ts)_
 
 ## `tape video`
 
@@ -221,7 +221,7 @@ EXAMPLE
   🎬 Recording started. Press SPACE to save or ESC to abort.
 ```
 
-_See code: [src/commands/video.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.1/src/commands/video.ts)_
+_See code: [src/commands/video.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.2/src/commands/video.ts)_
 <!-- commandsstop -->
 
 ### License

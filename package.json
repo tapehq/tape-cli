@@ -89,7 +89,6 @@
     },
     "hooks": {
       "init": [
-        "./src/hooks/command-not-found.hook",
         "./lib/hooks/init/check-auth"
       ]
     }

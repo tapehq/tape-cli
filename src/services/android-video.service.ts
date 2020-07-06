@@ -59,12 +59,12 @@ export default class AndroidVideo {
   //
 
   save = async (): Promise<string> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.process) {
         this.process.kill('SIGINT')
-        this.log('[process] SIGINT BHOTKA time.')
+        this.log('[process] SIGINT time.')
 
-        this.process.on('close', async (code: number) => {
+        this.process.on('close', async (/* code: number */) => {
           // TODO: investigate why this process ends with a null exit code and reject promise if we can get a proper exit code
           execSync(
             `adb -s ${this.device.id} pull /sdcard/${this.fileName} ${this.path}.h264`

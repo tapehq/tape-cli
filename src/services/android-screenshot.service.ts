@@ -28,12 +28,16 @@ export default class AndroidScreenShot {
     return new Promise((resolve, reject) => {
       this.log(`Taking screenshot and saving to ${this.path}`)
 
-      const dest = fs.createWriteStream(this.path)
-      dest.once('close', () => {
-        this.log('Done')
-        resolve(this.path)
-      })
-      screenshot.pipe(dest)
+      try {
+        const dest = fs.createWriteStream(this.path)
+        dest.once('close', () => {
+          this.log('Done')
+          resolve(this.path)
+        })
+        screenshot.pipe(dest)
+      } catch (error) {
+        reject(error)
+      }
     })
   }
 

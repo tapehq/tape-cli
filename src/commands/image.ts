@@ -36,6 +36,7 @@ export default class Image extends GithubIssueOnErrorCommand {
       device.type === 'android'
         ? AndroidScreenshotService
         : XcodeScreenshotService
+
     const screenshot = new ScreenshotKlass({ device, verbose: flags.debug })
     const path = await screenshot.save()
 

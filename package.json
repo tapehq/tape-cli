@@ -99,7 +99,7 @@
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "postinstall": "echo '🎉  Tape installed! \n Please run `tape config --setup` to get started \n'",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "mocha --forbid-only 'test/**/*.test.ts'",
     "version": "oclif-dev readme && git add README.md",
     "docs": "oclif-dev readme",
     "release": "np"

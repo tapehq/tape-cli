@@ -7,9 +7,15 @@
     "rootDir": "src",
     "strict": true,
     "target": "es2017",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "paths": {
+      "*": [
+        "src/types/*"
+      ]
+    }
   },
   "include": [
     "src/**/*"
-  ]
+  ],
 }

@@ -10,6 +10,8 @@ const FFMPEG = path.join(
   'ffmpeg -loglevel warning -nostats -hide_banner'
 )
 
+const FFMPEG_NO_FLAGS = path.join(BIN_DIR, 'ffmpeg')
+
 const exec = util.promisify(originalExec)
 
 // Output path only, will use input video name
@@ -30,8 +32,6 @@ export const compressVid = (inputVideoFile: string, outputFile: string) => {
   )
 }
 
-export const checkIfNeeded = () => {
-  return commandExists.sync(FFMPEG)
-}
+export const isFfmpegAvailable = () => commandExists.sync(FFMPEG_NO_FLAGS)
 
 export default { makeGif, compressVid }

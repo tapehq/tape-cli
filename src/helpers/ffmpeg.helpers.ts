@@ -6,7 +6,11 @@ const decompress = require('decompress')
 const tarxz = require('decompress-tarxz')
 const unzip = require('decompress-unzip')
 
-function callback(res: any) {
+// Adapted from
+// https://github.com/Hackzzila/node-ffmpeg-binaries/blob/master/install.js
+// Needs updating so syntax is more readable with promises, etc.
+
+function callback(res: any, onDone: () => void, onFailure: () => void) {
   let last: any
   let complete = 0
   const total = parseInt(res.headers['content-length'], 10)
@@ -44,28 +48,47 @@ function callback(res: any) {
       filter: (x: any) =>
         x.path === (process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg'),
       // output: CONFIG_DIR,
-    }).then(() => {
-      console.log("You're good to go! 🎉")
-      console.log('Some examples: tape image | tape video | tape video --gif')
     })
+      .then(() => {
+        console.log("You're good to go! 🎉")
+        console.log('Some examples: tape image | tape video | tape video --gif')
+        onDone()
+      })
+      .catch(() => {
+        onFailure()
+      })
   })
 }
 
-export const install = () => {
+export const install = async () => {
   console.log(`ℹ️  Detected ${process.platform} ${process.arch}`)
+
+  // ------- Promise workaround -------
+  let onDone: { (value?: unknown): void; (): void }
+  let onFailure
+
+  const result = new Promise((resolve, reject) => {
+    onDone = resolve
+    onFailure = reject
+  })
+
+  const downloadCallback = (res: any) => {
+    callback(res, onDone, onFailure)
+  }
+  // ==============================
 
   if (process.platform === 'win32') {
     switch (process.arch) {
       case 'x64':
         get(
           'https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip',
-          callback
+          downloadCallback
         )
         break
       case 'ia32':
         get(
           'https://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.zip',
-          callback
+          downloadCallback
         )
         break
       default:
@@ -76,25 +99,25 @@ export const install = () => {
       case 'x64':
         get(
           'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz',
-          callback
+          downloadCallback
         )
         break
       case 'ia32':
         get(
           'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-i686-static.tar.xz',
-          callback
+          downloadCallback
         )
         break
       case 'arm':
         get(
           'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-armhf-32bit-static.tar.xz',
-          callback
+          downloadCallback
         )
         break
       case 'arm64':
         get(
           'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-arm64-64bit-static.tar.xz',
-          callback
+          downloadCallback
         )
         break
       default:
@@ -105,7 +128,7 @@ export const install = () => {
       case 'x64':
         get(
           'https://ffmpeg.zeranoe.com/builds/macos64/static/ffmpeg-latest-macos64-static.zip',
-          callback
+          downloadCallback
         )
         break
       default:
@@ -114,4 +137,6 @@ export const install = () => {
   } else {
     throw new Error('unsupported platform')
   }
+
+  return result
 }

@@ -12,7 +12,7 @@ import {
   TAPE_HOST,
 } from './../services/config.service'
 import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
-import { checkIfNeeded as checkIfFfmpegNeeded } from './../services/ffmpeg.service'
+import { isFfmpegAvailable } from './../services/ffmpeg.service'
 import ConfigService from '../services/config.service'
 
 export default class Config extends Command {
@@ -23,6 +23,7 @@ export default class Config extends Command {
   static flags = {
     help: flags.help({ char: 'h' }),
     setup: flags.boolean({ char: 's' }),
+    check: flags.boolean(),
     login: flags.boolean(),
   }
 
@@ -40,6 +41,11 @@ export default class Config extends Command {
 
     if (flags.login) {
       await this.login()
+      return
+    }
+
+    if (flags.check) {
+      await this.checkSetup()
       return
     }
 
@@ -143,10 +149,22 @@ export default class Config extends Command {
     )
   }
 
+  async checkSetup() {
+    await checkDependencies()
+    if (isFfmpegAvailable()) {
+      this.log('   Tape Dependencies Downloaded ✅')
+    } else {
+      this.log(
+        `   Depedencies required 🛑.
+        Run ${chalk.yellow('tape config --setup')}`
+      )
+    }
+  }
+
   async fullSetup() {
     await checkDependencies()
-    // await this.changeBucketName()
-    if (!checkIfFfmpegNeeded()) {
+
+    if (isFfmpegAvailable()) {
       const { choice: redownload } = await inquirer.prompt([
         {
           name: 'choice',
@@ -166,10 +184,10 @@ export default class Config extends Command {
       ])
 
       if (redownload) {
-        installFfmpeg()
+        await installFfmpeg()
       }
     } else {
-      installFfmpeg()
+      await installFfmpeg()
     }
 
     await this.login()

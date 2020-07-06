@@ -65,7 +65,7 @@ export const install = async () => {
 
   // ------- Promise workaround -------
   let onDone: { (value?: unknown): void; (): void }
-  let onFailure
+  let onFailure: { (reason?: any): void; (): void }
 
   const result = new Promise((resolve, reject) => {
     onDone = resolve

@@ -1,13 +1,14 @@
 # tape-cli
 
+> Collaborate better during mobile development, for iOS & tvOS simulators and Android emulators and devices. Share screenshots, screen recordings as video or GIFs. Use with [https://www.tape.sh/](https://www.tape.sh/) or bring your own bucket!
+
+---
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/tape-cli.svg)](https://npmjs.org/package/tape-cli)
 [![Downloads/week](https://img.shields.io/npm/dw/tape-cli.svg)](https://npmjs.org/package/tape-cli)
 [![License](https://img.shields.io/npm/l/rec.svg)](https://github.com/edamameldn/tape-cli/blob/master/package.json)
 
 ![Tape](https://www.tape.sh/media/tape-og.gif)
-
-> Collaborate better during mobile development, for iOS & tvOS simulators and Android emulators and devices. Share screenshots, screen recordings as video or GIFs. Use with [https://www.tape.sh/](https://www.tape.sh/) or bring your own bucket!
 
 ---
 <!-- toc -->
@@ -240,3 +241,9 @@ EXAMPLE
 _See code: [src/commands/video.ts](https://github.com/edamameldn/tape-cli/blob/v0.9.0/src/commands/video.ts)_
 
 <!-- commandsstop -->
+
+### License
+[MIT License](LICENSE), read more [here](https://help.tape.sh/articles/licensing/)
+
+by [edamame studio](https://edamame.studio/)
+

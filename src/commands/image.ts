@@ -10,6 +10,11 @@ import {
 import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { copyToLocalOutput, commonFlags } from '../helpers/utils'
 import { CopyFormats } from '../helpers/copy.helpers'
+import {
+  getXcodeDeviceOrientation,
+  DeviceOrientation,
+} from '../helpers/orientation.helpers'
+import { rotateImage } from '../services/ffmpeg.service'
 
 export default class Image extends GithubIssueOnErrorCommand {
   static description = 'Take screenshots of iOS/Android devices/simulators'
@@ -38,14 +43,28 @@ export default class Image extends GithubIssueOnErrorCommand {
         : XcodeScreenshotService
 
     const screenshot = new ScreenshotKlass({ device, verbose: flags.debug })
-    const path = await screenshot.save()
+    const rawOutputFile = await screenshot.save()
 
+    let outputFile = rawOutputFile
+
+    const orientation = getXcodeDeviceOrientation(device.id)
+    if (
+      orientation !== DeviceOrientation.Portrait &&
+      orientation !== DeviceOrientation.Unknown
+    ) {
+      outputFile = rawOutputFile.replace('-raw.png', '.png')
+
+      await rotateImage(rawOutputFile, `${outputFile}`, orientation)
+      outputFile = `${outputFile}`
+    }
+
+    console.log({ orientation })
     if (flags.local) {
-      const localFilePath = copyToLocalOutput(path, flags.local)
+      const localFilePath = copyToLocalOutput(outputFile, flags.local)
       this.log(`\n 🎉 Saved locally to ${localFilePath}.`)
     } else {
       try {
-        await uploadFile(path, {
+        await uploadFile(outputFile, {
           copyToClipboard: !flags.nocopy,
           fileType: 'Screenshot',
           format: flags.format as CopyFormats,

@@ -30,7 +30,7 @@ export const getXcodeDeviceOrientation = (
 
   if (deviceId in json.DevicePreferences) {
     const preferences = json.DevicePreferences[deviceId]
-
+    console.log({ rotation: preferences.SimulatorWindowRotationAngle })
     switch (preferences.SimulatorWindowRotationAngle) {
       case 0:
       case -0:
@@ -38,7 +38,7 @@ export const getXcodeDeviceOrientation = (
 
       case 90:
       case -90:
-        return DeviceOrientation.LandscapeRight
+        return DeviceOrientation.LandscapeLeft
 
       case 180:
       case -180:
@@ -46,7 +46,7 @@ export const getXcodeDeviceOrientation = (
 
       case 270:
       case -270:
-        return DeviceOrientation.LandscapeLeft
+        return DeviceOrientation.LandscapeRight
 
       default:
         return DeviceOrientation.Unknown

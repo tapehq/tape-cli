@@ -59,6 +59,15 @@ export const compressVid = (
   )
 }
 
+export const rotateImage = (
+  inputImageFile: string,
+  outputFile: string,
+  deviceOrientation: DeviceOrientation = DeviceOrientation.Unknown
+) => {
+  const rotation = getRotationForDeviceOrientation(deviceOrientation)
+  return exec(`${FFMPEG} -y -i ${inputImageFile} -vf ${rotation} ${outputFile}`)
+}
+
 export const isFfmpegAvailable = () => commandExists.sync(FFMPEG_NO_FLAGS)
 
-export default { makeGif, compressVid }
+export default { makeGif, compressVid, rotateImage }

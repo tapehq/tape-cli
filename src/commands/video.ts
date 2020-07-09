@@ -64,48 +64,52 @@ export default class Video extends GithubIssueOnErrorCommand {
 
       const orientation = getDeviceOrientation(device)
 
-      if (flags.hq && !flags.gif) {
-        this.log(' ℹ hq flag supplied. Not Compressing \n')
-      } else {
-        outputPath = rawOutputFile.replace('-raw.mp4', '.mp4')
-        await FfmpegService.compressVid(rawOutputFile, outputPath, orientation)
-        cli.action.stop()
-      }
+      try {
+        if (flags.hq && !flags.gif) {
+          this.log(' ℹ hq flag supplied. Not Compressing \n')
+        } else {
+          outputPath = rawOutputFile.replace('-raw.mp4', '.mp4')
+          await FfmpegService.compressVid(
+            rawOutputFile,
+            outputPath,
+            orientation
+          )
+          cli.action.stop()
+        }
 
-      if (flags.gif) {
-        cli.action.start(' 🚴🏽‍♀️ Making your gif...')
+        if (flags.gif) {
+          cli.action.start(' 🚴🏽‍♀️ Making your gif...')
 
-        const gifPath = rawOutputFile.replace('-raw.mp4', '')
-        await FfmpegService.makeGif(
-          rawOutputFile,
-          gifPath,
-          flags.hq,
-          orientation
-        )
-        outputPath = `${gifPath}.gif`
+          const gifPath = rawOutputFile.replace('-raw.mp4', '')
+          await FfmpegService.makeGif(
+            rawOutputFile,
+            gifPath,
+            flags.hq,
+            orientation
+          )
+          outputPath = `${gifPath}.gif`
 
-        cli.action.stop('✔️')
-      }
+          cli.action.stop('✔️')
+        }
 
-      if (flags.local) {
-        const localFilePath = copyToLocalOutput(outputPath, flags.local)
-        this.log(`\n 🎉 Video saved locally to ${localFilePath}.`)
-      } else {
-        this.log(
-          `${chalk.grey(
-            `Original file size: ${filesize(fs.statSync(rawOutputFile).size)}`
-          )}`
-        )
-
-        this.log(
-          `${chalk.grey(
-            `📼  Tape output file size: ${filesize(
-              fs.statSync(outputPath).size
+        if (flags.local) {
+          const localFilePath = copyToLocalOutput(outputPath, flags.local)
+          this.log(`\n 🎉 Video saved locally to ${localFilePath}.`)
+        } else {
+          this.log(
+            `${chalk.grey(
+              `Original file size: ${filesize(fs.statSync(rawOutputFile).size)}`
             )}`
-          )}`
-        )
+          )
 
-        try {
+          this.log(
+            `${chalk.grey(
+              `📼  Tape output file size: ${filesize(
+                fs.statSync(outputPath).size
+              )}`
+            )}`
+          )
+
           await uploadFile(outputPath, {
             copyToClipboard: !flags.nocopy,
             fileType: 'Video',
@@ -117,12 +121,12 @@ export default class Video extends GithubIssueOnErrorCommand {
               deviceId: device.id,
             },
           })
-        } catch (error) {
-          if (flags.debug) {
-            this.error(error)
-          }
-          this.error(`${chalk.dim(error?.message)}`)
         }
+      } catch (error) {
+        if (flags.debug) {
+          this.error(error)
+        }
+        this.error(`${chalk.dim(error?.message)}`)
       }
     } else {
       this.log(

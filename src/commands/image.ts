@@ -11,8 +11,8 @@ import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { copyToLocalOutput, commonFlags } from '../helpers/utils'
 import { CopyFormats } from '../helpers/copy.helpers'
 import {
-  getXcodeDeviceOrientation,
   DeviceOrientation,
+  getDeviceOrientation,
 } from '../helpers/orientation.helpers'
 import { rotateImage } from '../services/ffmpeg.service'
 
@@ -47,7 +47,7 @@ export default class Image extends GithubIssueOnErrorCommand {
 
     let outputFile = rawOutputFile
 
-    const orientation = getXcodeDeviceOrientation(device.id)
+    const orientation = getDeviceOrientation(device)
     if (
       orientation !== DeviceOrientation.Portrait &&
       orientation !== DeviceOrientation.Unknown
@@ -58,7 +58,6 @@ export default class Image extends GithubIssueOnErrorCommand {
       outputFile = `${outputFile}`
     }
 
-    console.log({ orientation })
     if (flags.local) {
       const localFilePath = copyToLocalOutput(outputFile, flags.local)
       this.log(`\n 🎉 Saved locally to ${localFilePath}.`)

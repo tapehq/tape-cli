@@ -1,4 +1,5 @@
 import { execSync } from 'child_process'
+import { Device } from 'src/services/device.service'
 
 interface IphoneSimulatorPlist {
   DevicePreferences: {
@@ -21,8 +22,10 @@ export enum DeviceOrientation {
 }
 
 export const getXcodeDeviceOrientation = (
-  deviceId: string
+  device: Device
 ): DeviceOrientation => {
+  const { id: deviceId } = device
+
   const rawJson = execSync(
     'plutil -convert json ~/Library/Preferences/com.apple.iphonesimulator.plist -o -'
   ).toString()
@@ -30,7 +33,6 @@ export const getXcodeDeviceOrientation = (
 
   if (deviceId in json.DevicePreferences) {
     const preferences = json.DevicePreferences[deviceId]
-    console.log({ rotation: preferences.SimulatorWindowRotationAngle })
     switch (preferences.SimulatorWindowRotationAngle) {
       case 0:
       case -0:
@@ -54,4 +56,12 @@ export const getXcodeDeviceOrientation = (
   } else {
     return DeviceOrientation.Unknown
   }
+}
+
+export const getDeviceOrientation = (device: Device) => {
+  if (device.type === 'ios') {
+    return getXcodeDeviceOrientation(device)
+  }
+
+  return DeviceOrientation.Unknown
 }

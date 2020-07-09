@@ -16,7 +16,7 @@ import {
 import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { waitForKeys } from '../helpers/keyboard'
 import { copyToLocalOutput, commonFlags } from '../helpers/utils'
-import { getXcodeDeviceOrientation } from '../helpers/orientation.helpers'
+import { getDeviceOrientation } from '../helpers/orientation.helpers'
 
 export default class Video extends GithubIssueOnErrorCommand {
   static description = 'Record iOS/Android devices/simulators'
@@ -62,7 +62,7 @@ export default class Video extends GithubIssueOnErrorCommand {
     if (success) {
       let outputPath = rawOutputFile
 
-      const orientation = getXcodeDeviceOrientation(device.id)
+      const orientation = getDeviceOrientation(device)
 
       if (flags.hq && !flags.gif) {
         this.log(' ℹ hq flag supplied. Not Compressing \n')

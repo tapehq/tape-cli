@@ -40,8 +40,6 @@ export default class XcodeScreenshot {
 
         if (code === 0) {
           this.log('File saved and ready to upload!')
-          // const orientation = getXcodeDeviceOrientation(this.device.id)
-          // console.log(`orientation: ${orientation}`)
 
           resolve(this.path)
         } else {

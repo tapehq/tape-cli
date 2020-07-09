@@ -39,7 +39,7 @@ export const getXcodeDeviceOrientation = (
         return DeviceOrientation.Portrait
 
       case 90:
-      case -90:
+      case -270:
         return DeviceOrientation.LandscapeLeft
 
       case 180:
@@ -47,7 +47,7 @@ export const getXcodeDeviceOrientation = (
         return DeviceOrientation.PortraitUpsideDown
 
       case 270:
-      case -270:
+      case -90:
         return DeviceOrientation.LandscapeRight
 
       default:

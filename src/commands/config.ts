@@ -128,13 +128,14 @@ export default class Config extends Command {
 
     const oldToken = await ConfigService.get('token')
 
+    const currentTokenText = oldToken
+      ? ` (current: ${chalk.yellow(oldToken)})`
+      : ''
     const { cliToken } = await inquirer.prompt([
       {
         name: 'cliToken',
         type: 'input',
-        message: `Paste the token from the browser  (current: ${chalk.yellow(
-          oldToken
-        )})`,
+        message: `Paste the token from the browser${currentTokenText}: `,
       },
     ])
 

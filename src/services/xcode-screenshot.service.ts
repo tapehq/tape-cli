@@ -4,6 +4,7 @@ import * as fs from 'fs'
 
 import { randomString } from '../helpers/random'
 import { Device } from './device.service'
+import { getXcodeDeviceOrientation } from '../helpers/orientation.helpers'
 
 export default class XcodeScreenshot {
   xcrun: ChildProcess | null = null
@@ -39,6 +40,7 @@ export default class XcodeScreenshot {
 
         if (code === 0) {
           this.log('File saved and ready to upload!')
+
           resolve(this.path)
         } else {
           this.log('xcrun died unsuccessfully')

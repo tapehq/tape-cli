@@ -16,6 +16,7 @@ import {
 import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { waitForKeys } from '../helpers/keyboard'
 import { copyToLocalOutput, commonFlags } from '../helpers/utils'
+import { getDeviceOrientation } from '../helpers/orientation.helpers'
 
 export default class Video extends GithubIssueOnErrorCommand {
   static description = 'Record iOS/Android devices/simulators'
@@ -61,11 +62,13 @@ export default class Video extends GithubIssueOnErrorCommand {
     if (success) {
       let outputPath = rawOutputFile
 
+      const orientation = getDeviceOrientation(device)
+
       if (flags.hq && !flags.gif) {
         this.log(' ℹ hq flag supplied. Not Compressing \n')
       } else {
         outputPath = rawOutputFile.replace('-raw.mp4', '.mp4')
-        await FfmpegService.compressVid(rawOutputFile, outputPath)
+        await FfmpegService.compressVid(rawOutputFile, outputPath, orientation)
         cli.action.stop()
       }
 
@@ -73,7 +76,12 @@ export default class Video extends GithubIssueOnErrorCommand {
         cli.action.start(' 🚴🏽‍♀️ Making your gif...')
 
         const gifPath = rawOutputFile.replace('-raw.mp4', '')
-        await FfmpegService.makeGif(rawOutputFile, gifPath, flags.hq)
+        await FfmpegService.makeGif(
+          rawOutputFile,
+          gifPath,
+          flags.hq,
+          orientation
+        )
         outputPath = `${gifPath}.gif`
 
         cli.action.stop('✔️')

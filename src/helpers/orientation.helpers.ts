@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import { Device } from 'src/services/device.service'
+import { Device } from '../services/device.service'
 
 interface IphoneSimulatorPlist {
   DevicePreferences: {

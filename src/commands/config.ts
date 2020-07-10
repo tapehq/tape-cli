@@ -13,7 +13,7 @@ import {
 } from './../services/config.service'
 import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
 import { isFfmpegAvailable } from './../services/ffmpeg.service'
-import ConfigService from '../services/config.service'
+import ConfigService, { FILE as CONFIG_FILE } from '../services/config.service'
 
 export default class Config extends Command {
   static description = 'Configuration'
@@ -78,6 +78,11 @@ export default class Config extends Command {
             value: 'change_bucket_name',
           },
           {
+            name: 'Open Config File',
+            short: 'Open Config File',
+            value: 'open_config',
+          },
+          {
             name: 'Cancel',
           },
         ],
@@ -99,6 +104,10 @@ export default class Config extends Command {
 
       case 'login':
         await this.login()
+        break
+
+      case 'open_config':
+        await this.openConfigFile()
         break
 
       default:
@@ -160,6 +169,12 @@ export default class Config extends Command {
         Run ${chalk.yellow('tape config --setup')}`
       )
     }
+  }
+
+  async openConfigFile() {
+    open(CONFIG_FILE)
+
+    this.log(`   ${chalk.grey(`Opening config file at: ${CONFIG_FILE}`)}`)
   }
 
   async fullSetup() {

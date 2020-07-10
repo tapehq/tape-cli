@@ -13,7 +13,7 @@ type ConfigKey = 'bucketName' | 'device' | 'token'
 export const TAPE_HOST = process.env.TAPE_DEBUG_HOST || 'https://tape.sh'
 export const DIR = path.join(os.homedir(), '.tape')
 export const BIN_DIR = path.join(DIR, 'bin')
-const FILE = path.join(os.homedir(), '.tape', 'config.json')
+export const FILE = path.join(os.homedir(), '.tape', 'config.json')
 
 const setupConfigFile = () => {
   if (!fs.existsSync(DIR)) {

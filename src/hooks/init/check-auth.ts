@@ -7,15 +7,19 @@ import {
 } from './../../services/config.service'
 
 const hook: Hook<'init'> = async function (opts) {
-  const ignoredCommands = {
-    login: true,
-    config: true,
-    devices: true,
-    help: true,
-    version: true,
-  }
+  const commandsToCheck = [
+    'gif',
+    'g',
+    'image',
+    'img',
+    'i',
+    'screenshot',
+    'video',
+    'vid',
+    'm',
+  ]
 
-  if (opts.id && !(opts.id in ignoredCommands)) {
+  if (opts.id && commandsToCheck.includes(opts.id)) {
     const isLoggedIn = await hasAccessToken()
     const hasCustomBucket = await isUsingCustomBucket()
 

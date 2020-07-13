@@ -80,7 +80,12 @@ export const getXcodeDevices = (): XcodeDevice[] => {
     )
   } catch (error) {
     console.log(chalk.bold('⚠️  Warning: failed to fetch Xcode devices'))
-    console.log(chalk.dim(error.toString()))
+    if (error.message.includes('unable to find utility "simctl"')) {
+      console.log('Xcode detected, but looks like you need to set your version of Xcode Command Line Tools')
+      console.log('Please open Xcode -> Preferences -> Locations -> select Command Line Tools')
+    } else {
+      console.log(chalk.dim(error.toString()))
+    }
     return []
   }
 }

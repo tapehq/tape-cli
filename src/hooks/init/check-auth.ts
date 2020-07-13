@@ -11,6 +11,8 @@ const hook: Hook<'init'> = async function (opts) {
     login: true,
     config: true,
     devices: true,
+    help: true,
+    version: true,
   }
 
   if (opts.id && !(opts.id in ignoredCommands)) {

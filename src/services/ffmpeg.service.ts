@@ -16,7 +16,7 @@ const FFMPEG_NO_FLAGS = path.join(BIN_DIR, 'ffmpeg')
 export const isFfmpegAvailable = () => commandExists.sync(FFMPEG_NO_FLAGS)
 
 // Use this "getter" to check for ffmpeg presence first
-const getFfmpegBin = () => {
+export const getFfmpegBin = () => {
   if (isFfmpegAvailable()) {
     return FFMPEG
   }

@@ -11,7 +11,7 @@ import {
   DeviceService,
   FfmpegService,
   XcodeVideoService,
-  AndroidVideoService,
+  AndroidVideoAltService,
 } from '../services'
 import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { waitForKeys } from '../helpers/keyboard'
@@ -45,7 +45,7 @@ export default class Video extends GithubIssueOnErrorCommand {
     this.log(` 📱 Device: ${deviceToFriendlyString(device)}`)
 
     const VideoKlass =
-      device.type === 'android' ? AndroidVideoService : XcodeVideoService
+      device.type === 'android' ? AndroidVideoAltService : XcodeVideoService
 
     const video = new VideoKlass({ device, verbose: flags.debug })
     video.record()

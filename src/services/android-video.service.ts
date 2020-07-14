@@ -1,16 +1,12 @@
+import { isMac } from './../helpers/utils'
 import { spawn, ChildProcess, execSync } from 'child_process'
 import * as os from 'os'
 import * as fs from 'fs'
 import * as path from 'path'
 
 import { randomString } from '../helpers/random'
-import { BIN_DIR } from './config.service'
 import { Device } from './device.service'
-
-const FFMPEG = path.join(
-  BIN_DIR,
-  'ffmpeg -loglevel warning -nostats -hide_banner'
-)
+import { getFfmpegBin } from './ffmpeg.service'
 
 export default class AndroidVideo {
   process: ChildProcess | null = null
@@ -58,6 +54,10 @@ export default class AndroidVideo {
   //   adb shell screenrecord --output-format=h264 --size 1440x2560 - > ./screenrecord.raw
   //
 
+  speedUpRequired = () => {
+    return this.device.isEmulator && isMac()
+  }
+
   save = async (): Promise<string> => {
     return new Promise((resolve) => {
       if (this.process) {
@@ -73,12 +73,14 @@ export default class AndroidVideo {
 
           let speedOption = ''
 
-          if (this.device.isEmulator) {
+          if (this.speedUpRequired()) {
             speedOption = '-vf "setpts=1.6*PTS"'
           }
 
           execSync(
-            `${FFMPEG} -vcodec h264 -i ${this.path}.h264 ${speedOption} -r 30 ${this.path}`
+            `${getFfmpegBin()} -vcodec h264 -i ${
+              this.path
+            }.h264 ${speedOption} -r 30 ${this.path}`
           )
           resolve(this.path)
         })

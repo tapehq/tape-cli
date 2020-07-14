@@ -209,6 +209,7 @@ OPTIONS
   -l, --local=~/Documents
   --format=md|href|html|url              [default: url]
   --hq
+  --legacy
   --nocopy Disable copying to clipboard
 
 ALIASES

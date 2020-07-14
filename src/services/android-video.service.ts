@@ -1,6 +1,7 @@
 import { execSync } from 'child_process'
 import * as os from 'os'
 import * as fs from 'fs'
+import * as chalk from 'chalk'
 
 import { randomString } from '../helpers/random'
 import { Device } from './device.service'
@@ -26,16 +27,16 @@ export default class AndroidVideo {
     const result = this.adbStart()
     if (result === 'KO: Recording has already started') {
       if (retrying) {
-        console.log('😥 ADB is still reporting that a recording is already in progress. Aborting!')
+        console.log(chalk.red('😥 ADB is still reporting that a recording is already in progress. Aborting!'))
         throw new Error('ADB recording already in progreess, cannot proceed')
       } else {
-        console.log('Warning: Recording already in progress. Stopping current recording and retrying.')
+        console.log(chalk.yellow('Warning: Recording already in progress. Stopping current recording and retrying.'))
         this.adbStop()
         this.record({ retrying: true })
       }
     } else if (result !== 'OK') {
-      console.log('WARNING: unexpected data reeceived from Android Emulator.')
-      console.log(result)
+      console.log(chalk.yellow('😱 WARNING: unexpected data received from Android Emulator.'))
+      console.log(chalk.dim(result))
     }
 
     this.log(`Recording started in ${this.path}.`)

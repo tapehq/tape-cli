@@ -1,16 +1,13 @@
-import { isMac } from './../helpers/utils'
-import { spawn, ChildProcess, execSync } from 'child_process'
+import { execSync } from 'child_process'
 import * as os from 'os'
 import * as fs from 'fs'
-import * as path from 'path'
+import * as chalk from 'chalk'
 
 import { randomString } from '../helpers/random'
 import { Device } from './device.service'
 import { getFfmpegBin } from './ffmpeg.service'
 
 export default class AndroidVideo {
-  process: ChildProcess | null = null
-
   fileName: string
 
   path: string
@@ -26,72 +23,54 @@ export default class AndroidVideo {
     this.verbose = options.verbose || false
   }
 
-  record() {
-    this.process = spawn('adb', [
-      '-s',
-      this.device.id,
-      'shell',
-      'screenrecord',
-      `/sdcard/${this.fileName}`,
-      '--output-format',
-      'h264',
-    ])
+  record({ retrying } = { retrying: false }) {
+    const result = this.adbStart()
+    if (result === 'KO: Recording has already started') {
+      if (retrying) {
+        console.log(chalk.red('😥 ADB is still reporting that a recording is already in progress. Aborting!'))
+        throw new Error('ADB recording already in progreess, cannot proceed')
+      } else {
+        console.log(chalk.yellow('Warning: Recording already in progress. Stopping current recording and retrying.'))
+        this.adbStop()
+        this.record({ retrying: true })
+      }
+    } else if (result !== 'OK') {
+      console.log(chalk.yellow('😱 WARNING: unexpected data received from Android Emulator.'))
+      console.log(chalk.dim(result))
+    }
 
     this.log(`Recording started in ${this.path}.`)
-
-    this.process.stdout!.on('data', (data) => {
-      console.log(`[process] stdout: ${data}`)
-    })
-
-    this.process.stderr!.on('data', (data) => {
-      console.log(`[process] stderr: ${data}`)
-    })
-
-    this.process.on('error', (error) => {
-      console.log(`[process] error: ${error.message}`)
-    })
-  }
-  //   adb shell screenrecord --output-format=h264 --size 1440x2560 - > ./screenrecord.raw
-  //
-
-  speedUpRequired = () => {
-    return this.device.isEmulator && isMac()
   }
 
   save = async (): Promise<string> => {
     return new Promise((resolve) => {
-      if (this.process) {
-        this.process.kill('SIGINT')
-        this.log('[process] SIGINT time.')
-
-        this.process.on('close', async (/* code: number */) => {
-          // TODO: investigate why this process ends with a null exit code and reject promise if we can get a proper exit code
-          execSync(
-            `adb -s ${this.device.id} pull /sdcard/${this.fileName} ${this.path}.h264`
-          )
-          this.log('[process] File saved and ready to upload!')
-
-          let speedOption = ''
-
-          if (this.speedUpRequired()) {
-            speedOption = '-vf "setpts=1.6*PTS"'
-          }
-
-          execSync(
-            `${getFfmpegBin()} -vcodec h264 -i ${
-              this.path
-            }.h264 ${speedOption} -r 30 ${this.path}`
-          )
-          resolve(this.path)
-        })
+      if (this.adbStop() === 'OK') {
+        this.log('File saved and ready to upload!')
       }
+
+      execSync(
+        `${getFfmpegBin()} -i ${this.path}.webm -crf 26 ${this.path}`
+      )
+
+      resolve(this.path)
     })
   }
 
   async destroy() {
     this.log('Destroying temporary video file')
     await fs.unlinkSync(this.path)
-    // TODO: also destroy the video file on the android side
+  }
+
+  private adbStart() {
+    return execSync(
+      `adb -s ${this.device.id} emu screenrecord start ${this.path}.webm`
+    ).toString().trim()
+  }
+
+  private adbStop() {
+    return execSync(
+      `adb -s ${this.device.id} emu screenrecord stop`
+    ).toString().trim()
   }
 
   private log(text: string) {

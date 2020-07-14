@@ -1,4 +1,5 @@
 export { default as AndroidScreenshotService } from './android-screenshot.service'
+export { default as AndroidVideoLegacyService } from './android-video-legacy.service'
 export { default as AndroidVideoService } from './android-video.service'
 export { default as ConfigService } from './config.service'
 export { default as DeviceService } from './device.service'

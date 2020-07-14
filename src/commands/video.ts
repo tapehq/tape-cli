@@ -108,7 +108,9 @@ export default class Video extends GithubIssueOnErrorCommand {
         } else {
           this.log(
             `${chalk.grey(
-              `Original file size: ${filesize(fs.statSync(rawOutputFile).size)}`
+              `Original video file size: ${filesize(
+                fs.statSync(rawOutputFile).size
+              )}`
             )}`
           )
 

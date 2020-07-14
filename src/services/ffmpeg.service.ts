@@ -55,7 +55,7 @@ export const makeGif = (
   hq: boolean,
   deviceOrientation: DeviceOrientation = DeviceOrientation.Unknown
 ) => {
-  const outputScale = hq ? 'iw' : 'iw*0.5'
+  const outputScale = hq ? 'iw' : 'iw*0.35'
   const rotation = getRotationForDeviceOrientation(deviceOrientation)
   const rotationString = rotation === '' ? '' : `${rotation},`
 

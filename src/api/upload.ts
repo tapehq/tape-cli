@@ -107,5 +107,6 @@ export const putFile = async (
 ) => {
   return axios.put(signedUrl, file, {
     headers,
+    maxContentLength: Infinity,
   })
 }

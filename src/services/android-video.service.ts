@@ -26,7 +26,7 @@ export default class AndroidVideo {
     const result = this.adbStart()
     if (result === 'KO: Recording has already started') {
       if (retrying) {
-        console.log('ADB is still reporting that a recording is already in progress. Aborting!')
+        console.log('😥 ADB is still reporting that a recording is already in progress. Aborting!')
         throw new Error('ADB recording already in progreess, cannot proceed')
       } else {
         console.log('Warning: Recording already in progress. Stopping current recording and retrying.')

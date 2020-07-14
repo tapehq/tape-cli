@@ -7,7 +7,7 @@ import { randomString } from '../helpers/random'
 import { Device } from './device.service'
 import { getFfmpegBin } from './ffmpeg.service'
 
-export default class AndroidVideo {
+export default class AndroidVideoEmu {
   fileName: string
 
   path: string
@@ -75,7 +75,7 @@ export default class AndroidVideo {
 
   private log(text: string) {
     if (this.verbose) {
-      console.log(`[android-video] ${text}`)
+      console.log(`[android-video-emu] ${text}`)
     }
   }
 }

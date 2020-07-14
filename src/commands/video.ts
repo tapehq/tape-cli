@@ -11,8 +11,8 @@ import {
   DeviceService,
   FfmpegService,
   XcodeVideoService,
-  AndroidVideoService,
-  AndroidVideoLegacyService,
+  AndroidVideoEmuService,
+  AndroidVideoShellService,
 } from '../services'
 import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { waitForKeys } from '../helpers/keyboard'
@@ -34,7 +34,6 @@ export default class Video extends GithubIssueOnErrorCommand {
     ...commonFlags,
     gif: flags.boolean({ char: 'g', default: false }),
     hq: flags.boolean({ default: false }),
-    legacy: flags.boolean({ default: false }),
   }
 
   async run() {
@@ -49,16 +48,12 @@ export default class Video extends GithubIssueOnErrorCommand {
     let VideoKlass
 
     if (device.type === 'android') {
-      if (flags.legacy) {
-        this.log('Legacy Android flag detected.')
-        VideoKlass = AndroidVideoLegacyService
+      if (device.isEmulator) {
+        VideoKlass = AndroidVideoEmuService
       } else {
-        VideoKlass = AndroidVideoService
+        VideoKlass = AndroidVideoShellService
       }
     } else {
-      if (flags.legacy) {
-        this.log('Legacy flag is android only and has been ignored.')
-      }
       VideoKlass = XcodeVideoService
     }
 

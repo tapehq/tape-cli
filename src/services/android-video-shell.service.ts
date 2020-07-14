@@ -1,4 +1,4 @@
-import { isMac } from './../helpers/utils'
+import { isMac } from '../helpers/utils'
 import { spawn, ChildProcess, execSync } from 'child_process'
 import * as os from 'os'
 import * as fs from 'fs'
@@ -7,7 +7,7 @@ import { randomString } from '../helpers/random'
 import { Device } from './device.service'
 import { getFfmpegBin } from './ffmpeg.service'
 
-export default class AndroidVideo {
+export default class AndroidVideoShell {
   process: ChildProcess | null = null
 
   fileName: string
@@ -93,7 +93,7 @@ export default class AndroidVideo {
 
   private log(text: string) {
     if (this.verbose) {
-      console.log(`[android-video-legacy] ${text}`)
+      console.log(`[android-video-shell] ${text}`)
     }
   }
 }

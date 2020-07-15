@@ -31,36 +31,45 @@ interface XcodeDevice {
   name: string
 }
 
+interface AdbDevice {
+  id: string
+  type: 'offline' | 'device' // not sure if these are all the options
+}
+
 export const getAndroidDevices = async (): Promise<AndroidDevice[]> => {
   if (!adbAvailable()) return []
 
   const client = adb.createClient()
-  const devices = await client.listDevices()
+  const devices: AdbDevice[] = await client.listDevices()
+
   const out: Promise<AndroidDevice[]> = Promise.all(
-    devices.map(async (device: Device) => {
-      const properties = await client.getProperties(device.id)
-      const brand = properties['ro.product.board']
-      const deviceName = properties['ro.product.device']
-      const productName = properties['ro.product.name']
-      const manufacturer = properties['ro.product.manufacturer']
-      const model = properties['ro.product.model']
-      const sdk = properties['ro.build.version.sdk']
+    devices
+      .filter((device) => device.type !== 'offline')
+      .map(async (device) => {
+        const properties = await client.getProperties(device.id)
+        const brand = properties['ro.product.board']
+        const deviceName = properties['ro.product.device']
+        const productName = properties['ro.product.name']
+        const manufacturer = properties['ro.product.manufacturer']
+        const model = properties['ro.product.model']
+        const sdk = properties['ro.build.version.sdk']
 
-      const kernelQemu = properties['ro.kernel.qemu']
+        const kernelQemu = properties['ro.kernel.qemu']
 
-      const deviceDescription = [manufacturer, model, productName, brand]
+        const deviceDescription = [manufacturer, model, productName, brand]
 
-      const isEmulator = kernelQemu === '1' && deviceName.includes('generic_x')
+        const isEmulator =
+          kernelQemu === '1' && deviceName.includes('generic_x')
 
-      const name = `${deviceName} (${deviceDescription.join(
-        ', '
-      )}) - SDK ${sdk}`
-      return {
-        ...device,
-        isEmulator,
-        name,
-      }
-    })
+        const name = `${deviceName} (${deviceDescription.join(
+          ', '
+        )}) - SDK ${sdk}`
+        return {
+          ...device,
+          isEmulator,
+          name,
+        }
+      })
   )
   return out
 }
@@ -81,8 +90,12 @@ export const getXcodeDevices = (): XcodeDevice[] => {
   } catch (error) {
     console.log(chalk.bold('⚠️  Warning: failed to fetch Xcode devices'))
     if (error.message.includes('unable to find utility "simctl"')) {
-      console.log('Xcode detected, but looks like you need to set your version of Xcode Command Line Tools')
-      console.log('Please open Xcode -> Preferences -> Locations -> select Command Line Tools')
+      console.log(
+        'Xcode detected, but looks like you need to set your version of Xcode Command Line Tools'
+      )
+      console.log(
+        'Please open Xcode -> Preferences -> Locations -> select Command Line Tools'
+      )
     } else {
       console.log(chalk.dim(error.toString()))
     }
@@ -91,7 +104,15 @@ export const getXcodeDevices = (): XcodeDevice[] => {
 }
 
 export const getDevices = async (): Promise<Device[]> => {
-  const androidDevices = await getAndroidDevices()
+  let androidDevices: AndroidDevice[] = []
+  try {
+    androidDevices = await getAndroidDevices()
+  } catch (error) {
+    // do nothing, function will return
+    // empty array.
+    // this is to prevent a hard error
+  }
+
   const android = androidDevices.map((device: AndroidDevice) => {
     return {
       type: 'android',

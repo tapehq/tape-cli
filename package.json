@@ -1,6 +1,6 @@
 {
   "name": "tape-cli",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "author": "Edamame Studio @ingmaras @dac09",
   "bin": {
     "tape": "./bin/tape"

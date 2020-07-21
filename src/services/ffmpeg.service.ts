@@ -40,7 +40,6 @@ const getRotationForDeviceOrientation = (
       return 'transpose=2,transpose=2'
     case DeviceOrientation.LandscapeLeft:
       return 'transpose=2'
-      break
     case DeviceOrientation.LandscapeRight:
       return 'transpose=1'
   }

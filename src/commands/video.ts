@@ -74,6 +74,8 @@ export default class Video extends GithubIssueOnErrorCommand {
 
       const orientation = await getDeviceOrientation(device)
 
+      console.log('xxx returned', orientation)
+
       try {
         if (flags.hq && !flags.gif) {
           this.log(' ℹ hq flag supplied. Not Compressing \n')

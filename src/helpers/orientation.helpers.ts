@@ -31,10 +31,11 @@ export const getXcodeDeviceOrientation = async (
 ): Promise<DeviceOrientation> => {
   const { id: deviceId } = device
 
-  const rawJson = await execPromise(
+  const { stdout: rawJson } = await execPromise(
     'plutil -convert json ~/Library/Preferences/com.apple.iphonesimulator.plist -o -'
-  ).toString()
-  const json = JSON.parse(rawJson) as IphoneSimulatorPlist
+  )
+
+  const json = JSON.parse(rawJson.toString()) as IphoneSimulatorPlist
 
   if (deviceId in json.DevicePreferences) {
     const preferences = json.DevicePreferences[deviceId]
@@ -75,7 +76,7 @@ export const getAdbDeviceOrientation = async (device: Device) => {
 
   const [, , orientationCode] = output.match(ORIENTATION_REGEX)
 
-  switch (orientationCode) {
+  switch (Number(orientationCode)) {
     case 0:
       return DeviceOrientation.Portrait
     case 1:

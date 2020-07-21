@@ -72,7 +72,7 @@ export default class Video extends GithubIssueOnErrorCommand {
     if (success) {
       let outputPath = rawOutputFile
 
-      const orientation = getDeviceOrientation(device)
+      const orientation = await getDeviceOrientation(device)
 
       try {
         if (flags.hq && !flags.gif) {

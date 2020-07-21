@@ -47,7 +47,7 @@ export default class Image extends GithubIssueOnErrorCommand {
 
     let outputFile = rawOutputFile
 
-    const orientation = getDeviceOrientation(device)
+    const orientation = await getDeviceOrientation(device)
     if (
       orientation !== DeviceOrientation.Portrait &&
       orientation !== DeviceOrientation.Unknown

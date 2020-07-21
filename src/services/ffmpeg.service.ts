@@ -54,11 +54,12 @@ export const makeGif = (
   const fps = hq ? 20 : 10
   const outputScale = hq ? 'iw*0.7' : 'iw*0.35'
   const dither = hq ? 'bayer:bayer_scale=5:diff_mode=rectangle' : 'none'
+  const maxColors = hq ? 256 : 192
 
   const filters = `fps=${fps},${rotationString}scale=${outputScale}:-1:flags=lanczos`
 
   return exec(
-    `${getFfmpegBin()} -i ${inputVideoFile} -vf "${filters},palettegen=stats_mode=diff:max_colors=192" -y ${palette} &&
+    `${getFfmpegBin()} -i ${inputVideoFile} -vf "${filters},palettegen=stats_mode=diff:max_colors=${maxColors}" -y ${palette} &&
     ${getFfmpegBin()} -i ${inputVideoFile} -i ${palette} -lavfi "${filters},paletteuse=dither=${dither}" -y ${outputFile}.gif`
   )
 }

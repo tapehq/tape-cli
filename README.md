@@ -18,6 +18,15 @@
 <!-- tocstop -->
 ---
 
+# Installation
+```sh-session
+brew install edamameldn/tap/tape-cli
+```
+or 
+```sh-session
+npm install -g tape-cli
+```
+
 # Usage
 
 <!-- usage -->

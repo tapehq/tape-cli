@@ -50,7 +50,7 @@ export const makeGif = (
   const rotationString = rotation === '' ? '' : `${rotation},`
 
   return exec(
-    `${getFfmpegBin()} -i ${inputVideoFile} -filter_complex 'fps=24,${rotationString}scale=${outputScale}:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle' ${outputFile}.gif`
+    `${getFfmpegBin()} -i ${inputVideoFile} -filter_complex "fps=24,${rotationString}scale=${outputScale}:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" ${outputFile}.gif`
   )
 }
 

@@ -2,7 +2,7 @@ import * as util from 'util'
 import { exec as originalExec } from 'child_process'
 import * as commandExists from 'command-exists'
 import * as chalk from 'chalk'
-import * as pathToFfmpeg from 'ffmpeg-static';
+import * as pathToFfmpeg from 'ffmpeg-static'
 
 import { DeviceOrientation } from '../helpers/orientation.helpers'
 

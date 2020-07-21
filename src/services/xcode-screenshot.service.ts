@@ -4,7 +4,6 @@ import * as fs from 'fs'
 
 import { randomString } from '../helpers/random'
 import { Device } from './device.service'
-import { getXcodeDeviceOrientation } from '../helpers/orientation.helpers'
 
 export default class XcodeScreenshot {
   xcrun: ChildProcess | null = null

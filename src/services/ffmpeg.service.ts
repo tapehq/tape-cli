@@ -1,17 +1,13 @@
 import * as util from 'util'
 import { exec as originalExec } from 'child_process'
-import * as path from 'path'
 import * as commandExists from 'command-exists'
 import * as chalk from 'chalk'
+import * as pathToFfmpeg from 'ffmpeg-static';
 
-import { BIN_DIR } from './config.service'
 import { DeviceOrientation } from '../helpers/orientation.helpers'
 
-const FFMPEG = path.join(
-  BIN_DIR,
-  'ffmpeg -loglevel warning -nostats -hide_banner'
-)
-const FFMPEG_NO_FLAGS = path.join(BIN_DIR, 'ffmpeg')
+const FFMPEG = `${pathToFfmpeg} -loglevel warning -nostats -hide_banner`
+const FFMPEG_NO_FLAGS = pathToFfmpeg
 
 export const isFfmpegAvailable = () => commandExists.sync(FFMPEG_NO_FLAGS)
 
@@ -21,13 +17,7 @@ export const getFfmpegBin = () => {
     return FFMPEG
   }
 
-  console.log(`💥  ${chalk.bgRed('Setup not complete:')}`)
-  console.log(
-    `
-    Run ${chalk.yellow('tape config --setup')} to download dependencies
-    `
-  )
-  throw new Error('Ffmpeg not found.')
+  console.log(`💥  ${chalk.bgRed('Uh oh! Ffmpeg is not available.')}`)
 }
 
 const exec = util.promisify(originalExec)
@@ -60,7 +50,7 @@ export const makeGif = (
   const rotationString = rotation === '' ? '' : `${rotation},`
 
   return exec(
-    `${getFfmpegBin()} -i ${inputVideoFile} -filter_complex 'fps=24,${rotationString}scale=${outputScale}:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle' ${outputFile}.gif`
+    `${getFfmpegBin()} -i ${inputVideoFile} -filter_complex "fps=24,${rotationString}scale=${outputScale}:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" ${outputFile}.gif`
   )
 }
 

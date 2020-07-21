@@ -11,8 +11,6 @@ import {
   hasAccessToken,
   TAPE_HOST,
 } from './../services/config.service'
-import { install as installFfmpeg } from '../helpers/ffmpeg.helpers'
-import { isFfmpegAvailable } from './../services/ffmpeg.service'
 import ConfigService, { FILE as CONFIG_FILE } from '../services/config.service'
 
 export default class Config extends Command {
@@ -161,14 +159,6 @@ export default class Config extends Command {
 
   async checkSetup() {
     await checkDependencies()
-    if (isFfmpegAvailable()) {
-      this.log('   Tape Dependencies Downloaded ✅')
-    } else {
-      this.log(
-        `   Depedencies required 🛑.
-        Run ${chalk.yellow('tape config --setup')}`
-      )
-    }
   }
 
   async openConfigFile() {
@@ -179,33 +169,6 @@ export default class Config extends Command {
 
   async fullSetup() {
     await checkDependencies()
-
-    if (isFfmpegAvailable()) {
-      const { choice: redownload } = await inquirer.prompt([
-        {
-          name: 'choice',
-          message: 'Reinstall dependencies?',
-          type: 'list',
-          choices: [
-            {
-              name: 'Nope.',
-              value: false,
-            },
-            {
-              name: 'Yes please!',
-              value: true,
-            },
-          ],
-        },
-      ])
-
-      if (redownload) {
-        await installFfmpeg()
-      }
-    } else {
-      await installFfmpeg()
-    }
-
     await this.login()
   }
 

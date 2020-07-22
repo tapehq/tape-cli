@@ -2,6 +2,7 @@ import * as util from 'util'
 import { exec as originalExec } from 'child_process'
 import * as commandExists from 'command-exists'
 import * as chalk from 'chalk'
+import * as os from 'os'
 import * as pathToFfmpeg from 'ffmpeg-static'
 
 import { DeviceOrientation } from '../helpers/orientation.helpers'
@@ -44,12 +45,22 @@ export const makeGif = (
   hq: boolean,
   deviceOrientation: DeviceOrientation = DeviceOrientation.Unknown
 ) => {
-  const outputScale = hq ? 'iw' : 'iw*0.35'
   const rotation = getRotationForDeviceOrientation(deviceOrientation)
   const rotationString = rotation === '' ? '' : `${rotation},`
 
+  const palette = `${os.tmpdir()}/palette.png`
+
+  // @TODO allow user to pass in more granular options?
+  const fps = hq ? 20 : 10
+  const outputScale = hq ? 'iw*0.7' : 'iw*0.35'
+  const dither = hq ? 'bayer:bayer_scale=5:diff_mode=rectangle' : 'none'
+  const maxColors = hq ? 256 : 192
+
+  const filters = `fps=${fps},${rotationString}scale=${outputScale}:-1:flags=lanczos`
+
   return exec(
-    `${getFfmpegBin()} -i ${inputVideoFile} -filter_complex "fps=24,${rotationString}scale=${outputScale}:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" ${outputFile}.gif`
+    `${getFfmpegBin()} -i ${inputVideoFile} -vf "${filters},palettegen=stats_mode=diff:max_colors=${maxColors}" -y ${palette} &&
+    ${getFfmpegBin()} -i ${inputVideoFile} -i ${palette} -lavfi "${filters},paletteuse=dither=${dither}" -y ${outputFile}.gif`
   )
 }
 

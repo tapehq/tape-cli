@@ -99,7 +99,8 @@
     "hooks": {
       "init": [
         "./lib/hooks/init/check-auth"
-      ]
+      ],
+      "prerun": "./lib/hooks/prerun/set-adb-envs"
     }
   },
   "repository": "git://github.com/edamameldn/tape-cli.git",

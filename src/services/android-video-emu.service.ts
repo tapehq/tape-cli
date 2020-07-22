@@ -1,51 +1,48 @@
 import { execSync } from 'child_process'
 import * as os from 'os'
 import * as fs from 'fs'
-import * as chalk from 'chalk'
 
 import { randomString } from '../helpers/random'
 import { Device } from './device.service'
 import { getFfmpegBin } from './ffmpeg.service'
+import { log, debug, error, warn, MessageStyle } from '../services/message.service'
 
 export default class AndroidVideoEmu {
   fileName: string
 
   path: string
 
-  verbose: boolean
-
   device: Device
 
-  constructor(options: { device: Device; verbose?: boolean }) {
+  constructor(options: { device: Device }) {
     this.fileName = `${randomString()}-raw.mp4`
     this.path = `${os.tmpdir()}/${this.fileName}`
     this.device = options.device
-    this.verbose = options.verbose || false
   }
 
   record({ retrying } = { retrying: false }) {
     const result = this.adbStart()
     if (result === 'KO: Recording has already started') {
       if (retrying) {
-        console.log(chalk.red('😥 ADB is still reporting that a recording is already in progress. Aborting!'))
+        error('😥 ADB is still reporting that a recording is already in progress. Aborting!')
         throw new Error('ADB recording already in progreess, cannot proceed')
       } else {
-        console.log(chalk.yellow('Warning: Recording already in progress. Stopping current recording and retrying.'))
+        warn('Warning: Recording already in progress. Stopping current recording and retrying.')
         this.adbStop()
         this.record({ retrying: true })
       }
     } else if (result !== 'OK') {
-      console.log(chalk.yellow('😱 WARNING: unexpected data received from Android Emulator.'))
-      console.log(chalk.dim(result))
+      error('unexpected data received from Android Emulator')
+      log(result, MessageStyle.Dim)
     }
 
-    this.log(`Recording started in ${this.path}.`)
+    debug(`Recording started in ${this.path}.`)
   }
 
   save = async (): Promise<string> => {
     return new Promise((resolve) => {
       if (this.adbStop() === 'OK') {
-        this.log('File saved and ready to upload!')
+        debug('File saved and ready to upload!')
       }
 
       execSync(
@@ -57,7 +54,7 @@ export default class AndroidVideoEmu {
   }
 
   async destroy() {
-    this.log('Destroying temporary video file')
+    debug('Destroying temporary video file')
     await fs.unlinkSync(this.path)
   }
 
@@ -71,11 +68,5 @@ export default class AndroidVideoEmu {
     return execSync(
       `adb -s ${this.device.id} emu screenrecord stop`
     ).toString().trim()
-  }
-
-  private log(text: string) {
-    if (this.verbose) {
-      console.log(`[android-video-emu] ${text}`)
-    }
   }
 }

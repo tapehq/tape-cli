@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash'
 
 import { ConfigService } from '../services'
 import { TAPE_HOST } from '../services/config.service'
+import { log } from '../services/message.service'
 import { bytesToSize } from '../helpers/utils'
 import { GraphQLClient } from 'graphql-request'
 
@@ -97,7 +98,7 @@ export const confirmTape = async (id: string) => {
   const data = await qlClient.request(confirmTapeMutation, variables)
 
   const { fileSize } = data.confirmTape
-  console.log(`File Size: ${bytesToSize(fileSize)}`)
+  log(`File Size: ${bytesToSize(fileSize)}`)
 }
 
 export const putFile = async (

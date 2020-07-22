@@ -57,7 +57,7 @@ export default class Video extends GithubIssueOnErrorCommand {
       VideoKlass = XcodeVideoService
     }
 
-    const video = new VideoKlass({ device, verbose: flags.debug })
+    const video = new VideoKlass({ device })
     video.record()
     cli.action.start(
       ' 🎬 Recording started. Press SPACE to save or ESC to abort.'

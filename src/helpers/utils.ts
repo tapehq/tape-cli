@@ -6,6 +6,7 @@ import * as chalk from 'chalk'
 import * as prettyBytes from 'pretty-bytes'
 
 export const isMac = () => process.platform === 'darwin'
+export const isWindows = () => process.platform === 'win32'
 
 export const copyToLocalOutput = (
   originalFile: string,
@@ -19,7 +20,6 @@ export const copyToLocalOutput = (
 
 export const commonFlags = {
   help: flags.help({ char: 'h' }),
-  debug: flags.boolean({ char: 'd' }),
   local: flags.string({
     char: 'l',
     helpValue: '~/Documents',

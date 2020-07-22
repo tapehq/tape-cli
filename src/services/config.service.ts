@@ -5,10 +5,11 @@ import * as chalk from 'chalk'
 import * as commandExists from 'command-exists'
 import * as adb from 'adbkit'
 
-import { isMac } from '../helpers/utils'
+import { isMac, isWindows } from '../helpers/utils'
 import { omit, isEmpty } from 'lodash'
+import { error, log } from './message.service'
 
-type ConfigKey = 'bucketName' | 'device' | 'token'
+type ConfigKey = 'bucketName' | 'device' | 'token' | 'emojisDisabled'
 
 export const TAPE_HOST = process.env.TAPE_DEBUG_HOST || 'https://tape.sh'
 export const DIR = path.join(os.homedir(), '.tape')
@@ -20,8 +21,13 @@ const setupConfigFile = () => {
     fs.mkdirSync(DIR)
   }
 
+
+  const defaultConfig = {
+    emojisDisabled: isWindows(),
+  }
+
   if (!fs.existsSync(FILE)) {
-    fs.writeFileSync(FILE, JSON.stringify({}))
+    fs.writeFileSync(FILE, JSON.stringify(defaultConfig))
   }
 }
 
@@ -60,20 +66,20 @@ export const checkDependencies = async () => {
       )
     }
 
-    console.log('   Tape Config Writable ✅')
+    log('   Tape Config Writable ✅')
   })
 
   // Check for adb
   try {
     const adbClient = adb.createClient()
     await adbClient.listDevices()
-    console.log('   Android Setup ✅')
+    log('   Android Setup ✅')
     // eslint-disable-next-line unicorn/catch-error-name
   } catch (e) {
-    console.error(
+    error(
       `   Android Setup -> ${chalk.red('🤦🏻‍♂️ Could not locate android sdk')}`
     )
-    console.log(
+    log(
       `     ℹ  To install the android sdk ${chalk.blue(
         'Visit https://developer.android.com/studio or brew cask install android-sdk'
       )}`
@@ -84,11 +90,11 @@ export const checkDependencies = async () => {
   if (isMac()) {
     try {
       await commandExists('xcrun')
-      console.log('   iOS Setup ✅')
+      log('   iOS Setup ✅')
       // eslint-disable-next-line unicorn/catch-error-name
     } catch (e) {
-      console.error(`   iOS Setup -> ${chalk.red('🤦🏽‍♀️ Could not find xcrun.')}`)
-      console.log(
+      error(`   iOS Setup -> ${chalk.red('🤦🏽‍♀️ Could not find xcrun.')}`)
+      log(
         `     ℹ  You can install it by running:  ${chalk.blue(
           'xcode-select --install'
         )}`

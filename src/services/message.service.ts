@@ -1,5 +1,6 @@
 import * as emojiStrip from 'emoji-strip'
 import * as chalk from 'chalk'
+import cli from 'cli-ux'
 
 import ConfigService from './config.service'
 
@@ -8,26 +9,26 @@ export enum MessageStyle {
   Dim
 }
 
-const output = (rawText: string) => {
-  const renderEmojis = Boolean(ConfigService.get('emojisDisabled'))
-  const text = renderEmojis ? rawText : emojiStrip(rawText)
+const output = (rawText: string, style: MessageStyle = MessageStyle.Regular) => {
+  const emojisDisabled = ConfigService.get('emojisDisabled') || false
+  let text = emojisDisabled ? emojiStrip(rawText) : rawText
 
-  console.log(text.trim())
-}
-
-export const log = (text: string, style: MessageStyle = MessageStyle.Regular) => {
   if (style === MessageStyle.Dim) {
-    output(chalk.dim(text))
-  } else {
-    output(text)
+    text = chalk.dim(text)
   }
+
+  cli.log(text.trim())
 }
 
-export const warn = (text: string) => {
-  output(text)
+export const log = output
+export const debug = output
+
+export const warn = (rawText: string, style: MessageStyle = MessageStyle.Regular) => {
+  const text = chalk.yellow(chalk.bold(rawText))
+  output(`⚠️ WARNING: ${text}`, style)
 }
 
-export const error = (rawText: string) => {
-  const text = chalk.bold(rawText)
-  output(`⚠️  ${text}`)
+export const error = (rawText: string, style: MessageStyle = MessageStyle.Regular) => {
+  const text = chalk.red(chalk.bold(rawText))
+  output(`⚠️ ERROR: ${text}`, style)
 }

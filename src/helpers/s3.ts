@@ -6,6 +6,7 @@ import * as chalk from 'chalk'
 import cli from 'cli-ux'
 
 import ConfigService from '../services/config.service'
+import { log } from '../services/message.service'
 import { generateSignedUploadURL, putFile, confirmTape } from '../api/upload'
 import { formatLink, CopyFormats } from './copy.helpers'
 
@@ -106,7 +107,7 @@ export const uploadFile = async (
 
       cli.action.stop(
         `\n🎉 ${
-          options.fileType || 'Screenshot'
+        options.fileType || 'Screenshot'
         } uploaded. ${clipboard} -> \n ${formattedLink}`
       )
     }
@@ -116,7 +117,7 @@ export const uploadFile = async (
     cli.action.stop(`😨 ${chalk.redBright('Upload failed.')}`)
 
     if (error.message.includes('403:')) {
-      console.log(
+      log(
         `\n   🤔 Sorry it seems you've reached your tape limit. Run ${chalk.yellow(
           'tape upgrade'
         )} for moar`

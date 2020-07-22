@@ -6,6 +6,7 @@ import * as fs from 'fs'
 import { randomString } from '../helpers/random'
 import { Device } from './device.service'
 import { getFfmpegBin } from './ffmpeg.service'
+import { debug } from '../services/message.service'
 
 export default class AndroidVideoShell {
   process: ChildProcess | null = null
@@ -14,15 +15,12 @@ export default class AndroidVideoShell {
 
   path: string
 
-  verbose: boolean
-
   device: Device
 
-  constructor(options: { device: Device; verbose?: boolean }) {
+  constructor(options: { device: Device }) {
     this.fileName = `${randomString()}-raw.mp4`
     this.path = `${os.tmpdir()}/${this.fileName}`
     this.device = options.device
-    this.verbose = options.verbose || false
   }
 
   record() {
@@ -36,18 +34,18 @@ export default class AndroidVideoShell {
       'h264',
     ])
 
-    this.log(`Recording started in ${this.path}.`)
+    debug(`Recording started in ${this.path}.`)
 
     this.process.stdout!.on('data', (data) => {
-      console.log(`[process] stdout: ${data}`)
+      debug(`[process] stdout: ${data}`)
     })
 
     this.process.stderr!.on('data', (data) => {
-      console.log(`[process] stderr: ${data}`)
+      debug(`[process] stderr: ${data}`)
     })
 
     this.process.on('error', (error) => {
-      console.log(`[process] error: ${error.message}`)
+      debug(`[process] error: ${error.message}`)
     })
   }
   //   adb shell screenrecord --output-format=h264 --size 1440x2560 - > ./screenrecord.raw
@@ -61,14 +59,14 @@ export default class AndroidVideoShell {
     return new Promise((resolve) => {
       if (this.process) {
         this.process.kill('SIGINT')
-        this.log('[process] SIGINT time.')
+        debug('SIGINT')
 
         this.process.on('close', async (/* code: number */) => {
           // TODO: investigate why this process ends with a null exit code and reject promise if we can get a proper exit code
           execSync(
             `adb -s ${this.device.id} pull /sdcard/${this.fileName} ${this.path}.h264`
           )
-          this.log('[process] File saved and ready to upload!')
+          debug('File saved and ready to upload!')
 
           let speedOption = ''
 
@@ -86,14 +84,8 @@ export default class AndroidVideoShell {
   }
 
   async destroy() {
-    this.log('Destroying temporary video file')
+    debug('Destroying temporary video file')
     await fs.unlinkSync(this.path)
     // TODO: also destroy the video file on the android side
-  }
-
-  private log(text: string) {
-    if (this.verbose) {
-      console.log(`[android-video-shell] ${text}`)
-    }
   }
 }

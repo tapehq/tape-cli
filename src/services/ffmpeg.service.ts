@@ -1,10 +1,10 @@
 import * as util from 'util'
 import { exec as originalExec } from 'child_process'
 import * as commandExists from 'command-exists'
-import * as chalk from 'chalk'
 import * as os from 'os'
 import * as pathToFfmpeg from 'ffmpeg-static'
 
+import { error } from '../services/message.service'
 import { DeviceOrientation } from '../helpers/orientation.helpers'
 
 const FFMPEG = `${pathToFfmpeg} -loglevel warning -nostats -hide_banner`
@@ -18,7 +18,7 @@ export const getFfmpegBin = () => {
     return FFMPEG
   }
 
-  console.log(`💥  ${chalk.bgRed('Uh oh! Ffmpeg is not available.')}`)
+  error('uh oh! Ffmpeg is not available. Please report this. 😞')
 }
 
 const exec = util.promisify(originalExec)

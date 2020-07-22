@@ -1,5 +1,6 @@
 import { Hook } from '@oclif/config'
 import * as chalk from 'chalk'
+import { error } from './../../services/message.service'
 
 import {
   hasAccessToken,
@@ -24,7 +25,7 @@ const hook: Hook<'init'> = async function (opts) {
     const hasCustomBucket = await isUsingCustomBucket()
 
     if (!isLoggedIn && !hasCustomBucket) {
-      this.error(`👩🏽‍💻 Please login first -> ${chalk.yellow('tape login')}`)
+      error(`👩🏽‍💻 Please login first -> ${chalk.yellow('tape login')}`)
     }
   }
 }

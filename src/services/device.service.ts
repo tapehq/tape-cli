@@ -1,10 +1,11 @@
 import * as adb from 'adbkit'
 import { execSync } from 'child_process'
 import { filter, flatMap } from 'lodash'
+import * as chalk from 'chalk'
 
 import configService, { adbAvailable } from './config.service'
 import { chooseDevicePrompt } from '../helpers/device.helpers'
-import * as chalk from 'chalk'
+import { log, error, MessageStyle } from '../services/message.service'
 
 export interface Device {
   type: string
@@ -88,16 +89,12 @@ export const getXcodeDevices = (): XcodeDevice[] => {
       (device: XcodeDevice) => device.state === 'Booted'
     )
   } catch (error) {
-    console.log(chalk.bold('⚠️  Warning: failed to fetch Xcode devices'))
+    error('Warning: failed to fetch Xcode devices')
     if (error.message.includes('unable to find utility "simctl"')) {
-      console.log(
-        'Xcode detected, but looks like you need to set your version of Xcode Command Line Tools'
-      )
-      console.log(
-        'Please open Xcode -> Preferences -> Locations -> select Command Line Tools'
-      )
+      log('Xcode detected, but looks like you need to set your version of Xcode Command Line Tools')
+      log('Please open Xcode -> Preferences -> Locations -> select Command Line Tools')
     } else {
-      console.log(chalk.dim(error.toString()))
+      log(error.toString(), MessageStyle.Dim)
     }
     return []
   }
@@ -141,17 +138,17 @@ export const getDevices = async (): Promise<Device[]> => {
 export const getActiveDevice = async (): Promise<Device | null> => {
   const bootedDevices = await getDevices()
   if (bootedDevices.length === 0) {
-    console.log('Error: no devices detected.')
+    error('Error: no devices detected.')
     return null
   }
   const activeDevice: Device = await configService.get('device')
 
   if (!activeDevice) {
-    // console.log('no active device has been set')
+    // log('no active device has been set')
     if (bootedDevices.length === 1) return bootedDevices[0]
 
     const device = await chooseDevicePrompt()
-    console.log('Use `tape devices` to set an active device')
+    log('Use `tape devices` to set an active device')
     return device
   }
 
@@ -160,7 +157,7 @@ export const getActiveDevice = async (): Promise<Device | null> => {
   )
   // Their active device is booted
   if (isBooted) {
-    console.log(
+    log(
       `\n ℹ  Using preselected device. Use ${chalk.yellow(
         'tape devices'
       )} to choose a different device \n`
@@ -170,13 +167,13 @@ export const getActiveDevice = async (): Promise<Device | null> => {
 
   // Their active device is not booted, but they're only running one device.
   if (bootedDevices.length === 1) {
-    // console.log('You only have 1 device running so defaulting to that')
+    // log('You only have 1 device running so defaulting to that')
     return bootedDevices[0]
   }
-  console.log('Your chosen device is no longer booted.')
+  log('Your chosen device is no longer booted.')
 
   const device = await chooseDevicePrompt()
-  console.log('Use `tape devices` to set an active device')
+  log('Use `tape devices` to set an active device')
 
   return device
 }

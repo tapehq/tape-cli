@@ -81,6 +81,10 @@ export default class Config extends Command {
             value: 'open_config',
           },
           {
+            name: 'Logout',
+            value: 'logout',
+          },
+          {
             name: 'Cancel',
           },
         ],
@@ -108,6 +112,10 @@ export default class Config extends Command {
         await this.openConfigFile()
         break
 
+      case 'logout':
+        await this.logout()
+        break
+
       default:
       // do nothing
     }
@@ -127,6 +135,12 @@ export default class Config extends Command {
         'https://dashboard.tape.sh'
       )}`
     )
+  }
+
+  async logout() {
+    await ConfigService.set('token', null)
+
+    this.log(`${chalk.blue('Logged out. See you later! ✌🏾')}`)
   }
 
   async login() {

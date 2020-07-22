@@ -1,9 +1,9 @@
 import { isEmpty } from 'lodash'
 import { Hook } from '@oclif/config'
 
-const setAdbEnvHook: Hook<'prerun'> = async function (opts) {
-  console.log('Hook run!!! 🎉')
-
+const setAdbEnvHook: Hook<'prerun'> = async function () {
+  // Only set this if user hasn't set it already
+  // They may have a custom directory for Android SDK
   if (isEmpty(process.env.ANDROID_HOME)) {
     const HOME = require('os').homedir()
 
@@ -13,7 +13,7 @@ const setAdbEnvHook: Hook<'prerun'> = async function (opts) {
         break
 
       case 'linux':
-        process.env.ANDROID_HOME = `${HOME}/Library/Android/sdk`
+        process.env.ANDROID_HOME = `${HOME}/Android/Sdk`
         break
 
       case 'win32':
@@ -23,7 +23,11 @@ const setAdbEnvHook: Hook<'prerun'> = async function (opts) {
   }
 
   // Add adb to path, just to make sure
-  process.env.PATH = `${process.env.PATH}:${process.env.ANDROID_HOME}/platform-tools`
+  if (process.platform === 'win32') {
+    process.env.PATH = `${process.env.PATH}${process.env.ANDROID_HOME}\\platform-tools;`
+  } else {
+    process.env.PATH = `${process.env.PATH}:${process.env.ANDROID_HOME}/platform-tools`
+  }
 }
 
 export default setAdbEnvHook

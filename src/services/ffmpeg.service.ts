@@ -4,7 +4,7 @@ import * as commandExists from 'command-exists'
 import * as os from 'os'
 import * as pathToFfmpeg from 'ffmpeg-static'
 
-import { error } from '../services/message.service'
+import { debug, error } from '../services/message.service'
 import { DeviceOrientation } from '../helpers/orientation.helpers'
 
 const FFMPEG = `${pathToFfmpeg} -loglevel warning -nostats -hide_banner`
@@ -28,11 +28,17 @@ const getRotationForDeviceOrientation = (
 ) => {
   switch (deviceOrientation) {
     case DeviceOrientation.PortraitUpsideDown:
+      debug('Device orientation is PortraitUpsideDown')
       return 'transpose=2,transpose=2'
     case DeviceOrientation.LandscapeLeft:
+      debug('Device orientation is LandscapeLeft')
       return 'transpose=2'
     case DeviceOrientation.LandscapeRight:
+      debug('Device orientation is LandscapeRight')
       return 'transpose=1'
+    default:
+      debug('Device orientation is default (Portrait)')
+      return ''
   }
 
   return ''
@@ -82,6 +88,7 @@ export const rotateImage = (
   deviceOrientation: DeviceOrientation = DeviceOrientation.Unknown
 ) => {
   const rotation = getRotationForDeviceOrientation(deviceOrientation)
+  debug(`Rotating image. Orientation: ${deviceOrientation} | Rotation: ${rotation} | Input: ${inputImageFile} | Output: ${outputFile}`)
   return exec(
     `${getFfmpegBin()} -y -i ${inputImageFile} -vf ${rotation} ${outputFile}`
   )

@@ -138,7 +138,7 @@ export const getDevices = async (): Promise<Device[]> => {
 export const getActiveDevice = async (): Promise<Device | null> => {
   const bootedDevices = await getDevices()
   if (bootedDevices.length === 0) {
-    error('Error: no devices detected.')
+    error('no devices detected.')
     return null
   }
   const activeDevice: Device = await configService.get('device')

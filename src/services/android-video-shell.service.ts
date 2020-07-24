@@ -51,8 +51,8 @@ export default class AndroidVideoShell {
   }
 
   async destroy() {
-    debug('Destroying temporary video file')
     await fs.unlinkSync(this.path)
+    debug(`Destroying temporary video file (${this.path})`)
 
     debug('Destroying temporary video file on Android')
     execSync(`adb -s ${this.device.id} shell rm /sdcard/${this.fileName}`)

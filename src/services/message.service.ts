@@ -21,14 +21,17 @@ const output = (rawText: string, style: MessageStyle = MessageStyle.Regular) => 
 }
 
 export const log = output
-export const debug = output
+
+export const debug = (rawText: string, style: MessageStyle = MessageStyle.Regular) => {
+  if (process.env.DEBUG || process.env.TAPE_DEBUG) {
+    output(chalk.dim(` DEBUG: ${rawText}`), style)
+  }
+}
 
 export const warn = (rawText: string, style: MessageStyle = MessageStyle.Regular) => {
-  const text = chalk.yellow(chalk.bold(rawText))
-  output(`⚠️ WARNING: ${text}`, style)
+  output(chalk.yellow(chalk.bold(` ⚠️ WARNING: ${rawText}`)), style)
 }
 
 export const error = (rawText: string, style: MessageStyle = MessageStyle.Regular) => {
-  const text = chalk.red(chalk.bold(rawText))
-  output(`⚠️ ERROR: ${text}`, style)
+  output(chalk.red(chalk.bold(` ⚠️ ERROR: ${rawText}`)), style)
 }

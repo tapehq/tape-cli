@@ -72,7 +72,7 @@ export const compressVid = (
   const rotation = getRotationForDeviceOrientation(deviceOrientation)
   const rotationString = rotation === '' ? '' : `-vf "${rotation}"`
   return exec(
-    `${getFfmpegBin()} -i ${inputVideoFile} -c:v libx264 -crf 23 -maxrate 1.5M -bufsize 1.5M ${rotationString} ${outputFile}`
+    `${getFfmpegBin()} -i ${inputVideoFile} -preset faster -c:v libx264 -movflags +faststart -crf 23 -maxrate 1.5M -bufsize 1.5M ${rotationString} ${outputFile}`
   )
 }
 

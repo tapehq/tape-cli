@@ -147,8 +147,8 @@ export const getActiveDevice = async (): Promise<Device | null> => {
     console.log(
       `${chalk.yellow('  💡 Tips:')}
     ${chalk.yellow('-')} Do you have simulators/emulators running?
-    ${chalk.yellow('-')} or connected an Android device with USB debugging enabled?
-      Run ${chalk.blue('adb devices')} to check
+    ${chalk.yellow('-')} Or connected an Android device with USB debugging enabled?
+      run ${chalk.blue('adb devices')} to check
       `
     )
 

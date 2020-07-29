@@ -141,7 +141,17 @@ export const getDevices = async (): Promise<Device[]> => {
 export const getActiveDevice = async (): Promise<Device | null> => {
   const bootedDevices = await getDevices()
   if (bootedDevices.length === 0) {
-    console.log('Error: no devices detected.')
+    console.log(chalk.grey('\n No devices detected. \n'))
+
+    // prettier-ignore
+    console.log(
+      `${chalk.yellow('  💡 Tips:')}
+    ${chalk.yellow('-')} Do you have simulators/emulators running?
+    ${chalk.yellow('-')} or connected an Android device with USB debugging enabled?
+      Run ${chalk.blue('adb devices')} to check
+      `
+    )
+
     return null
   }
   const activeDevice: Device = await configService.get('device')

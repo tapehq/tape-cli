@@ -30,7 +30,6 @@ export default class XcodeVideo {
       this.device.id,
       'recordVideo',
       this.path,
-      '--codec=h264',
       '-f',
     ]
     if (this.device.subtype && this.device.subtype.includes('Apple-TV')) {

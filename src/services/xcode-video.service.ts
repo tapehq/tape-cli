@@ -24,14 +24,7 @@ export default class XcodeVideo {
   }
 
   record() {
-    const args = [
-      'simctl',
-      'io',
-      this.device.id,
-      'recordVideo',
-      this.path,
-      '-f',
-    ]
+    const args = ['simctl', 'io', this.device.id, 'recordVideo', this.path]
     if (this.device.subtype && this.device.subtype.includes('Apple-TV')) {
       args.push('--display=external')
     }

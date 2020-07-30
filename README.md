@@ -2,6 +2,8 @@
 
 > Collaborate better during mobile development, for iOS & tvOS simulators and Android emulators and devices. Share screenshots, screen recordings as video or GIFs. Use with [https://www.tape.sh/](https://www.tape.sh/) or bring your own bucket!
 
+Edited for demo
+
 ---
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/tape-cli.svg)](https://npmjs.org/package/tape-cli)

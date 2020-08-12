@@ -20,6 +20,7 @@ export const copyToLocalOutput = (
 export const commonFlags = {
   help: flags.help({ char: 'h' }),
   debug: flags.boolean({ char: 'd' }),
+  frame: flags.boolean(),
   local: flags.string({
     char: 'l',
     helpValue: '~/Documents',

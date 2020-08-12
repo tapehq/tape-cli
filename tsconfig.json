@@ -10,12 +10,9 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "paths": {
-      "*": [
-        "src/types/*"
-      ]
-    }
+      "*": ["src/types/*"]
+    },
+    "resolveJsonModule": true
   },
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*"]
 }

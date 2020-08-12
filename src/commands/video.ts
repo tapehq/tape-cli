@@ -1,3 +1,5 @@
+import { fetchDeviceFrame } from './../api/frame'
+import { getDimensions } from './../services/ffmpeg.service'
 import { CopyFormats } from './../helpers/copy.helpers'
 import { flags } from '@oclif/command'
 import cli from 'cli-ux'
@@ -72,6 +74,17 @@ export default class Video extends GithubIssueOnErrorCommand {
     if (success) {
       let outputPath = rawOutputFile
 
+      let frameOptions = null
+
+      if (flags.frame) {
+        const dimensions = await getDimensions(outputPath)
+
+        frameOptions = await fetchDeviceFrame({
+          ...dimensions,
+          type: flags.gif ? 'gif' : 'video',
+        })
+      }
+
       const orientation = await getDeviceOrientation(device)
 
       try {
@@ -82,7 +95,8 @@ export default class Video extends GithubIssueOnErrorCommand {
           await FfmpegService.compressVid(
             rawOutputFile,
             outputPath,
-            orientation
+            orientation,
+            frameOptions
           )
           cli.action.stop()
         }
@@ -95,7 +109,8 @@ export default class Video extends GithubIssueOnErrorCommand {
             rawOutputFile,
             gifPath,
             flags.hq,
-            orientation
+            orientation,
+            frameOptions
           )
           outputPath = `${gifPath}.gif`
 

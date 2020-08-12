@@ -34,7 +34,7 @@ const read = async () => {
 const get = async (key: ConfigKey) => {
   setupConfigFile()
   const config = await read()
-  return config[key]
+  return process.env[`TAPE_DEBUG_${key}`.toUpperCase()] || config[key]
 }
 
 const set = async (key: ConfigKey, value: string | object | null) => {

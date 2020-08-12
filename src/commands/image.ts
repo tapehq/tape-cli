@@ -1,20 +1,18 @@
 import * as chalk from 'chalk'
-
+import { fetchDeviceFrame } from '../api/frame'
 import GithubIssueOnErrorCommand from '../github-issue-on-error-command'
+import { CopyFormats } from '../helpers/copy.helpers'
+import { deviceToFriendlyString } from '../helpers/device.helpers'
+import { getDeviceOrientation } from '../helpers/orientation.helpers'
 import { uploadFile } from '../helpers/s3'
+import { commonFlags, copyToLocalOutput } from '../helpers/utils'
 import {
   AndroidScreenshotService,
-  XcodeScreenshotService,
   DeviceService,
+  XcodeScreenshotService,
 } from '../services'
-import { deviceToFriendlyString } from '../helpers/device.helpers'
-import { copyToLocalOutput, commonFlags } from '../helpers/utils'
-import { CopyFormats } from '../helpers/copy.helpers'
-import {
-  DeviceOrientation,
-  getDeviceOrientation,
-} from '../helpers/orientation.helpers'
-import { rotateImage } from '../services/ffmpeg.service'
+import { processImage } from '../services/ffmpeg.service'
+import { getDimensions } from './../services/ffmpeg.service'
 
 export default class Image extends GithubIssueOnErrorCommand {
   static description = 'Take screenshots of iOS/Android devices/simulators'
@@ -45,25 +43,31 @@ export default class Image extends GithubIssueOnErrorCommand {
     const screenshot = new ScreenshotKlass({ device, verbose: flags.debug })
     const rawOutputFile = await screenshot.save()
 
-    let outputFile = rawOutputFile
+    let outputFilePath = rawOutputFile
 
     const orientation = await getDeviceOrientation(device)
-    if (
-      orientation !== DeviceOrientation.Portrait &&
-      orientation !== DeviceOrientation.Unknown
-    ) {
-      outputFile = rawOutputFile.replace('-raw.png', '.png')
 
-      await rotateImage(rawOutputFile, `${outputFile}`, orientation)
-      outputFile = `${outputFile}`
+    let frameOptions = null
+
+    if (flags.frame) {
+      const dimensions = await getDimensions(outputFilePath)
+
+      frameOptions = await fetchDeviceFrame({
+        ...dimensions,
+        type: 'image',
+      })
     }
 
+    outputFilePath = rawOutputFile.replace('-raw.png', '.png')
+
+    await processImage(rawOutputFile, outputFilePath, orientation, frameOptions)
+
     if (flags.local) {
-      const localFilePath = copyToLocalOutput(outputFile, flags.local)
+      const localFilePath = copyToLocalOutput(outputFilePath, flags.local)
       this.log(`\n 🎉 Saved locally to ${localFilePath}.`)
     } else {
       try {
-        await uploadFile(outputFile, {
+        await uploadFile(outputFilePath, {
           copyToClipboard: !flags.nocopy,
           fileType: 'Screenshot',
           format: flags.format as CopyFormats,

@@ -1,37 +1,12 @@
 import axios from 'axios'
-import { isEmpty } from 'lodash'
 
-import { ConfigService } from '../services'
-import { TAPE_HOST } from '../services/config.service'
 import { bytesToSize } from '../helpers/utils'
-import { GraphQLClient } from 'graphql-request'
+import { createQlClient, handleError } from './client'
 
 interface CreateTape {
   url: string
   tapeUrl: string
   id: string
-}
-
-interface QlError {
-  message: string
-  extensions?: {
-    code: string
-  }
-}
-
-const createQlClient = async () => {
-  const accessToken = await ConfigService.get('token')
-
-  if (isEmpty(accessToken)) {
-    throw new Error('Please login, run: tape login or tape config')
-  }
-
-  return new GraphQLClient(`${TAPE_HOST}/.netlify/functions/graphql`, {
-    headers: {
-      authorization: `Bearer ${accessToken}`,
-      'auth-provider': 'cli',
-    },
-  })
 }
 
 export const generateSignedUploadURL = async (
@@ -65,19 +40,7 @@ export const generateSignedUploadURL = async (
 
     return data.createTape
   } catch (error) {
-    if (error?.response?.errors[0]?.extensions.code === 'UNAUTHENTICATED') {
-      throw new Error(
-        'Authentication error. Try again after running -> tape login '
-      )
-    }
-
-    if (error?.response?.errors) {
-      throw new Error(
-        error?.response?.errors.map((error: QlError) => error.message)
-      )
-    }
-
-    throw error
+    handleError(error)
   }
 }
 

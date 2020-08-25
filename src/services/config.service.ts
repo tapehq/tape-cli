@@ -1,14 +1,14 @@
-import * as fs from 'fs'
-import * as os from 'os'
-import * as path from 'path'
+import { RecordingSettings } from './config.service'
+import * as adb from 'adbkit'
 import * as chalk from 'chalk'
 import * as commandExists from 'command-exists'
-import * as adb from 'adbkit'
-
+import * as fs from 'fs'
+import { isEmpty, omit } from 'lodash'
+import * as os from 'os'
+import * as path from 'path'
 import { isMac } from '../helpers/utils'
-import { omit, isEmpty } from 'lodash'
 
-type ConfigKey = 'bucketName' | 'device' | 'token'
+type ConfigKey = 'bucketName' | 'device' | 'token' | 'recordingSettings'
 
 export const TAPE_HOST = process.env.TAPE_DEBUG_HOST || 'https://tape.sh'
 export const DIR = path.join(os.homedir(), '.tape')
@@ -97,6 +97,22 @@ export const checkDependencies = async () => {
   }
 }
 
+interface RecordingSettings {
+  disableFraming: boolean
+}
+
+export const DISABLED_RECORDING_SETTINGS: RecordingSettings = {
+  disableFraming: false,
+}
+
+export const getRecordingSettings = (): Promise<RecordingSettings> => {
+  return get('recordingSettings')
+}
+
+export const setRecordingSettings = (newSettings: RecordingSettings) => {
+  set('recordingSettings', newSettings)
+}
+
 export const hasAccessToken = async () => {
   const token = await get('token')
 
@@ -111,4 +127,4 @@ export const isUsingCustomBucket = async () => {
 
 export const adbAvailable = () => commandExists.sync('adb')
 
-export default { get, set }
+export default { get, set, getRecordingSettings, setRecordingSettings }

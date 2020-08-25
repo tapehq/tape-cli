@@ -114,6 +114,7 @@ OPTIONS
   --format=md|href|html|url              [default: url]
   --hq
   --nocopy Disable copying to clipboard
+  --noframe Disable device frames
 
 ALIASES
   $ tape gif
@@ -157,6 +158,7 @@ OPTIONS
   -l, --local=~/Documents
   --format=md|href|html|url              [default: url]
   --nocopy Disable copying to clipboard
+  --noframe Disable device frames
 
 ALIASES
   $ tape i
@@ -220,6 +222,7 @@ OPTIONS
   --format=md|href|html|url              [default: url]
   --hq
   --nocopy Disable copying to clipboard
+  --noframe Disable device frames
 
 ALIASES
   $ tape video

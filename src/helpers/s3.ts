@@ -9,20 +9,23 @@ import ConfigService from '../services/config.service'
 import { generateSignedUploadURL, putFile, confirmTape } from '../api/upload'
 import { formatLink, CopyFormats } from './copy.helpers'
 
-const uploadFileToTape = async (
-  source: string,
-  metadata: object
-): Promise<string> => {
+const uploadFileToTape = async (source: string, metadata: object) => {
   // Read content from the file
   const fileContent = fs.readFileSync(source)
   const fileName = path.parse(source).base
   const contentType = mime.lookup(source) || 'application/octet-stream'
 
-  const { url: uploadUrl, tapeUrl, id } = await generateSignedUploadURL(
+  const tapeDetails = await generateSignedUploadURL(
     fileName,
     contentType,
     metadata
   )
+
+  if (!tapeDetails) {
+    throw new Error('Something went wrong!')
+  }
+
+  const { url: uploadUrl, tapeUrl, id } = tapeDetails
 
   await putFile(fileContent, uploadUrl, {
     'Content-Type': contentType,

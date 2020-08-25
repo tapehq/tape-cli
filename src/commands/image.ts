@@ -10,6 +10,7 @@ import {
   AndroidScreenshotService,
   DeviceService,
   XcodeScreenshotService,
+  ConfigService,
 } from '../services'
 import { processImage } from '../services/ffmpeg.service'
 import { getDimensions } from './../services/ffmpeg.service'
@@ -43,14 +44,14 @@ export default class Image extends GithubIssueOnErrorCommand {
     const screenshot = new ScreenshotKlass({ device, verbose: flags.debug })
     const rawOutputFile = await screenshot.save()
 
-    let outputFilePath = rawOutputFile
-
     const orientation = await getDeviceOrientation(device)
 
     let frameOptions = null
 
-    if (flags.frame) {
-      const dimensions = await getDimensions(outputFilePath)
+    const recordingSettings = await ConfigService.getRecordingSettings()
+
+    if (!flags.noframe || !recordingSettings.disableFraming) {
+      const dimensions = await getDimensions(rawOutputFile)
 
       frameOptions = await fetchDeviceFrame({
         ...dimensions,
@@ -58,9 +59,14 @@ export default class Image extends GithubIssueOnErrorCommand {
       })
     }
 
-    outputFilePath = rawOutputFile.replace('-raw.png', '.png')
+    const outputFilePathWithoutExtension = rawOutputFile.replace('-raw.png', '')
 
-    await processImage(rawOutputFile, outputFilePath, orientation, frameOptions)
+    const outputFilePath = await processImage(
+      rawOutputFile,
+      outputFilePathWithoutExtension,
+      orientation,
+      frameOptions
+    )
 
     if (flags.local) {
       const localFilePath = copyToLocalOutput(outputFilePath, flags.local)

@@ -1,25 +1,25 @@
-import { fetchDeviceFrame } from './../api/frame'
-import { getDimensions } from './../services/ffmpeg.service'
-import { CopyFormats } from './../helpers/copy.helpers'
 import { flags } from '@oclif/command'
+import * as chalk from 'chalk'
 import cli from 'cli-ux'
 import * as filesize from 'filesize'
 import * as fs from 'fs'
-import * as chalk from 'chalk'
-
 import GithubIssueOnErrorCommand from '../github-issue-on-error-command'
+import { deviceToFriendlyString } from '../helpers/device.helpers'
+import { waitForKeys } from '../helpers/keyboard'
+import { getDeviceOrientation } from '../helpers/orientation.helpers'
 import { uploadFile } from '../helpers/s3'
+import { commonFlags, copyToLocalOutput } from '../helpers/utils'
 import {
+  AndroidVideoEmuService,
+  AndroidVideoShellService,
+  ConfigService,
   DeviceService,
   FfmpegService,
   XcodeVideoService,
-  AndroidVideoEmuService,
-  AndroidVideoShellService,
 } from '../services'
-import { deviceToFriendlyString } from '../helpers/device.helpers'
-import { waitForKeys } from '../helpers/keyboard'
-import { copyToLocalOutput, commonFlags } from '../helpers/utils'
-import { getDeviceOrientation } from '../helpers/orientation.helpers'
+import { fetchDeviceFrame } from './../api/frame'
+import { CopyFormats } from './../helpers/copy.helpers'
+import { getDimensions } from './../services/ffmpeg.service'
 
 export default class Video extends GithubIssueOnErrorCommand {
   static description = 'Record iOS/Android devices/simulators'
@@ -72,12 +72,19 @@ export default class Video extends GithubIssueOnErrorCommand {
     const rawOutputFile = await video.save()
 
     if (success) {
-      let outputPath = rawOutputFile
+      let outputFilePath = rawOutputFile
 
       let frameOptions = null
 
-      if (flags.frame) {
-        const dimensions = await getDimensions(outputPath)
+      const recordingSettings = await ConfigService.getRecordingSettings()
+
+      console.log('xxx recordingSettings -> ', recordingSettings)
+
+      // Get framing settings, if not disabled by user
+      if (flags.noframe || recordingSettings.disableFraming) {
+        this.log(` ℹ ${chalk.grey(' Framing disabled \n')}`)
+      } else {
+        const dimensions = await getDimensions(outputFilePath)
 
         frameOptions = await fetchDeviceFrame({
           ...dimensions,
@@ -86,39 +93,37 @@ export default class Video extends GithubIssueOnErrorCommand {
       }
 
       const orientation = await getDeviceOrientation(device)
+      const outPathWithoutExtension = rawOutputFile.replace('-raw.mp4', '')
 
       try {
-        if (flags.hq && !flags.gif) {
-          this.log(' ℹ hq flag supplied. Not Compressing \n')
-        } else {
-          outputPath = rawOutputFile.replace('-raw.mp4', '.mp4')
-          await FfmpegService.compressVid(
+        // Video mode
+        if (!flags.gif) {
+          outputFilePath = await FfmpegService.processVideo(
             rawOutputFile,
-            outputPath,
+            outPathWithoutExtension,
             orientation,
             frameOptions
           )
           cli.action.stop()
         }
 
+        // Gif mode
         if (flags.gif) {
           cli.action.start(' 🚴🏽‍♀️ Making your gif...')
 
-          const gifPath = rawOutputFile.replace('-raw.mp4', '')
-          await FfmpegService.makeGif(
+          outputFilePath = await FfmpegService.makeGif(
             rawOutputFile,
-            gifPath,
+            outPathWithoutExtension,
             flags.hq,
             orientation,
             frameOptions
           )
-          outputPath = `${gifPath}.gif`
 
           cli.action.stop('✔️')
         }
 
         if (flags.local) {
-          const localFilePath = copyToLocalOutput(outputPath, flags.local)
+          const localFilePath = copyToLocalOutput(outputFilePath, flags.local)
           this.log(`\n 🎉 Video saved locally to ${localFilePath}.`)
         } else {
           this.log(
@@ -132,12 +137,12 @@ export default class Video extends GithubIssueOnErrorCommand {
           this.log(
             `${chalk.grey(
               `📼  Tape output file size: ${filesize(
-                fs.statSync(outputPath).size
+                fs.statSync(outputFilePath).size
               )}`
             )}`
           )
 
-          await uploadFile(outputPath, {
+          await uploadFile(outputFilePath, {
             copyToClipboard: !flags.nocopy,
             fileType: 'Video',
             format: flags.format as CopyFormats,

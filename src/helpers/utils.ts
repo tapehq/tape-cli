@@ -20,7 +20,9 @@ export const copyToLocalOutput = (
 export const commonFlags = {
   help: flags.help({ char: 'h' }),
   debug: flags.boolean({ char: 'd' }),
-  frame: flags.boolean(),
+  noframe: flags.boolean({
+    helpLabel: `--noframe ${chalk.grey('Disable device frames')}`,
+  }),
   local: flags.string({
     char: 'l',
     helpValue: '~/Documents',

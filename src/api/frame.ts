@@ -25,6 +25,14 @@ export const fetchDeviceFrame = async (inputs: DeviceFrameInputs) => {
 
     const { deviceFrames } = data
 
+    if (deviceFrames.length === 0) {
+      cli.log(
+        chalk.grey(' ☒ No frames found for resolution. Skipping framing.')
+      )
+
+      return null
+    }
+
     cli.log(chalk.grey(` 🖼  Framing with ${deviceFrames[0].deviceName}`))
 
     return deviceFrames[0]

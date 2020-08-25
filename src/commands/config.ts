@@ -10,6 +10,7 @@ import {
   checkDependencies,
   hasAccessToken,
   TAPE_HOST,
+  DISABLED_RECORDING_SETTINGS,
 } from './../services/config.service'
 import ConfigService, { FILE as CONFIG_FILE } from '../services/config.service'
 
@@ -47,13 +48,12 @@ export default class Config extends Command {
       return
     }
 
-    const currentBucketName = await ConfigService.get('bucketName')
-
     const responses = await inquirer.prompt([
       {
         name: 'choice',
         message: 'What would you like to configure?',
         type: 'list',
+        loop: false,
         choices: [
           {
             name: 'Login to Tape.sh',
@@ -64,17 +64,16 @@ export default class Config extends Command {
             short: 'Setup 📼 Tape',
             value: 'full_setup',
           },
+          new inquirer.Separator(),
           {
-            name: 'Use Tape.sh for uploads',
-            value: 'use_tape',
+            name: 'Upload/Share settings',
+            value: 'share_settings',
           },
           {
-            name: `Set bucket name (current: ${chalk.yellow(
-              currentBucketName || 'Tape.sh hosted'
-            )})`,
-            short: 'Set bucket name',
-            value: 'change_bucket_name',
+            name: 'Recording settings',
+            value: 'recording_settings',
           },
+          new inquirer.Separator(),
           {
             name: 'Open Config File',
             short: 'Open Config File',
@@ -84,28 +83,30 @@ export default class Config extends Command {
             name: 'Logout',
             value: 'logout',
           },
+          new inquirer.Separator(),
           {
             name: 'Cancel',
           },
+          new inquirer.Separator(),
         ],
       },
     ])
 
     switch (responses.choice) {
-      case 'change_bucket_name':
-        await this.changeBucketName()
-        break
-
-      case 'use_tape':
-        await this.useTape()
-        break
-
       case 'full_setup':
         await this.fullSetup()
         break
 
       case 'login':
         await this.login()
+        break
+
+      case 'share_settings':
+        await this.shareSettings()
+        break
+
+      case 'recording_settings':
+        await this.recordingSettings()
         break
 
       case 'open_config':
@@ -135,6 +136,84 @@ export default class Config extends Command {
         'https://dashboard.tape.sh'
       )}`
     )
+  }
+
+  async shareSettings() {
+    const currentBucketName = await ConfigService.get('bucketName')
+
+    const responses = await inquirer.prompt([
+      {
+        name: 'choice',
+        message: 'Upload/Share settings',
+        type: 'list',
+        choices: [
+          {
+            name: 'Use Tape.sh for uploads',
+            value: 'use_tape',
+          },
+          {
+            name: `Set bucket name (current: ${chalk.yellow(
+              currentBucketName || 'Tape.sh hosted'
+            )})`,
+            short: 'Set bucket name',
+            value: 'change_bucket_name',
+          },
+        ],
+      },
+    ])
+
+    switch (responses.choice) {
+      case 'change_bucket_name':
+        await this.changeBucketName()
+        break
+
+      case 'use_tape':
+        await this.useTape()
+        break
+
+      default:
+      // do nothing
+    }
+  }
+
+  // Try to only use booleans here
+  async recordingSettings() {
+    // Framing enabled by default
+    const recordingSettings = await ConfigService.get('recordingSettings')
+
+    const checkedSettings: {
+      recordingSettings: string[]
+    } = await inquirer.prompt([
+      {
+        name: 'recordingSettings',
+        message: 'Toggle recording settings',
+        type: 'checkbox',
+        choices: [
+          {
+            name: `Device framing ${chalk.grey(
+              '- wraps a neat frame around your tapes'
+            )}`,
+            value: 'enableFraming',
+            checked: !recordingSettings?.disableFraming,
+          },
+        ],
+      },
+    ])
+
+    const newRecordingSettings: Record<string, string | boolean> = {
+      ...DISABLED_RECORDING_SETTINGS,
+    }
+
+    // Because inquirer only returns enabled choices
+    checkedSettings.recordingSettings.forEach((settingName) => {
+      if (settingName === 'enableFraming') {
+        newRecordingSettings.disableFraming = !(settingName === 'enableFraming')
+      } else {
+        newRecordingSettings[settingName] = true
+      }
+    })
+
+    await ConfigService.set('recordingSettings', newRecordingSettings)
   }
 
   async logout() {

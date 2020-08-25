@@ -50,7 +50,7 @@ export default class Image extends GithubIssueOnErrorCommand {
 
     const recordingSettings = await ConfigService.getRecordingSettings()
 
-    if (!flags.noframe || !recordingSettings.disableFraming) {
+    if (!flags.noframe || recordingSettings.deviceFraming) {
       const dimensions = await getDimensions(rawOutputFile)
 
       frameOptions = await fetchDeviceFrame({

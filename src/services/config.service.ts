@@ -1,4 +1,4 @@
-import { RecordingSettings } from './config.service'
+import { CopyFormats } from './../helpers/copy.helpers'
 import * as adb from 'adbkit'
 import * as chalk from 'chalk'
 import * as commandExists from 'command-exists'
@@ -97,20 +97,24 @@ export const checkDependencies = async () => {
   }
 }
 
-interface RecordingSettings {
-  disableFraming: boolean
+export interface RecordingSettings {
+  deviceFraming: boolean
+  copyFormat: CopyFormats
 }
 
-export const DISABLED_RECORDING_SETTINGS: RecordingSettings = {
-  disableFraming: false,
+export const DEFAULT_RECORDING_SETTINGS: RecordingSettings = {
+  deviceFraming: true,
+  copyFormat: CopyFormats.URL,
 }
 
-export const getRecordingSettings = (): Promise<RecordingSettings> => {
-  return get('recordingSettings')
+export const getRecordingSettings = async (): Promise<RecordingSettings> => {
+  const recordingSettings = await get('recordingSettings')
+  return Object.assign(DEFAULT_RECORDING_SETTINGS, recordingSettings)
 }
 
-export const setRecordingSettings = (newSettings: RecordingSettings) => {
-  set('recordingSettings', newSettings)
+export const setRecordingSettings = async (newSettings: RecordingSettings) => {
+  const existingSettings = await getRecordingSettings()
+  return set('recordingSettings', Object.assign(existingSettings, newSettings))
 }
 
 export const hasAccessToken = async () => {

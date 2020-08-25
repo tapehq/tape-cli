@@ -83,6 +83,8 @@ export const uploadFile = async (
   options: UploadFileOptions = {}
 ) => {
   const bucketName = await ConfigService.get('bucketName')
+  const recordingSettings = await ConfigService.getRecordingSettings()
+
   if (options.log) {
     cli.action.start('🔗 Uploading file...')
   }
@@ -96,15 +98,13 @@ export const uploadFile = async (
       url = await uploadFileToTape(source, options.metadata || {})
     }
 
-    const formattedLink = formatLink(
-      url,
-      options.format,
-      options.copyToClipboard
-    )
+    const linkFormat = options.format || recordingSettings.copyFormat
+
+    const formattedLink = formatLink(url, linkFormat, options.copyToClipboard)
 
     if (options.log) {
       const clipboard = options.copyToClipboard
-        ? `Copied ${options.format} to clipboard 🔖 ! `
+        ? `Copied ${linkFormat} to clipboard 🔖 ! `
         : ''
 
       cli.action.stop(

@@ -78,10 +78,8 @@ export default class Video extends GithubIssueOnErrorCommand {
 
       const recordingSettings = await ConfigService.getRecordingSettings()
 
-      console.log('xxx recordingSettings -> ', recordingSettings)
-
       // Get framing settings, if not disabled by user
-      if (flags.noframe || recordingSettings.disableFraming) {
+      if (flags.noframe || !recordingSettings.deviceFraming) {
         this.log(` ℹ ${chalk.grey(' Framing disabled \n')}`)
       } else {
         const dimensions = await getDimensions(outputFilePath)

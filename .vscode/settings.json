@@ -15,6 +15,5 @@
     "titleBar.inactiveBackground": "#db709399",
     "titleBar.inactiveForeground": "#15202b99"
 },
-  "peacock.color": "#db7093",
-  "prettier.requireConfig": true
+"peacock.color": "#db7093"
 }

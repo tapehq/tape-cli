@@ -30,6 +30,12 @@ export const commonFlags = {
   format: flags.string({
     options: Object.values(CopyFormats),
   }),
+  selectframe: flags.boolean({
+    helpLabel: `--selectframe ${chalk.grey(
+      'Select which frame to use, if there are multiple'
+    )}`,
+    default: false,
+  }),
   nocopy: flags.boolean({
     default: false,
     helpLabel: `--nocopy ${chalk.grey('Disable copying to clipboard')}`,

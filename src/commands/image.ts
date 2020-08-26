@@ -1,3 +1,4 @@
+import { frameFromSelectorPrompt } from './../helpers/frame.helpers'
 import * as chalk from 'chalk'
 import { fetchDeviceFrame } from '../api/frame'
 import GithubIssueOnErrorCommand from '../github-issue-on-error-command'
@@ -53,10 +54,18 @@ export default class Image extends GithubIssueOnErrorCommand {
     if (!flags.noframe || recordingSettings.deviceFraming) {
       const dimensions = await getDimensions(rawOutputFile)
 
-      frameOptions = await fetchDeviceFrame({
+      const allFrames = await fetchDeviceFrame({
         ...dimensions,
         type: 'image',
       })
+
+      if (allFrames) {
+        if (allFrames.length > 1 && flags.selectframe) {
+          frameOptions = await frameFromSelectorPrompt(allFrames)
+        } else {
+          frameOptions = allFrames[0]
+        }
+      }
     }
 
     const outputFilePathWithoutExtension = rawOutputFile.replace('-raw.png', '')

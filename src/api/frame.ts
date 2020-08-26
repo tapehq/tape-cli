@@ -9,7 +9,15 @@ interface DeviceFrameInputs {
   type: 'gif' | 'video' | 'image'
 }
 
-export const fetchDeviceFrame = async (inputs: DeviceFrameInputs) => {
+export interface DeviceFrame {
+  inputs: string[]
+  deviceName: string
+  filter: string
+}
+
+export const fetchDeviceFrame = async (
+  inputs: DeviceFrameInputs
+): Promise<DeviceFrame[] | null> => {
   const qlClient = await createQlClient()
 
   try {
@@ -33,10 +41,9 @@ export const fetchDeviceFrame = async (inputs: DeviceFrameInputs) => {
       return null
     }
 
-    cli.log(chalk.grey(` 🖼  Framing with ${deviceFrames[0].deviceName}`))
-
-    return deviceFrames[0]
+    return deviceFrames
   } catch (error) {
     handleError(error)
+    return null
   }
 }

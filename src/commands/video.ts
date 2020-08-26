@@ -1,3 +1,4 @@
+import { frameFromSelectorPrompt } from './../helpers/frame.helpers'
 import { flags } from '@oclif/command'
 import * as chalk from 'chalk'
 import cli from 'cli-ux'
@@ -84,10 +85,18 @@ export default class Video extends GithubIssueOnErrorCommand {
       } else {
         const dimensions = await getDimensions(outputFilePath)
 
-        frameOptions = await fetchDeviceFrame({
+        const allFrames = await fetchDeviceFrame({
           ...dimensions,
           type: flags.gif ? 'gif' : 'video',
         })
+
+        if (allFrames) {
+          if (allFrames.length > 1 && flags.selectframe) {
+            frameOptions = await frameFromSelectorPrompt(allFrames)
+          } else {
+            frameOptions = allFrames[0]
+          }
+        }
       }
 
       const orientation = await getDeviceOrientation(device)

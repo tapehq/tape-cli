@@ -51,7 +51,7 @@ export default class Frame extends GithubIssueOnErrorCommand {
 
     const allFrames = await fetchDeviceFrame({
       ...dimensions,
-      type: fileType, // TODO: detect file type
+      type: fileType as 'image' | 'video',
     })
 
     if (allFrames) {

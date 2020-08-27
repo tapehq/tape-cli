@@ -49,7 +49,7 @@ const decodeFrameOptions = (
 
   if (frameOptions) {
     extraInputs = frameOptions.inputs
-      .map((frameInput) => `-i ${frameInput}`)
+      .map((frameInput) => `-i "${frameInput}"`)
       .join(' ')
     complexFilter = `-filter_complex "${frameOptions.filter}"`
 
@@ -90,16 +90,16 @@ export const makeGif = async (
     const { extraInputs, complexFilter } = decodeFrameOptions(frameOptions)
     await exec(
       `
-      ${getFfmpegBin()} -i ${inputVideoFile} ${extraInputs} -vcodec prores_ks -pix_fmt yuva444p10le -profile:v 4444 -q:v 23 -preset fastest ${complexFilter} -y ${intermediary} &&
-      ${getFfmpegBin()} -i ${intermediary} -vf "${gifFilters},palettegen=stats_mode=diff:max_colors=${maxColors}" -y ${palette} &&
-      ${getFfmpegBin()} -i ${intermediary} -i ${palette} -lavfi "${gifFilters},paletteuse=dither=${dither}" -y ${outputFile}.gif
+      ${getFfmpegBin()} -i "${inputVideoFile}" ${extraInputs} -vcodec prores_ks -pix_fmt yuva444p10le -profile:v 4444 -q:v 23 -preset fastest ${complexFilter} -y ${intermediary} &&
+      ${getFfmpegBin()} -i "${intermediary}" -vf "${gifFilters},palettegen=stats_mode=diff:max_colors=${maxColors}" -y ${palette} &&
+      ${getFfmpegBin()} -i "${intermediary}" -i "${palette}" -lavfi "${gifFilters},paletteuse=dither=${dither}" -y "${outputFile}.gif"
       `
     )
   } else {
     await exec(
       `
-      ${getFfmpegBin()} -i ${inputVideoFile} -vf "${gifFilters},palettegen=stats_mode=diff:max_colors=${maxColors}" -y ${palette} &&
-      ${getFfmpegBin()} -i ${inputVideoFile} -i ${palette} -lavfi "${gifFilters},paletteuse=dither=${dither}" -y ${outputFile}.gif
+      ${getFfmpegBin()} -i "${inputVideoFile}" -vf "${gifFilters},palettegen=stats_mode=diff:max_colors=${maxColors}" -y ${palette} &&
+      ${getFfmpegBin()} -i "${inputVideoFile}" -i "${palette}" -lavfi "${gifFilters},paletteuse=dither=${dither}" -y "${outputFile}.gif"
       `
     )
   }
@@ -130,7 +130,7 @@ export const processVideo = async (
   )
 
   await exec(
-    `${getFfmpegBin()} -i ${inputVideoFile} ${extraInputs} -preset faster -c:v libx264 -movflags +faststart -crf 23 -maxrate 1.5M -bufsize 1.5M ${complexFilter} ${rotationFilter} ${outputFile}.mp4`
+    `${getFfmpegBin()} -i "${inputVideoFile}" ${extraInputs} -preset faster -c:v libx264 -movflags +faststart -crf 23 -maxrate 1.5M -bufsize 1.5M ${complexFilter} ${rotationFilter} "${outputFile}.mp4"`
   )
 
   return `${outputFile}.mp4`
@@ -154,7 +154,7 @@ export const processImage = async (
     rotation === '' || frameOptions ? '' : `-vf "${rotation}"`
 
   await exec(
-    `${getFfmpegBin()} -y -i ${inputImageFile} ${extraInputs} ${rotationFilter} ${complexFilter} ${outputFile}.png`
+    `${getFfmpegBin()} -y -i "${inputImageFile}" ${extraInputs} ${rotationFilter} ${complexFilter} ${outputFile}.png`
   )
 
   return `${outputFile}.png`
@@ -164,7 +164,7 @@ export const getDimensions = async (
   inputPathToFile: string
 ): Promise<{ width: number; height: number }> => {
   const { stdout } = await exec(
-    `${ffprobe.path} -v error -show_entries stream=width,height -of json ${inputPathToFile}`
+    `${ffprobe.path} -v error -show_entries stream=width,height -of json "${inputPathToFile}"`
   )
 
   const { streams } = JSON.parse(stdout)

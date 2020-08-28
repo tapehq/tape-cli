@@ -13,7 +13,16 @@ const uploadFileToTape = async (source: string, metadata: object) => {
   // Read content from the file
   const fileContent = fs.readFileSync(source)
   const fileName = path.parse(source).base
-  const contentType = mime.lookup(source) || 'application/octet-stream'
+  const contentType = mime.lookup(source)
+
+  if (
+    !contentType ||
+    !(contentType.startsWith('image') || contentType.startsWith('video'))
+  ) {
+    throw new Error(
+      'There was a problem processing your tape. Are you sure you have the right file/simulator running correctly?'
+    )
+  }
 
   const tapeDetails = await generateSignedUploadURL(
     fileName,

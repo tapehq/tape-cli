@@ -18,9 +18,10 @@ import { randomString } from './../helpers/random'
 import { getDimensions } from './../services/ffmpeg.service'
 
 export default class Frame extends GithubIssueOnErrorCommand {
-  static description = 'Record iOS/Android devices/simulators'
+  static description =
+    'Wrap an existing screenshot or video in a device frame (if available) and upload to Tape.sh'
 
-  // static aliases = ['frame']
+  static aliases = ['frame', 'wrap', 'upload']
 
   static flags = {
     ...commonFlags,

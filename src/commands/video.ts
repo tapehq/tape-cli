@@ -146,8 +146,6 @@ export default class Video extends GithubIssueOnErrorCommand {
       )
     }
 
-    if (!flags.local) {
-      video.destroy()
-    }
+    video.destroy()
   }
 }

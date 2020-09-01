@@ -12,7 +12,7 @@ export const copyToLocalOutput = (
   outputPathOnly: string
 ) => {
   const newFilePath = path.join(outputPathOnly, path.basename(originalFile))
-  fs.renameSync(originalFile, newFilePath)
+  fs.copyFileSync(originalFile, newFilePath)
 
   return newFilePath
 }

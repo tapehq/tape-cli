@@ -80,7 +80,8 @@ export default class Image extends GithubIssueOnErrorCommand {
         }
         this.error(`${chalk.dim(error?.message)}`)
       }
-      screenshot.destroy()
     }
+
+    screenshot.destroy()
   }
 }

@@ -15,6 +15,7 @@ import {
 } from '../services'
 import { processImage } from '../services/ffmpeg.service'
 import { getDimensions } from './../services/ffmpeg.service'
+import { exec, ChildProcess, execSync } from 'child_process'
 
 export default class Image extends GithubIssueOnErrorCommand {
   static description = 'Take screenshots of iOS/Android devices/simulators'
@@ -62,6 +63,8 @@ export default class Image extends GithubIssueOnErrorCommand {
       if (allFrames) {
         if (allFrames.length > 1 && flags.selectframe) {
           frameOptions = await frameFromSelectorPrompt(allFrames)
+        } else if (allFrames.length > 1 && flags.frame) {
+          frameOptions = allFrames.find(frame => frame.deviceName === flags.frame)
         } else {
           frameOptions = allFrames[0]
         }
@@ -80,6 +83,7 @@ export default class Image extends GithubIssueOnErrorCommand {
     if (flags.local) {
       const localFilePath = copyToLocalOutput(outputFilePath, flags.local)
       this.log(`\n 🎉 Saved locally to ${localFilePath}.`)
+      // execSync(`open ${localFilePath}`)
     } else {
       try {
         await uploadFile(outputFilePath, {

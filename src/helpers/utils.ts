@@ -36,6 +36,12 @@ export const commonFlags = {
     )}`,
     default: false,
   }),
+  frame: flags.string({
+    helpLabel: `--frame ${chalk.grey(
+      'Select which frame to use, if there are multiple'
+    )}`,
+    default: '',
+  }),
   nocopy: flags.boolean({
     default: false,
     helpLabel: `--nocopy ${chalk.grey('Disable copying to clipboard')}`,

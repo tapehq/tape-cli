@@ -1,4 +1,4 @@
-import { frameFromSelectorPrompt } from './../helpers/frame.helpers'
+import { frameFromSelectorPrompt, getFrameOptions } from './../helpers/frame.helpers'
 import { flags } from '@oclif/command'
 import * as chalk from 'chalk'
 import cli from 'cli-ux'
@@ -44,34 +44,15 @@ export default class Frame extends GithubIssueOnErrorCommand {
       this.error('Could not detect file type')
     }
 
-    let frameOptions = null
-
-    const dimensions = await getDimensions(outputFilePath)
+    const frameFlags = { noframe: false, selectframe: flags.selectframe, frame: flags.frame }
+    const frameOptions = await getFrameOptions(outputFilePath, fileType, frameFlags)
 
     const orientation = DeviceOrientation.Unknown
 
-    const allFrames = await fetchDeviceFrame({
-      ...dimensions,
-      type: fileType as 'image' | 'video',
-    })
-
-    if (allFrames) {
-      if (allFrames.length > 1 && flags.selectframe) {
-        frameOptions = await frameFromSelectorPrompt(allFrames)
-      } else if (allFrames.length > 1 && flags.frame) {
-        frameOptions = allFrames.find(
-          (frame) => frame.deviceName === flags.frame
-        )
-      } else {
-        frameOptions = allFrames[0]
-      }
-    }
 
     cli.action.start(' 📼 Processing your tape')
 
-    const outPathWithoutExtension = `${
-      path.parse(args.inputFile).dir || '.'
-    }/${randomString()}`
+    const outPathWithoutExtension = `${path.parse(args.inputFile).dir || '.'}/${randomString()}`
 
     try {
       // Video mode

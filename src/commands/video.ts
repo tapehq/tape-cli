@@ -1,4 +1,4 @@
-import { frameFromSelectorPrompt } from './../helpers/frame.helpers'
+import { frameFromSelectorPrompt, getFrameOptions } from './../helpers/frame.helpers'
 import { flags } from '@oclif/command'
 import * as chalk from 'chalk'
 import cli from 'cli-ux'
@@ -75,34 +75,9 @@ export default class Video extends GithubIssueOnErrorCommand {
     if (success) {
       let outputFilePath = rawOutputFile
 
-      let frameOptions = null
-
       const recordingSettings = await ConfigService.getRecordingSettings()
-
-      // Get framing settings, if not disabled by user
-      if (flags.noframe || !recordingSettings.deviceFraming) {
-        this.log(` ℹ ${chalk.grey(' Framing disabled \n')}`)
-      } else {
-        const dimensions = await getDimensions(outputFilePath)
-
-        const allFrames = await fetchDeviceFrame({
-          ...dimensions,
-          type: flags.gif ? 'gif' : 'video',
-        })
-
-        if (allFrames) {
-          if (allFrames.length > 1 && flags.selectframe) {
-            frameOptions = await frameFromSelectorPrompt(allFrames)
-          } else if (allFrames.length > 1 && flags.frame) {
-            frameOptions = allFrames.find(
-              (frame) => frame.deviceName === flags.frame
-            )
-          } else {
-            frameOptions = allFrames[0]
-          }
-        }
-      }
-
+      const frameFlags = { noframe: false, selectframe: flags.selectframe, frame: flags.frame }
+      const frameOptions = await getFrameOptions(outputFilePath, 'video', frameFlags, recordingSettings)
       const orientation = await getDeviceOrientation(device)
       const outPathWithoutExtension = rawOutputFile.replace('-raw.mp4', '')
 

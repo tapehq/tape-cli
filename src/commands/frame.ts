@@ -56,8 +56,12 @@ export default class Frame extends GithubIssueOnErrorCommand {
     })
 
     if (allFrames) {
-      if (allFrames.length > 1) {
+      if (allFrames.length > 1 && flags.selectframe) {
         frameOptions = await frameFromSelectorPrompt(allFrames)
+      } else if (allFrames.length > 1 && flags.frame) {
+        frameOptions = allFrames.find(
+          (frame) => frame.deviceName === flags.frame
+        )
       } else {
         frameOptions = allFrames[0]
       }
@@ -66,7 +70,7 @@ export default class Frame extends GithubIssueOnErrorCommand {
     cli.action.start(' 📼 Processing your tape')
 
     const outPathWithoutExtension = `${
-      path.parse(args.inputFile).dir
+      path.parse(args.inputFile).dir || '.'
     }/${randomString()}`
 
     try {

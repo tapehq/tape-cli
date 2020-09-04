@@ -93,6 +93,10 @@ export default class Video extends GithubIssueOnErrorCommand {
         if (allFrames) {
           if (allFrames.length > 1 && flags.selectframe) {
             frameOptions = await frameFromSelectorPrompt(allFrames)
+          } else if (allFrames.length > 1 && flags.frame) {
+            frameOptions = allFrames.find(
+              (frame) => frame.deviceName === flags.frame
+            )
           } else {
             frameOptions = allFrames[0]
           }

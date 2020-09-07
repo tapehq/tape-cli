@@ -73,7 +73,7 @@ export const getShareChoices = (currentBucketName: string) => {
 export const getRecordingSettingsChoices = (
   existingSettings: RecordingSettings
 ) => {
-  inquirer.registerPrompt('table', require('../helpers/inquirer-table-prompt'))
+  inquirer.registerPrompt('table', require('inquirer-table-prompt'))
 
   return [
     {

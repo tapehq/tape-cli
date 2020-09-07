@@ -75,7 +75,7 @@ export default class Video extends GithubIssueOnErrorCommand {
 
       const recordingSettings = await ConfigService.getRecordingSettings()
       const frameFlags = {
-        noframe: false,
+        noframe: flags.noframe,
         selectframe: flags.selectframe,
         frame: flags.frame,
       }

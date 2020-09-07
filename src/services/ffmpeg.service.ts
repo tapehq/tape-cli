@@ -88,13 +88,22 @@ export const makeGif = async (
   if (frameOptions) {
     const intermediary = `${os.tmpdir()}/intermediary.mov`
     const { extraInputs, complexFilter } = decodeFrameOptions(frameOptions)
-    await exec(`${getFfmpegBin()} -i "${inputVideoFile}" ${extraInputs} -vcodec prores_ks -pix_fmt yuva444p10le -profile:v 4444 -q:v 23 -preset fastest ${complexFilter} -y ${intermediary}`)
-    await exec(`${getFfmpegBin()} -i "${intermediary}" -vf "${gifFilters},palettegen=stats_mode=diff:max_colors=${maxColors}" -y ${palette}`)
-    await exec(`${getFfmpegBin()} -i "${intermediary}" -i "${palette}" -lavfi "${gifFilters},paletteuse=dither=${dither}" -y "${outputFile}.gif"`)
-
+    await exec(
+      `${getFfmpegBin()} -i "${inputVideoFile}" ${extraInputs} -vcodec prores_ks -pix_fmt yuva444p10le -profile:v 4444 -q:v 23 -preset fastest ${complexFilter} -y ${intermediary}`
+    )
+    await exec(
+      `${getFfmpegBin()} -i "${intermediary}" -vf "${gifFilters},palettegen=stats_mode=diff:max_colors=${maxColors}" -y ${palette}`
+    )
+    await exec(
+      `${getFfmpegBin()} -i "${intermediary}" -i "${palette}" -lavfi "${gifFilters},paletteuse=dither=${dither}" -y "${outputFile}.gif"`
+    )
   } else {
-    await exec(`${getFfmpegBin()} -i "${inputVideoFile}" -vf "${gifFilters},palettegen=stats_mode=diff:max_colors=${maxColors}" -y ${palette}`)
-    await exec(`${getFfmpegBin()} -i "${inputVideoFile}" -i "${palette}" -lavfi "${gifFilters},paletteuse=dither=${dither}" -y "${outputFile}.gif"`)
+    await exec(
+      `${getFfmpegBin()} -i "${inputVideoFile}" -vf "${gifFilters},palettegen=stats_mode=diff:max_colors=${maxColors}" -y ${palette}`
+    )
+    await exec(
+      `${getFfmpegBin()} -i "${inputVideoFile}" -i "${palette}" -lavfi "${gifFilters},paletteuse=dither=${dither}" -y "${outputFile}.gif"`
+    )
   }
 
   return `${outputFile}.gif`

@@ -20,10 +20,10 @@ export const waitForKeys = (
         ' 🎬 Recording started. Press SPACE to save or ESC to abort.'
       )
     } else {
-      cli.action.start(
-        ' 🎬 Recording started. Press Ctrl + C to save.'
-      )
-      process.on('SIGINT', function() { resolve(true) })
+      cli.action.start(' 🎬 Recording started. Press Ctrl + C to save.')
+      process.on('SIGINT', function () {
+        resolve(true)
+      })
     }
 
     process.stdin.on('keypress', (str, key) => {

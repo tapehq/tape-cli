@@ -1,4 +1,3 @@
-import { frameFromSelectorPrompt, getFrameOptions } from './../helpers/frame.helpers'
 import { flags } from '@oclif/command'
 import * as chalk from 'chalk'
 import cli from 'cli-ux'
@@ -18,9 +17,8 @@ import {
   FfmpegService,
   XcodeVideoService,
 } from '../services'
-import { fetchDeviceFrame } from './../api/frame'
 import { CopyFormats } from './../helpers/copy.helpers'
-import { getDimensions } from './../services/ffmpeg.service'
+import { getFrameOptions } from './../helpers/frame.helpers'
 
 export default class Video extends GithubIssueOnErrorCommand {
   static description = 'Record iOS/Android devices/simulators'
@@ -76,8 +74,17 @@ export default class Video extends GithubIssueOnErrorCommand {
       let outputFilePath = rawOutputFile
 
       const recordingSettings = await ConfigService.getRecordingSettings()
-      const frameFlags = { noframe: false, selectframe: flags.selectframe, frame: flags.frame }
-      const frameOptions = await getFrameOptions(outputFilePath, 'video', frameFlags, recordingSettings)
+      const frameFlags = {
+        noframe: false,
+        selectframe: flags.selectframe,
+        frame: flags.frame,
+      }
+      const frameOptions = await getFrameOptions(
+        outputFilePath,
+        'video',
+        frameFlags,
+        recordingSettings
+      )
       const orientation = await getDeviceOrientation(device)
       const outPathWithoutExtension = rawOutputFile.replace('-raw.mp4', '')
 

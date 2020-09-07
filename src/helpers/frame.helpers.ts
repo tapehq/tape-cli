@@ -4,6 +4,7 @@ import * as chalk from 'chalk'
 import { DeviceFrame, fetchDeviceFrame } from './../api/frame'
 import { RecordingSettings } from '../services/config.service'
 import { getDimensions } from '../services/ffmpeg.service'
+import * as stringSimilary from 'string-similarity'
 
 export const frameFromSelectorPrompt = async (frames: DeviceFrame[]) => {
   const response: { frameIndex: number } = await inquirer.prompt([
@@ -21,8 +22,16 @@ export const frameFromSelectorPrompt = async (frames: DeviceFrame[]) => {
   return frames[response.frameIndex]
 }
 
-export const getFrameOptions = async (outputFilePath: string, fileType: string, flags: { noframe: boolean, selectframe: boolean, frame: string }, recordingSettings?: RecordingSettings) => {
-  if (flags.noframe || (recordingSettings && !recordingSettings.deviceFraming)) {
+export const getFrameOptions = async (
+  outputFilePath: string,
+  fileType: string,
+  flags: { noframe: boolean; selectframe: boolean; frame: string },
+  recordingSettings?: RecordingSettings
+) => {
+  if (
+    flags.noframe ||
+    (recordingSettings && !recordingSettings.deviceFraming)
+  ) {
     console.log(` ℹ ${chalk.grey(' Framing disabled \n')}`)
     return null
   }
@@ -41,9 +50,16 @@ export const getFrameOptions = async (outputFilePath: string, fileType: string, 
     }
 
     if (allFrames.length > 1 && flags.frame) {
-      return allFrames.find(
-        (result) => result.deviceName === flags.frame
-      ) || null
+      const matchResults = stringSimilary.findBestMatch(
+        flags.frame,
+        allFrames.map((frame) => frame.deviceName)
+      )
+
+      if (matchResults.bestMatch.rating >= 0.2) {
+        return allFrames[matchResults.bestMatchIndex]
+      }
+
+      return null
     }
 
     return allFrames[0]

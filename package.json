@@ -38,6 +38,7 @@
     "niceware": "^2.0.0",
     "open": "^7.0.4",
     "pretty-bytes": "^5.3.0",
+    "string-similarity": "^4.0.2",
     "tslib": "^1"
   },
   "devDependencies": {

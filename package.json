@@ -15,6 +15,7 @@
     "@types/command-exists": "^1.2.0",
     "@types/ffmpeg-static": "^3.0.0",
     "@types/ffprobe-static": "^2.0.0",
+    "@types/string-similarity": "^3.0.0",
     "adbkit": "^2.11.1",
     "await-exec": "^0.1.2",
     "aws-sdk": "^2.663.0",

@@ -1,3 +1,4 @@
+import cli from 'cli-ux'
 const readline = require('readline')
 
 // TODO these should be arrays..maybeh?
@@ -12,7 +13,18 @@ export const waitForKeys = (
     })
 
     readline.emitKeypressEvents(rl.input)
-    rl.input.setRawMode(true)
+
+    if (process.stdin.isTTY) {
+      rl.input.setRawMode(true)
+      cli.action.start(
+        ' 🎬 Recording started. Press SPACE to save or ESC to abort.'
+      )
+    } else {
+      cli.action.start(
+        ' 🎬 Recording started. Press Ctrl + C to save.'
+      )
+      process.on('SIGINT', function() { resolve(true) })
+    }
 
     process.stdin.on('keypress', (str, key) => {
       // console.log({ str, key })

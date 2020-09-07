@@ -60,10 +60,6 @@ export default class Video extends GithubIssueOnErrorCommand {
 
     const video = new VideoKlass({ device, verbose: flags.debug })
     video.record()
-    cli.action.start(
-      ' 🎬 Recording started. Press SPACE to save or ESC to abort.'
-    )
-
     const success = await waitForKeys('space', 'escape')
 
     cli.action.start(' 📼 Processing your tape')

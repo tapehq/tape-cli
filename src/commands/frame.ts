@@ -43,7 +43,7 @@ export default class Frame extends GithubIssueOnErrorCommand {
     }
 
     const frameFlags = {
-      noframe: false,
+      noframe: flags.noframe,
       selectframe: flags.selectframe,
       frame: flags.frame,
     }

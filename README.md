@@ -49,6 +49,7 @@ USAGE
 <!-- commands -->
 * [`tape config [NAME]`](#tape-config-name)
 * [`tape devices`](#tape-devices)
+* [`tape frame [INPUTFILE]`](#tape-frame-inputfile)
 * [`tape gif`](#tape-gif)
 * [`tape help [COMMAND]`](#tape-help-command)
 * [`tape image`](#tape-image)
@@ -99,6 +100,33 @@ EXAMPLE
 
 _See code: [src/commands/devices.ts](https://github.com/edamameldn/tape-cli/blob/v0.12.3-0/src/commands/devices.ts)_
 
+## `tape frame [INPUTFILE]`
+
+Wrap an existing screenshot or video in a device frame (if available) and upload to Tape.sh
+
+```
+USAGE
+  $ tape frame [INPUTFILE]
+
+OPTIONS
+  -d, --debug
+  -h, --help                                                      show CLI help
+  -l, --local=~/Documents
+  --format=md|href|url
+  --frame Select which frame to use, if there are multiple=frame
+  --hq
+  --nocopy Disable copying to clipboard
+  --noframe Disable device frames
+  --selectframe Select which frame to use, if there are multiple
+
+ALIASES
+  $ tape frame
+  $ tape wrap
+  $ tape upload
+```
+
+_See code: [src/commands/frame.ts](https://github.com/edamameldn/tape-cli/blob/v0.12.3-0/src/commands/frame.ts)_
+
 ## `tape gif`
 
 Record iOS simulators and Android devices/emulators and output a gif file
@@ -109,12 +137,14 @@ USAGE
 
 OPTIONS
   -d, --debug
-  -h, --help                             show CLI help
+  -h, --help                                                      show CLI help
   -l, --local=~/Documents
-  --format=md|href|html|url              [default: url]
+  --format=md|href|url
+  --frame Select which frame to use, if there are multiple=frame
   --hq
   --nocopy Disable copying to clipboard
   --noframe Disable device frames
+  --selectframe Select which frame to use, if there are multiple
 
 ALIASES
   $ tape gif
@@ -154,11 +184,13 @@ USAGE
 
 OPTIONS
   -d, --debug
-  -h, --help                             show CLI help
+  -h, --help                                                      show CLI help
   -l, --local=~/Documents
-  --format=md|href|html|url              [default: url]
+  --format=md|href|url
+  --frame Select which frame to use, if there are multiple=frame
   --nocopy Disable copying to clipboard
   --noframe Disable device frames
+  --selectframe Select which frame to use, if there are multiple
 
 ALIASES
   $ tape i
@@ -217,12 +249,14 @@ USAGE
 OPTIONS
   -d, --debug
   -g, --gif
-  -h, --help                             show CLI help
+  -h, --help                                                      show CLI help
   -l, --local=~/Documents
-  --format=md|href|html|url              [default: url]
+  --format=md|href|url
+  --frame Select which frame to use, if there are multiple=frame
   --hq
   --nocopy Disable copying to clipboard
   --noframe Disable device frames
+  --selectframe Select which frame to use, if there are multiple
 
 ALIASES
   $ tape video

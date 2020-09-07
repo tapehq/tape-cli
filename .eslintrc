@@ -15,6 +15,7 @@
         "SwitchCase": 1
       }
     ],
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "unicorn/no-abusive-eslint-disable": "warning"
   }
 }

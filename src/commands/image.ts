@@ -1,7 +1,6 @@
-import { frameFromSelectorPrompt, getFrameOptions } from './../helpers/frame.helpers'
 import * as chalk from 'chalk'
-import { fetchDeviceFrame } from '../api/frame'
 import GithubIssueOnErrorCommand from '../github-issue-on-error-command'
+
 import { CopyFormats } from '../helpers/copy.helpers'
 import { deviceToFriendlyString } from '../helpers/device.helpers'
 import { getDeviceOrientation } from '../helpers/orientation.helpers'
@@ -9,13 +8,12 @@ import { uploadFile } from '../helpers/s3'
 import { commonFlags, copyToLocalOutput } from '../helpers/utils'
 import {
   AndroidScreenshotService,
+  ConfigService,
   DeviceService,
   XcodeScreenshotService,
-  ConfigService,
 } from '../services'
 import { processImage } from '../services/ffmpeg.service'
-import { getDimensions } from './../services/ffmpeg.service'
-import { exec, ChildProcess, execSync } from 'child_process'
+import { getFrameOptions } from './../helpers/frame.helpers'
 
 export default class Image extends GithubIssueOnErrorCommand {
   static description = 'Take screenshots of iOS/Android devices/simulators'
@@ -49,8 +47,17 @@ export default class Image extends GithubIssueOnErrorCommand {
     const orientation = await getDeviceOrientation(device)
     const recordingSettings = await ConfigService.getRecordingSettings()
 
-    const frameFlags = { noframe: flags.noframe, selectframe: flags.selectframe, frame: flags.frame }
-    const frameOptions = await getFrameOptions(rawOutputFile, 'image', frameFlags, recordingSettings)
+    const frameFlags = {
+      noframe: flags.noframe,
+      selectframe: flags.selectframe,
+      frame: flags.frame,
+    }
+    const frameOptions = await getFrameOptions(
+      rawOutputFile,
+      'image',
+      frameFlags,
+      recordingSettings
+    )
 
     const outputFilePathWithoutExtension = rawOutputFile.replace('-raw.png', '')
 

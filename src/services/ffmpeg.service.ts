@@ -1,12 +1,11 @@
-import { isEmpty } from 'lodash'
-import * as util from 'util'
+import * as chalk from 'chalk'
 import { exec as originalExec } from 'child_process'
 import * as commandExists from 'command-exists'
-import * as chalk from 'chalk'
-import * as os from 'os'
 import * as pathToFfmpeg from 'ffmpeg-static'
 import * as ffprobe from 'ffprobe-static'
-
+import { isEmpty } from 'lodash'
+import * as os from 'os'
+import * as util from 'util'
 import { DeviceOrientation } from '../helpers/orientation.helpers'
 
 const FFMPEG = `${pathToFfmpeg} -loglevel warning -nostats -hide_banner`
@@ -71,6 +70,7 @@ export const makeGif = async (
   hq: boolean,
   deviceOrientation: DeviceOrientation = DeviceOrientation.Unknown,
   frameOptions: FrameOptions | null
+  // eslint-disable-next-line max-params
 ) => {
   const rotation = getRotationForDeviceOrientation(deviceOrientation)
   const rotationString = rotation === '' ? '' : `${rotation},`

@@ -1,4 +1,3 @@
-import { frameFromSelectorPrompt, getFrameOptions } from './../helpers/frame.helpers'
 import { flags } from '@oclif/command'
 import * as chalk from 'chalk'
 import cli from 'cli-ux'
@@ -12,10 +11,9 @@ import { DeviceOrientation } from '../helpers/orientation.helpers'
 import { uploadFile } from '../helpers/s3'
 import { commonFlags, copyToLocalOutput } from '../helpers/utils'
 import { FfmpegService } from '../services'
-import { fetchDeviceFrame } from './../api/frame'
 import { CopyFormats } from './../helpers/copy.helpers'
+import { getFrameOptions } from './../helpers/frame.helpers'
 import { randomString } from './../helpers/random'
-import { getDimensions } from './../services/ffmpeg.service'
 
 export default class Frame extends GithubIssueOnErrorCommand {
   static description =
@@ -44,15 +42,24 @@ export default class Frame extends GithubIssueOnErrorCommand {
       this.error('Could not detect file type')
     }
 
-    const frameFlags = { noframe: false, selectframe: flags.selectframe, frame: flags.frame }
-    const frameOptions = await getFrameOptions(outputFilePath, fileType, frameFlags)
+    const frameFlags = {
+      noframe: false,
+      selectframe: flags.selectframe,
+      frame: flags.frame,
+    }
+    const frameOptions = await getFrameOptions(
+      outputFilePath,
+      fileType,
+      frameFlags
+    )
 
     const orientation = DeviceOrientation.Unknown
 
-
     cli.action.start(' 📼 Processing your tape')
 
-    const outPathWithoutExtension = `${path.parse(args.inputFile).dir || '.'}/${randomString()}`
+    const outPathWithoutExtension = `${
+      path.parse(args.inputFile).dir || '.'
+    }/${randomString()}`
 
     try {
       // Video mode

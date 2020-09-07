@@ -9,20 +9,32 @@ import ConfigService from '../services/config.service'
 import { generateSignedUploadURL, putFile, confirmTape } from '../api/upload'
 import { formatLink, CopyFormats } from './copy.helpers'
 
-const uploadFileToTape = async (
-  source: string,
-  metadata: object
-): Promise<string> => {
+const uploadFileToTape = async (source: string, metadata: object) => {
   // Read content from the file
   const fileContent = fs.readFileSync(source)
   const fileName = path.parse(source).base
-  const contentType = mime.lookup(source) || 'application/octet-stream'
+  const contentType = mime.lookup(source)
 
-  const { url: uploadUrl, tapeUrl, id } = await generateSignedUploadURL(
+  if (
+    !contentType ||
+    !(contentType.startsWith('image') || contentType.startsWith('video'))
+  ) {
+    throw new Error(
+      'There was a problem processing your tape. Are you sure you have the right file/simulator running correctly?'
+    )
+  }
+
+  const tapeDetails = await generateSignedUploadURL(
     fileName,
     contentType,
     metadata
   )
+
+  if (!tapeDetails) {
+    throw new Error('Something went wrong!')
+  }
+
+  const { url: uploadUrl, tapeUrl, id } = tapeDetails
 
   await putFile(fileContent, uploadUrl, {
     'Content-Type': contentType,
@@ -80,6 +92,8 @@ export const uploadFile = async (
   options: UploadFileOptions = {}
 ) => {
   const bucketName = await ConfigService.get('bucketName')
+  const recordingSettings = await ConfigService.getRecordingSettings()
+
   if (options.log) {
     cli.action.start('🔗 Uploading file...')
   }
@@ -93,15 +107,13 @@ export const uploadFile = async (
       url = await uploadFileToTape(source, options.metadata || {})
     }
 
-    const formattedLink = formatLink(
-      url,
-      options.format,
-      options.copyToClipboard
-    )
+    const linkFormat = options.format || recordingSettings.copyFormat
+
+    const formattedLink = formatLink(url, linkFormat, options.copyToClipboard)
 
     if (options.log) {
       const clipboard = options.copyToClipboard
-        ? `Copied ${options.format} to clipboard 🔖 ! `
+        ? `Copied ${linkFormat} to clipboard 🔖 ! `
         : ''
 
       cli.action.stop(

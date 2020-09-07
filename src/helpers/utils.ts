@@ -20,13 +20,27 @@ export const copyToLocalOutput = (
 export const commonFlags = {
   help: flags.help({ char: 'h' }),
   debug: flags.boolean({ char: 'd' }),
+  noframe: flags.boolean({
+    helpLabel: `--noframe ${chalk.grey('Disable device frames')}`,
+  }),
   local: flags.string({
     char: 'l',
     helpValue: '~/Documents',
   }), // dont upload
   format: flags.string({
     options: Object.values(CopyFormats),
-    default: CopyFormats.URL,
+  }),
+  selectframe: flags.boolean({
+    helpLabel: `--selectframe ${chalk.grey(
+      'Select which frame to use, if there are multiple'
+    )}`,
+    default: false,
+  }),
+  frame: flags.string({
+    helpLabel: `--frame ${chalk.grey(
+      'Select which frame to use, if there are multiple'
+    )}`,
+    default: '',
   }),
   nocopy: flags.boolean({
     default: false,

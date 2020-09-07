@@ -1,17 +1,22 @@
 import { Command, flags } from '@oclif/command'
-import * as inquirer from 'inquirer'
-import { isEmpty } from 'lodash'
 import * as chalk from 'chalk'
+import * as inquirer from 'inquirer'
+import { isEmpty, mapValues } from 'lodash'
 import * as open from 'open'
 import * as os from 'os'
 
+import ConfigService, { FILE as CONFIG_FILE } from '../services/config.service'
+import {
+  getRecordingSettingsChoices,
+  getShareChoices,
+  mainConfigChoices,
+} from './../helpers/config.menus'
 import { logoAscii } from './../helpers/logo.ascii'
 import {
   checkDependencies,
   hasAccessToken,
   TAPE_HOST,
 } from './../services/config.service'
-import ConfigService, { FILE as CONFIG_FILE } from '../services/config.service'
 
 export default class Config extends Command {
   static description = 'Configuration'
@@ -47,65 +52,23 @@ export default class Config extends Command {
       return
     }
 
-    const currentBucketName = await ConfigService.get('bucketName')
-
-    const responses = await inquirer.prompt([
-      {
-        name: 'choice',
-        message: 'What would you like to configure?',
-        type: 'list',
-        choices: [
-          {
-            name: 'Login to Tape.sh',
-            value: 'login',
-          },
-          {
-            name: 'Run full Setup',
-            short: 'Setup 📼 Tape',
-            value: 'full_setup',
-          },
-          {
-            name: 'Use Tape.sh for uploads',
-            value: 'use_tape',
-          },
-          {
-            name: `Set bucket name (current: ${chalk.yellow(
-              currentBucketName || 'Tape.sh hosted'
-            )})`,
-            short: 'Set bucket name',
-            value: 'change_bucket_name',
-          },
-          {
-            name: 'Open Config File',
-            short: 'Open Config File',
-            value: 'open_config',
-          },
-          {
-            name: 'Logout',
-            value: 'logout',
-          },
-          {
-            name: 'Cancel',
-          },
-        ],
-      },
-    ])
+    const responses = await inquirer.prompt(mainConfigChoices)
 
     switch (responses.choice) {
-      case 'change_bucket_name':
-        await this.changeBucketName()
-        break
-
-      case 'use_tape':
-        await this.useTape()
-        break
-
       case 'full_setup':
         await this.fullSetup()
         break
 
       case 'login':
         await this.login()
+        break
+
+      case 'upload_settings':
+        await this.uploadSettings()
+        break
+
+      case 'settings':
+        await this.settings()
         break
 
       case 'open_config':
@@ -135,6 +98,41 @@ export default class Config extends Command {
         'https://dashboard.tape.sh'
       )}`
     )
+  }
+
+  async uploadSettings() {
+    const currentBucketName = await ConfigService.get('bucketName')
+
+    const responses = await inquirer.prompt(getShareChoices(currentBucketName))
+
+    switch (responses.choice) {
+      case 'change_bucket_name':
+        await this.changeBucketName()
+        break
+
+      case 'use_tape':
+        await this.useTape()
+        break
+
+      default:
+      // do nothing
+    }
+  }
+
+  async settings() {
+    const recordingSettings = await ConfigService.getRecordingSettings()
+
+    const tableResult = await inquirer.prompt(
+      getRecordingSettingsChoices(recordingSettings)
+    )
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore-next-line
+    const newSettings = mapValues(tableResult, (val) => val[0])
+
+    this.log(' 🆒 Saved settings. Happy Taping!')
+
+    await ConfigService.set('recordingSettings', newSettings)
   }
 
   async logout() {

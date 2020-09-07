@@ -1,23 +1,24 @@
-import { CopyFormats } from './../helpers/copy.helpers'
 import { flags } from '@oclif/command'
+import * as chalk from 'chalk'
 import cli from 'cli-ux'
 import * as filesize from 'filesize'
 import * as fs from 'fs'
-import * as chalk from 'chalk'
-
 import GithubIssueOnErrorCommand from '../github-issue-on-error-command'
+import { deviceToFriendlyString } from '../helpers/device.helpers'
+import { waitForKeys } from '../helpers/keyboard'
+import { getDeviceOrientation } from '../helpers/orientation.helpers'
 import { uploadFile } from '../helpers/s3'
+import { commonFlags, copyToLocalOutput } from '../helpers/utils'
 import {
+  AndroidVideoEmuService,
+  AndroidVideoShellService,
+  ConfigService,
   DeviceService,
   FfmpegService,
   XcodeVideoService,
-  AndroidVideoEmuService,
-  AndroidVideoShellService,
 } from '../services'
-import { deviceToFriendlyString } from '../helpers/device.helpers'
-import { waitForKeys } from '../helpers/keyboard'
-import { copyToLocalOutput, commonFlags } from '../helpers/utils'
-import { getDeviceOrientation } from '../helpers/orientation.helpers'
+import { CopyFormats } from './../helpers/copy.helpers'
+import { getFrameOptions } from './../helpers/frame.helpers'
 
 export default class Video extends GithubIssueOnErrorCommand {
   static description = 'Record iOS/Android devices/simulators'
@@ -70,40 +71,52 @@ export default class Video extends GithubIssueOnErrorCommand {
     const rawOutputFile = await video.save()
 
     if (success) {
-      let outputPath = rawOutputFile
+      let outputFilePath = rawOutputFile
 
+      const recordingSettings = await ConfigService.getRecordingSettings()
+      const frameFlags = {
+        noframe: false,
+        selectframe: flags.selectframe,
+        frame: flags.frame,
+      }
+      const frameOptions = await getFrameOptions(
+        outputFilePath,
+        'video',
+        frameFlags,
+        recordingSettings
+      )
       const orientation = await getDeviceOrientation(device)
+      const outPathWithoutExtension = rawOutputFile.replace('-raw.mp4', '')
 
       try {
-        if (flags.hq && !flags.gif) {
-          this.log(' ℹ hq flag supplied. Not Compressing \n')
-        } else {
-          outputPath = rawOutputFile.replace('-raw.mp4', '.mp4')
-          await FfmpegService.compressVid(
+        // Video mode
+        if (!flags.gif) {
+          outputFilePath = await FfmpegService.processVideo(
             rawOutputFile,
-            outputPath,
-            orientation
+            outPathWithoutExtension,
+            orientation,
+            frameOptions
           )
           cli.action.stop()
         }
 
+        // Gif mode
         if (flags.gif) {
           cli.action.start(' 🚴🏽‍♀️ Making your gif...')
 
-          const gifPath = rawOutputFile.replace('-raw.mp4', '')
-          await FfmpegService.makeGif(
+          outputFilePath = await FfmpegService.makeGif(
             rawOutputFile,
-            gifPath,
+            outPathWithoutExtension,
             flags.hq,
-            orientation
+            orientation,
+            frameOptions
           )
-          outputPath = `${gifPath}.gif`
 
           cli.action.stop('✔️')
         }
 
         if (flags.local) {
-          const localFilePath = copyToLocalOutput(outputPath, flags.local)
+          const localFilePath = copyToLocalOutput(outputFilePath, flags.local)
           this.log(`\n 🎉 Video saved locally to ${localFilePath}.`)
         } else {
           this.log(
@@ -117,12 +130,12 @@ export default class Video extends GithubIssueOnErrorCommand {
           this.log(
             `${chalk.grey(
               `📼  Tape output file size: ${filesize(
-                fs.statSync(outputPath).size
+                fs.statSync(outputFilePath).size
               )}`
             )}`
           )
 
-          await uploadFile(outputPath, {
+          await uploadFile(outputFilePath, {
             copyToClipboard: !flags.nocopy,
             fileType: 'Video',
             format: flags.format as CopyFormats,

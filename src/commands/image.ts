@@ -1,20 +1,21 @@
+import { frameFromSelectorPrompt, getFrameOptions } from './../helpers/frame.helpers'
 import * as chalk from 'chalk'
-
+import { fetchDeviceFrame } from '../api/frame'
 import GithubIssueOnErrorCommand from '../github-issue-on-error-command'
+import { CopyFormats } from '../helpers/copy.helpers'
+import { deviceToFriendlyString } from '../helpers/device.helpers'
+import { getDeviceOrientation } from '../helpers/orientation.helpers'
 import { uploadFile } from '../helpers/s3'
+import { commonFlags, copyToLocalOutput } from '../helpers/utils'
 import {
   AndroidScreenshotService,
-  XcodeScreenshotService,
   DeviceService,
+  XcodeScreenshotService,
+  ConfigService,
 } from '../services'
-import { deviceToFriendlyString } from '../helpers/device.helpers'
-import { copyToLocalOutput, commonFlags } from '../helpers/utils'
-import { CopyFormats } from '../helpers/copy.helpers'
-import {
-  DeviceOrientation,
-  getDeviceOrientation,
-} from '../helpers/orientation.helpers'
-import { rotateImage } from '../services/ffmpeg.service'
+import { processImage } from '../services/ffmpeg.service'
+import { getDimensions } from './../services/ffmpeg.service'
+import { exec, ChildProcess, execSync } from 'child_process'
 
 export default class Image extends GithubIssueOnErrorCommand {
   static description = 'Take screenshots of iOS/Android devices/simulators'
@@ -45,25 +46,28 @@ export default class Image extends GithubIssueOnErrorCommand {
     const screenshot = new ScreenshotKlass({ device, verbose: flags.debug })
     const rawOutputFile = await screenshot.save()
 
-    let outputFile = rawOutputFile
-
     const orientation = await getDeviceOrientation(device)
-    if (
-      orientation !== DeviceOrientation.Portrait &&
-      orientation !== DeviceOrientation.Unknown
-    ) {
-      outputFile = rawOutputFile.replace('-raw.png', '.png')
+    const recordingSettings = await ConfigService.getRecordingSettings()
 
-      await rotateImage(rawOutputFile, `${outputFile}`, orientation)
-      outputFile = `${outputFile}`
-    }
+    const frameFlags = { noframe: flags.noframe, selectframe: flags.selectframe, frame: flags.frame }
+    const frameOptions = await getFrameOptions(rawOutputFile, 'image', frameFlags, recordingSettings)
+
+    const outputFilePathWithoutExtension = rawOutputFile.replace('-raw.png', '')
+
+    const outputFilePath = await processImage(
+      rawOutputFile,
+      outputFilePathWithoutExtension,
+      orientation,
+      frameOptions
+    )
 
     if (flags.local) {
-      const localFilePath = copyToLocalOutput(outputFile, flags.local)
+      const localFilePath = copyToLocalOutput(outputFilePath, flags.local)
       this.log(`\n 🎉 Saved locally to ${localFilePath}.`)
+      // execSync(`open ${localFilePath}`)
     } else {
       try {
-        await uploadFile(outputFile, {
+        await uploadFile(outputFilePath, {
           copyToClipboard: !flags.nocopy,
           fileType: 'Screenshot',
           format: flags.format as CopyFormats,

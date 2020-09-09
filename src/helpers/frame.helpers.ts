@@ -26,6 +26,7 @@ export const getFrameOptions = async (
   outputFilePath: string,
   fileType: string,
   flags: { noframe: boolean; selectframe: boolean; frame: string },
+  metadata?: { deviceName: string },
   recordingSettings?: RecordingSettings
 ) => {
   if (

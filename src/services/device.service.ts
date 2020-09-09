@@ -47,16 +47,15 @@ export const getAndroidDevices = async (): Promise<AndroidDevice[]> => {
       .filter((device) => device.type !== 'offline')
       .map(async (device) => {
         const properties = await client.getProperties(device.id)
-        const brand = properties['ro.product.board']
+
+        const brand = properties['ro.product.vendor.brand']
         const deviceName = properties['ro.product.device']
-        const productName = properties['ro.product.name']
-        const manufacturer = properties['ro.product.manufacturer']
         const model = properties['ro.product.model']
         const sdk = properties['ro.build.version.sdk']
 
         const kernelQemu = properties['ro.kernel.qemu']
 
-        const deviceDescription = [manufacturer, model, productName, brand]
+        const deviceDescription = [brand, model]
 
         const isEmulator =
           kernelQemu === '1' && deviceName.includes('generic_x')

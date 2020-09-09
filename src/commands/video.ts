@@ -70,17 +70,21 @@ export default class Video extends GithubIssueOnErrorCommand {
       let outputFilePath = rawOutputFile
 
       const recordingSettings = await ConfigService.getRecordingSettings()
+
       const frameFlags = {
         noframe: flags.noframe,
         selectframe: flags.selectframe,
         frame: flags.frame,
       }
+
       const frameOptions = await getFrameOptions(
         outputFilePath,
         'video',
         frameFlags,
+        { deviceName: device.name },
         recordingSettings
       )
+
       const orientation = await getDeviceOrientation(device)
       const outPathWithoutExtension = rawOutputFile.replace('-raw.mp4', '')
 

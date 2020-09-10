@@ -56,6 +56,7 @@ export default class Image extends GithubIssueOnErrorCommand {
       rawOutputFile,
       'image',
       frameFlags,
+      { deviceName: device.name },
       recordingSettings
     )
 

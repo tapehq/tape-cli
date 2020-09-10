@@ -50,7 +50,8 @@ export default class Frame extends GithubIssueOnErrorCommand {
     const frameOptions = await getFrameOptions(
       outputFilePath,
       fileType,
-      frameFlags
+      frameFlags,
+      { deviceName: flags.frame }
     )
 
     const orientation = DeviceOrientation.Unknown

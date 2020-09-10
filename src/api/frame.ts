@@ -21,8 +21,8 @@ export const fetchDeviceFrame = async (
   const qlClient = await createQlClient()
 
   try {
-    const query = `query DeviceFrames($width:Int!, $height:Int!, $type: String) {
-    deviceFrames(width: $width, height:$height, type: $type){
+    const query = `query DeviceFrames($width:Int!, $height:Int!, $type: String, $deviceName: String) {
+    deviceFrames(width: $width, height:$height, type: $type, deviceName: $deviceName){
       inputs,
       deviceName,
       filter

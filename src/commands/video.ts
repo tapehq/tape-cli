@@ -79,7 +79,7 @@ export default class Video extends GithubIssueOnErrorCommand {
 
       const frameOptions = await getFrameOptions(
         outputFilePath,
-        'video',
+        flags.gif ? 'gif' : 'video',
         frameFlags,
         { deviceName: device.name },
         recordingSettings

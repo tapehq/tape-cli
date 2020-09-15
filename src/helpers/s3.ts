@@ -1,3 +1,4 @@
+import { getDimensions } from './../services/ffmpeg.service'
 import * as AWS from 'aws-sdk'
 import * as fs from 'fs'
 import * as mime from 'mime-types'
@@ -38,7 +39,7 @@ const uploadFileToTape = async (source: string, metadata: object) => {
 
   await putFile(fileContent, uploadUrl, {
     'Content-Type': contentType,
-    'Cache-Control': 'public, max-age=604800, immutable',
+    'Cache-Control': 'public, max-age=86400, immutable',
   })
 
   await confirmTape(id)
@@ -99,12 +100,18 @@ export const uploadFile = async (
   }
 
   let url
+  const dimensions = await getDimensions(source)
+
+  const enhancedMetadata = {
+    ...options.metadata,
+    ...dimensions,
+  }
 
   try {
     if (bucketName) {
       url = await uploadFileToBucket(source, bucketName)
     } else {
-      url = await uploadFileToTape(source, options.metadata || {})
+      url = await uploadFileToTape(source, enhancedMetadata || {})
     }
 
     const linkFormat = options.format || recordingSettings.copyFormat

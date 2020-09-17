@@ -4,7 +4,6 @@ import * as inquirer from 'inquirer'
 import { isEmpty, mapValues } from 'lodash'
 import * as open from 'open'
 import * as os from 'os'
-
 import ConfigService, { FILE as CONFIG_FILE } from '../services/config.service'
 import {
   getRecordingSettingsChoices,

@@ -6,6 +6,7 @@ import { createQlClient, handleError } from './client'
 interface CreateTape {
   url: string
   tapeUrl: string
+  shareUrl: string
   id: string
 }
 
@@ -26,6 +27,7 @@ export const generateSignedUploadURL = async (
         id
         url
         tapeUrl
+        shareUrl
       }
     }
   `

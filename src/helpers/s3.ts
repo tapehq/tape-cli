@@ -35,7 +35,7 @@ const uploadFileToTape = async (source: string, metadata: object) => {
     throw new Error('Something went wrong!')
   }
 
-  const { url: uploadUrl, tapeUrl, id } = tapeDetails
+  const { url: uploadUrl, tapeUrl, shareUrl, id } = tapeDetails
 
   await putFile(fileContent, uploadUrl, {
     'Content-Type': contentType,
@@ -43,7 +43,7 @@ const uploadFileToTape = async (source: string, metadata: object) => {
   })
 
   await confirmTape(id)
-  return tapeUrl
+  return { tapeUrl, shareUrl }
 }
 
 const uploadFileToBucket = async (
@@ -99,24 +99,31 @@ export const uploadFile = async (
     cli.action.start('🔗 Uploading file...')
   }
 
-  let url
   const dimensions = await getDimensions(source)
 
   const enhancedMetadata = {
     ...options.metadata,
     ...dimensions,
   }
+  let tapeUrl
+  let shareUrl
 
   try {
     if (bucketName) {
-      url = await uploadFileToBucket(source, bucketName)
+      tapeUrl = await uploadFileToBucket(source, bucketName)
     } else {
-      url = await uploadFileToTape(source, enhancedMetadata || {})
+      const urls = await uploadFileToTape(source, options.metadata || {})
+      tapeUrl = urls.tapeUrl
+      shareUrl = urls.shareUrl
     }
 
     const linkFormat = options.format || recordingSettings.copyFormat
 
-    const formattedLink = formatLink(url, linkFormat, options.copyToClipboard)
+    const formattedLink = formatLink(
+      { tapeUrl, shareUrl },
+      linkFormat,
+      options.copyToClipboard
+    )
 
     if (options.log) {
       const clipboard = options.copyToClipboard
@@ -130,7 +137,7 @@ export const uploadFile = async (
       )
     }
 
-    return url
+    return tapeUrl
   } catch (error) {
     cli.action.stop(`😨 ${chalk.redBright('Upload failed.')}`)
 

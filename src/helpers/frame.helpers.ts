@@ -44,7 +44,7 @@ export const getFrameOptions = async (
     type: fileType as 'image' | 'video',
   })
 
-  if (allFrames) {
+  if (allFrames && allFrames?.length) {
     if (allFrames.length > 1 && flags.selectframe) {
       const frame = await frameFromSelectorPrompt(allFrames)
       return frame

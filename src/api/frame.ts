@@ -38,12 +38,12 @@ export const fetchDeviceFrame = async (
         chalk.grey(' ☒ No frames found for resolution. Skipping framing.')
       )
 
-      return null
+      return []
     }
 
     return deviceFrames
   } catch (error) {
     handleError(error)
-    return null
+    return []
   }
 }

@@ -33,7 +33,7 @@
     "graphql-request": "2.1.0-next.1",
     "inquirer": "^7.1.0",
     "inquirer-table-prompt": "https://github.com/edamameldn/inquirer-table-prompt#13d35fb992e01c7e20516a0e57115e7cea7a8369",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "mime-types": "^2.1.27",
     "new-github-issue-url": "^0.2.1",
     "niceware": "^2.0.0",
